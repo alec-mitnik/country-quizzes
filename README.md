@@ -11,6 +11,7 @@ Supports light and dark color schemes, applying the preference detected by the b
 Works across different browsers and viewport sizes, and adheres to accessible practices, such as:
 * Keyboard and screen reader support
 * Semantic HTML and appropriate aria attributes
+* Supporting high zoom or text magnification without content getting cut off
 * Maintaining sufficient color contrast
 * Honoring a reduced motion preference
 * Supporting a high-contrast mode (on Windows this mode can be toggled with Alt+Shift+Printscreen)

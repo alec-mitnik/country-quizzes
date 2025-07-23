@@ -50,43 +50,6 @@ html, body {
   text-align: center;
 }
 
-a {
-  font-weight: bold;
-  color: var(--background-color-primary-foreground-accent);
-
-  &:not(:hover) {
-    text-decoration: none;
-  }
-}
-
-ol {
-  margin: 0 auto;
-
-  li {
-    text-align: left;
-  }
-}
-
-details {
-  margin: 16px;
-
-  summary {
-    /* Nicer presentation of focus outline */
-    padding-inline: 16px;
-    cursor: pointer;
-
-    > * {
-      display: inline-block;
-    }
-  }
-
-  &.quiz-instructions {
-    summary {
-      font-size: 1.5rem;
-    }
-  }
-}
-
 nav {
   width: 100%;
   background: var(--background-color-accent);
@@ -136,7 +99,7 @@ main {
   flex-direction: column;
   align-items: center;
   overflow: auto;
-  padding-block: 32px;
+  padding: 32px 16px;
 }
 
 h1 {
@@ -151,6 +114,43 @@ h2 {
   font-size: 1.5rem;
   font-weight: 500;
   margin: 8px 0;
+}
+
+a {
+  font-weight: bold;
+  color: var(--background-color-primary-foreground-accent);
+
+  &:not(:hover) {
+    text-decoration: none;
+  }
+}
+
+ol {
+  margin: 0 auto;
+
+  li {
+    text-align: left;
+  }
+}
+
+details {
+  margin-block: 16px;
+
+  summary {
+    /* Nicer presentation of focus outline */
+    padding-inline: 16px;
+    cursor: pointer;
+
+    > * {
+      display: inline-block;
+    }
+  }
+
+  &.quiz-instructions {
+    summary {
+      font-size: 1.5rem;
+    }
+  }
 }
 
 button {
@@ -178,15 +178,18 @@ button {
 }
 
 input[type=search] {
+  font-size: inherit;
   padding: 8px 16px;
   border-radius: 999999px;
   margin-block: 16px;
   border: 2px groove var(--background-color-primary-foreground-accent);
-  width: 300px;
+  width: 400px;
   max-width: 100%;
 }
 
 dl {
+  max-width: 100%;
+
   &.country-data-list, &.quiz-data-list {
     display: flex;
     flex-direction: column;
@@ -229,8 +232,12 @@ dl {
       width: 100%;
     }
 
-    @media (max-width: 600px) {
+    @media (max-width: 900px) {
       grid-template-columns: repeat(2, minmax(auto, 1fr));
+    }
+
+    @media (max-width: 500px) {
+      grid-template-columns: minmax(auto, 1fr);
     }
   }
 }
