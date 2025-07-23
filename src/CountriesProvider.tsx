@@ -1,6 +1,7 @@
 import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
+import { convertToOrdinal } from "./utils";
 
 /*
 For reference, partial data info for Country from the API:
@@ -41,10 +42,10 @@ export interface StoredCountry {
   capitals?: Capital[];
   languages?: string[];
   currencies?: string[];
-  area?: number;            // TODO - store overall rank?
-  areaLabel?: string;
-  population?: number;      // TODO - store overall rank?
-  populationLabel?: string;
+  area?: number;
+  areaLabel?: string;       // Includes calculated rank
+  population?: number;
+  populationLabel?: string; // Includes calculated rank
 };
 
 /**
@@ -92,7 +93,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
   }
 
   const updateStoredCountriesFromData = useCallback((data: Partial<Country>[],
-      onlyNamesAndCodes = false) => {
+      namesAndCodesData = false) => {
     if (data?.length) {
       setStoredCountries(prev => {
         const newData = {...prev};
@@ -102,32 +103,48 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             console.error("Country data is missing its code:", country);
             continue;
           }
-
           if (!country?.name?.common) {
             console.error("Country data is missing its name:", country);
             continue;
           }
 
+          if (!country?.area || isNaN(country.area)) {
+            console.error("Country data is missing its area:", country);
+          }
+          if (!country?.population || isNaN(country.population)) {
+            console.error("Country data is missing its population:", country);
+          }
+
           const cca3 = country.cca3;
           const countryName = country.name.common;
 
-          if (onlyNamesAndCodes) {
-            // Update of all country names and codes only
+          const area = country.area && !isNaN(country.area) ? country.area : undefined;
+          const population = country.population && !isNaN(country.population) ?
+              country.population : undefined;
+
+          if (namesAndCodesData) {
+            // Update of all country names, codes, areas, and populations only
             newData[cca3] = {
               ...newData[cca3],
               cca3,
               name: countryName,
+              area,
+              population,
             };
 
             setNamesAndCodesLoaded(true);
           } else {
             // Update of a single country's data
             if (!newData[cca3]) {
-              // Names and codes haven't been fetched yet, which can occur
-              // if (re)loading a country's page directly
+              // Names and codes haven't been fetched yet, which shouldn't occur
+              console.error(`All country names and codes not yet stored \
+when fetching specific country data for country:`, country);
+
               newData[cca3] = {
                 cca3,
                 name: countryName,
+                area,
+                population,
               };
             }
 
@@ -156,14 +173,6 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             const currencies = extractCurrencies(country);
             const capitals = country.capital;
             const languages = extractLanguages(country);
-            const area = country.area && !isNaN(country.area) ? country.area : undefined;
-            const areaLabel = area ?
-                `${Math.round(area / SQUARE_KM_PER_SQUARE_MILE).toLocaleString()
-                } sq mi (${area.toLocaleString()} sq km)` : undefined;
-            const population = country.population && !isNaN(country.population) ?
-                country.population : undefined;
-            const populationLabel = population ?
-                `${population.toLocaleString()} people` : undefined;
             const continents = country.continents;
 
             newData[cca3] = {
@@ -173,12 +182,55 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               currencies,
               capitals,
               languages,
-              area,
-              areaLabel,
-              population,
-              populationLabel,
               continents,
             };
+          }
+        }
+
+        if (namesAndCodesData) {
+          // Set the area and population labels with ranks
+          const countryCodesSortedByArea = Object.keys(newData).sort((a, b) => {
+            return (newData[b].area ?? 0) - (newData[a].area ?? 0)
+          });
+          const countryCodesSortedByPopulation = Object.keys(newData).sort((a, b) => {
+            return (newData[b].population ?? 0) - (newData[a].population ?? 0)
+          });
+
+          for (const cca3 of Object.keys(newData)) {
+            const area = newData[cca3].area;
+            const population = newData[cca3].population;
+
+            const areaLabelWithoutRank = area ?
+                `${Math.round(area / SQUARE_KM_PER_SQUARE_MILE).toLocaleString()
+                } sq mi (${area.toLocaleString()} sq km)` : undefined;
+            const populationLabelWithoutRank = population ?
+                `${population.toLocaleString()} people` : undefined;
+
+            let sizeRankText = "";
+            let populationRankText = "";
+
+            const sizeRank = countryCodesSortedByArea.indexOf(cca3) + 1;
+
+            if (sizeRank > 0) {
+              const sizeRankOrdinal = convertToOrdinal(sizeRank);
+              sizeRankText = ` — ${sizeRankOrdinal} largest`;
+            }
+
+            const populationRank = countryCodesSortedByPopulation.indexOf(cca3) + 1;
+
+            if (populationRank > 0) {
+              const populationRankOrdinal = convertToOrdinal(populationRank);
+              populationRankText = ` — ${populationRankOrdinal} largest`;
+            }
+
+            const areaLabel = `${areaLabelWithoutRank}${sizeRankText}`;
+            const populationLabel = `${populationLabelWithoutRank}${populationRankText}`;
+
+            newData[cca3] = {
+              ...newData[cca3],
+              areaLabel,
+              populationLabel,
+            }
           }
         }
 

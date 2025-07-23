@@ -5,47 +5,46 @@ import type { StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
 import useInitialized from "../hooks/useInitialized";
 import RenderWithLoading from "../RenderWithLoading";
+import { extractRandomArrayElement, getRandomArrayElement } from "../utils";
 import Page from "./Page";
 
 type QuizStructure = "matching" | "ranking";
+type QuizTypeKey = "MATCH_NAMES_TO_FLAGS" | "MATCH_NAMES_TO_CAPITALS"
+    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
 interface QuizType {
+  key: QuizTypeKey;
   description: string;
   structure: QuizStructure;
 };
 
 // More types can be added in the future
-const QUIZ_TYPES: Record<string, QuizType> = {
+const QUIZ_TYPES: Record<QuizTypeKey, QuizType> = {
   MATCH_NAMES_TO_FLAGS: {
+    key: "MATCH_NAMES_TO_FLAGS",
     description: "Match the countries to their flags.",
     structure: "matching",
   },
   MATCH_NAMES_TO_CAPITALS: {
+    key: "MATCH_NAMES_TO_CAPITALS",
     description: "Match the countries to their capitals.",
     structure: "matching",
   },
   ORDER_BY_SIZE: {
+    key: "ORDER_BY_SIZE",
     description: "Order the countries by size, largest first.",
     structure: "ranking",
   },
   ORDER_BY_POPULATION: {
+    key: "ORDER_BY_POPULATION",
     description: "Order the countries by population, largest first.",
     structure: "ranking",
   },
 };
 
-function getRandomArrayElement<T>(array: T[]) {
-  return array[Math.floor(Math.random() * array.length)];
-}
-
-function extractRandomArrayElement<T>(array: T[]) {
-  const randomIndex = Math.floor(Math.random() * array.length);
-  return array.splice(randomIndex, 1)[0];
-}
-
 function getRandomQuizTypeKey() {
-  const quizTypes = Object.keys(QUIZ_TYPES);
-  const randomTypeKey = getRandomArrayElement<string>(quizTypes);
+  const quizTypes = Object.keys(QUIZ_TYPES) as QuizTypeKey[];
+  const randomTypeKey = getRandomArrayElement<QuizTypeKey>(quizTypes);
   return randomTypeKey;
 }
 
@@ -208,8 +207,15 @@ function Quiz() {
 
             <div>
               <dt>Countries:</dt>
-              <dd>{quiz?.countryCodes.map(countryCode => storedCountries[countryCode].name).join(", ")}</dd>
+              <dd>{quiz?.countryCodes.map(countryCode => storedCountries[countryCode]
+                  .name).join(" | ")}</dd>
             </div>
+
+            {quiz?.type.key === "MATCH_NAMES_TO_CAPITALS" && <div>
+              <dt>Capitals:</dt>
+              <dd>{quiz?.countryCodes.map(countryCode => storedCountries[countryCode]
+                  .capitals?.join(", ")).join(" | ")}</dd>
+            </div>}
 
             {/* {quiz?.type.structure === "ranking" && (
 

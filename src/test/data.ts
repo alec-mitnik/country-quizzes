@@ -18,9 +18,9 @@ hoist-side corner to the lower fly-side corner of the field.`,
     "English"
   ],
   area: 5130,
-  areaLabel: "1,981 sq mi (5,130 sq km)",
+  areaLabel: "1,981 sq mi (5,130 sq km) — 165th largest",
   population: 1399491,
-  populationLabel: "1,399,491 people",
+  populationLabel: "1,399,491 people — 151st largest",
   continents: [
     "North America"
   ],

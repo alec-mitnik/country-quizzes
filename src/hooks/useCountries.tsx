@@ -5,8 +5,9 @@ import type { StoredCountry } from "../CountriesProvider";
 import useFetch from "./useFetch";
 
 // Doing just independent countries, since it's odd to think of something like
-// "United States Virgin Islands" as a country in this context
-const NAMES_AND_CODES_URL = "https://restcountries.com/v3.1/independent?fields=cca3,name";
+// "United States Virgin Islands" as a country in this context.
+// Get area and population as well to allow for displaying the overall ranking.
+const NAMES_AND_CODES_URL = "https://restcountries.com/v3.1/independent?fields=cca3,name,area,population";
 
 /**
  * Gives the full fetch URL to use for getting full data for specified countries
@@ -21,7 +22,7 @@ function getFullCountryFetchUrl(countryCodes: string[]) {
 
 function isCountryFullyLoaded(storedCountry: StoredCountry | undefined) {
   return storedCountry?.currencies && storedCountry.capitals && storedCountry.languages
-      && storedCountry.area && storedCountry.population && storedCountry.continents;
+      && storedCountry.areaLabel && storedCountry.populationLabel && storedCountry.continents;
 }
 
 /**

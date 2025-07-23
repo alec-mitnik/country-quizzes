@@ -1,4 +1,4 @@
-import { useCallback } from "react";
+import { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { BACK_TO_COUNTRIES_LINK_TEXT, NO_COUNTRY_DATA_MESSAGE } from "../consts";
 import type { StoredCountry } from "../CountriesProvider";
@@ -14,14 +14,34 @@ function Country() {
   // This component can't be reached without a country in the route,
   // so the `country` param can be safely assumed to exist
   const countryCode = useParams<{ country: string }>().country!;
-  const { storedCountries, error, loading, fetchCountry } = useCountries();
+  const [countryLoaded, setCountryLoaded] = useState(false);
+  const [loadingCountry, setLoadingCountry] = useState(false);
+  const { storedCountries, error, loading, fetchCountry, fetchCountryNamesAndCodes } = useCountries();
   const country: StoredCountry | undefined = storedCountries[countryCode];
 
-  const fetchOnLoadFunction = useCallback(() => {
-    return fetchCountry(countryCode);
-  }, [fetchCountry, countryCode]);
+  // Needed to display size and population rankings
+  const ranksLoaded = useInitialized(loading, fetchCountryNamesAndCodes);
 
-  const loaded = useInitialized(loading, fetchOnLoadFunction);
+  useEffect(() => {
+    if (ranksLoaded && !countryLoaded && !loading && !error) {
+      // Ranks are loaded, so ready to load data for this page's country
+      if (fetchCountry(countryCode)) {
+        // Country data had already been loaded
+        setCountryLoaded(true);
+      } else {
+        // Country data needs to be loaded
+        setLoadingCountry(true);
+      }
+    }
+  }, [ranksLoaded, countryLoaded, loading, error, countryCode, fetchCountry, setLoadingCountry]);
+
+  useEffect(() => {
+    if (!loading && loadingCountry) {
+      // Country data has been loaded
+      setCountryLoaded(true);
+      setLoadingCountry(false);
+    }
+  }, [loading, loadingCountry, setCountryLoaded, setLoadingCountry]);
 
   const { name, flag, flagDescription, currencies, capitals,
       languages, areaLabel, populationLabel, continents } = country ?? {};
@@ -47,8 +67,8 @@ function Country() {
   return (
     <>
       <Link to="/countries"><span aria-hidden="true">← </span>{BACK_TO_COUNTRIES_LINK_TEXT}</Link>
-      <Page pageTitle={name}>
-        <RenderWithLoading loaded={loaded} error={error} dataExists={!!country}
+      <Page pageTitle={name ?? ""}>
+        <RenderWithLoading loaded={(ranksLoaded && !!error) || countryLoaded} error={error} dataExists={!!country}
             noDataMessage={NO_COUNTRY_DATA_MESSAGE}>
           <dl className="country-data-list">
             <div>
