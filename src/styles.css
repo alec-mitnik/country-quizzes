@@ -245,6 +245,9 @@ dl {
 .flag {
   max-width: 100%;
   width: 300px;
+
+  /* Border doesn't quite meet the img edge on iOS Safari */
+  background: var(--background-color-primary-shadow-color);
   border: 1px solid var(--background-color-primary-shadow-color);
   box-shadow: 0 4px 8px 0px var(--background-color-primary-shadow-color);
   margin-block: 6px;
