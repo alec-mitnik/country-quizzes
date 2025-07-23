@@ -147,7 +147,7 @@ details {
   }
 
   &.quiz-instructions {
-    summary {
+    summary::marker {
       font-size: 1.5rem;
     }
   }
