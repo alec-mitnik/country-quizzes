@@ -14,34 +14,45 @@ function Country() {
   // This component can't be reached without a country in the route,
   // so the `country` param can be safely assumed to exist
   const countryCode = useParams<{ country: string }>().country!;
+  const [ranksLoaded, setRanksLoaded] = useState(false);
   const [countryLoaded, setCountryLoaded] = useState(false);
   const [loadingCountry, setLoadingCountry] = useState(false);
   const { storedCountries, error, loading, fetchCountry, fetchCountryNamesAndCodes } = useCountries();
   const country: StoredCountry | undefined = storedCountries[countryCode];
 
-  // Needed to display size and population rankings
-  const ranksLoaded = useInitialized(loading, fetchCountryNamesAndCodes);
+  // Needed in order to display size and population rankings
+  const loaded = useInitialized(loading, fetchCountryNamesAndCodes);
+
+  // My networking needs have evolved beyond what I had originally designed the handling for.
+  // It definitely needs an overhaul when I have time.
 
   useEffect(() => {
-    if (ranksLoaded && !countryLoaded && !loading && !error) {
+    if (ranksLoaded && !countryLoaded && !loading && !error && !loadingCountry) {
       // Ranks are loaded, so ready to load data for this page's country
       if (fetchCountry(countryCode)) {
         // Country data had already been loaded
         setCountryLoaded(true);
-      } else {
-        // Country data needs to be loaded
-        setLoadingCountry(true);
       }
     }
-  }, [ranksLoaded, countryLoaded, loading, error, countryCode, fetchCountry, setLoadingCountry]);
+  }, [ranksLoaded, countryLoaded, loading, error, countryCode, loadingCountry, fetchCountry]);
 
   useEffect(() => {
-    if (!loading && loadingCountry) {
-      // Country data has been loaded
-      setCountryLoaded(true);
-      setLoadingCountry(false);
+    if (loading) {
+      if (ranksLoaded && !countryLoaded) {
+        // Ranks are already loaded, so the loading state must be for the country
+        setLoadingCountry(true);
+      }
+    } else {
+      if (loaded && !ranksLoaded) {
+        // Ranks have been loaded
+        setRanksLoaded(true);
+      } else if (loadingCountry) {
+        // Country data has been loaded
+        setCountryLoaded(true);
+        setLoadingCountry(false);
+      }
     }
-  }, [loading, loadingCountry, setCountryLoaded, setLoadingCountry]);
+  }, [loading, loadingCountry, loaded, ranksLoaded, countryLoaded, setCountryLoaded, setLoadingCountry]);
 
   const { name, flag, flagDescription, currencies, capitals,
       languages, areaLabel, populationLabel, continents } = country ?? {};
