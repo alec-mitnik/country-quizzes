@@ -101,7 +101,7 @@ main {
   flex-direction: column;
   align-items: center;
   overflow: auto;
-  padding: 32px 16px;
+  padding: 32px 16px 16px;
 }
 
 h1 {
@@ -197,7 +197,7 @@ dl {
     display: flex;
     flex-direction: column;
     gap: 16px 32px;
-    margin: 8px 0;
+    margin: 8px 0 16px;
 
     dt {
       font-weight: bold;
@@ -292,6 +292,10 @@ dl {
   100% {
     transform: scale(1);
   }
+}
+
+.quiz-action-button {
+  margin-block: 16px;
 }
 
 /* TODO */

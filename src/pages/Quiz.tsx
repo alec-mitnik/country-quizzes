@@ -229,17 +229,20 @@ function Quiz() {
           {/* TODO */}
           <p>Actual quiz mechanics coming soon...</p>
 
-          {newRoundReadyToStart && <button type="button" onClick={startNewRound}>
+          {newRoundReadyToStart && <button type="button"
+              className="quiz-action-button" onClick={startNewRound}>
             Start New Round
           </button>}
 
-          {quizzingEnded && <button type="button" onClick={startNewQuiz}>
+          {quizzingEnded && <button type="button"
+              className="quiz-action-button" onClick={startNewQuiz}>
             Start New Quiz
           </button>}
 
           {/* Disable if no new guesses have been made - TODO */}
           {!newRoundReadyToStart && !quizzingEnded
-              && <button type="button" disabled={true} onClick={attemptSubmit}>
+              && <button type="button" className="quiz-action-button"
+              disabled={true} onClick={attemptSubmit}>
             Submit
           </button>}
         </>
