@@ -17,6 +17,7 @@ function Country() {
   const [ranksLoaded, setRanksLoaded] = useState(false);
   const [countryLoaded, setCountryLoaded] = useState(false);
   const [loadingCountry, setLoadingCountry] = useState(false);
+  const [flagImageLoaded, setFlagImageLoaded] = useState(false);
   const { storedCountries, error, loading, fetchCountry, fetchCountryNamesAndCodes } = useCountries();
   const country: StoredCountry | undefined = storedCountries[countryCode];
 
@@ -75,18 +76,24 @@ function Country() {
     );
   }
 
+  function onFlagLoaded() {
+    setFlagImageLoaded(true);
+  }
+
   return (
     <>
       <Link to="/countries"><span aria-hidden="true">← </span>{BACK_TO_COUNTRIES_LINK_TEXT}</Link>
       <Page pageTitle={name ?? ""}>
-        <RenderWithLoading loaded={(ranksLoaded && !!error) || countryLoaded} error={error} dataExists={!!country}
-            noDataMessage={NO_COUNTRY_DATA_MESSAGE}>
+        <RenderWithLoading loaded={(ranksLoaded && !!error) || countryLoaded}
+            error={error} dataExists={!!country} noDataMessage={NO_COUNTRY_DATA_MESSAGE}>
           <dl className="country-data-list">
             <div>
               <dt>Flag</dt>
               <dd>
-                {/* TODO - smoother image loading */}
-                {flagDescription ? <img className="flag" src={flag} alt={flagDescription} /> : "Unavailable"}
+                {flagDescription ?
+                    <img className={`flag smooth-loading ${flagImageLoaded ? "loaded" : ""}`}
+                    onLoad={onFlagLoaded} onError={onFlagLoaded} src={flag} alt={flagDescription} />
+                    : "Unavailable"}
               </dd>
             </div>
 
