@@ -181,6 +181,7 @@ button {
 
 input[type=search] {
   font-size: inherit;
+  font-family: inherit;
   padding: 8px 16px;
   border-radius: 999999px;
   margin-block: 16px;

@@ -166,7 +166,8 @@ function Quiz() {
     }
   }, [loading, quizRoundStarted, quizzingReadyToStart, quizzingEnded, setQuizRoundStarted]);
 
-  // TODO - get dataExists to properly reflect quiz round loading as well
+  // TODO - get dataExists to properly reflect quiz round loading as well.
+  // Really, all the loading handling needs an overhaul...
   return (
     <Page pageTitle={QUIZ_TITLE}>
       <RenderWithLoading
