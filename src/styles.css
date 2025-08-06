@@ -1,3 +1,9 @@
+/*
+ * Global styles go here.  Component-specific styles go in component stylesheets,
+ * encapsulated by nesting within a style class selector for the component wrapper,
+ * styled with display: contents as needed to avoid the wrapper affecting layout unnecessarily.
+ */
+
 *, *::before, *::after {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -6,11 +12,13 @@
 }
 
 :root {
+  --layout-max-width: 1280px;
+
   /* Light mode color scheme (default) */
   --background-color-primary: #e9e9e9;
   --background-color-primary-foreground-primary: #29273a;
-  --background-color-primary-foreground-accent: #10009e;
-  --background-color-primary-foreground-error: #c50000;
+  --background-color-primary-foreground-accent: #5a4dd3;
+  --danger-color: #c50000;
   --background-color-accent: #10009e;
   --background-color-accent-foreground-primary: #e9e9e9;
   --shadow-color: rgba(0, 0, 0, 0.5);
@@ -21,17 +29,20 @@
     --background-color-primary: #29273a;
     --background-color-primary-foreground-primary: #e9e9e9;
     --background-color-primary-foreground-accent: #a099e1;
-    --background-color-primary-foreground-error: #ffb3b3;
+    --danger-color: #ffb3b3;
     --background-color-accent: #565091;
     --background-color-accent-foreground-primary: #e9e9e9;
     --shadow-color: rgba(0, 0, 0, 0.5);
     --shadow-color-foreground: white;
   }
 
+  /* Makes native browser elements like form controls
+  reflect the preferred color scheme */
   color-scheme: light dark;
 
   background-color: var(--background-color-primary);
   color: var(--background-color-primary-foreground-primary);
+  accent-color: var(--background-color-primary-foreground-accent);
 
   font-family: system-ui, Arial, sans-serif;
   line-height: 1.5;
@@ -59,7 +70,7 @@ nav {
 
   ul {
     width: 100%;
-    max-width: 1280px;
+    max-width: var(--layout-max-width);
     list-style: none;
     padding: 0;
     margin: 0 auto;
@@ -67,12 +78,13 @@ nav {
     flex-wrap: wrap;
 
     a {
+      /* Modern version of the legacy inline-block value */
+      display: inline flow-root;
       background: var(--background-color-accent);
       color: inherit;
       text-decoration: inherit;
       padding: 12px 16px;
       height: 100%;
-      display: inline-block;
       outline-offset: -4px;
 
       &.active, &.active:hover {
@@ -95,13 +107,16 @@ nav {
   }
 }
 
-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  overflow: auto;
-  padding: 32px 16px 16px;
+.sr-only {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  border-width: 0;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
 }
 
 h1 {
@@ -118,41 +133,27 @@ h2 {
   margin: 8px 0;
 }
 
+p {
+  margin: 0;
+}
+
 a {
   font-weight: bold;
   color: var(--background-color-primary-foreground-accent);
+  text-underline-offset: 0.1em;
+  text-decoration-thickness: 0.05em;
+  text-decoration-style: dotted;
 
-  &:not(:hover) {
-    text-decoration: none;
+  @media (hover: hover) {
+    &:hover {
+      text-decoration-style: solid;
+      text-decoration-thickness: 0.15em;
+    }
   }
 }
 
-ol {
-  margin: 0 auto;
-
-  li {
-    text-align: left;
-  }
-}
-
-details {
-  margin-block: 16px;
-
-  summary {
-    /* Nicer presentation of focus outline */
-    padding-inline: 16px;
-    cursor: pointer;
-
-    > * {
-      display: inline-block;
-    }
-  }
-
-  &.quiz-instructions {
-    summary::marker {
-      font-size: 1.5rem;
-    }
-  }
+.danger {
+  color: var(--danger-color);
 }
 
 button {
@@ -177,23 +178,18 @@ button {
   &:disabled {
     opacity: 0.5;
   }
-}
 
-input[type=search] {
-  font-size: inherit;
-  font-family: inherit;
-  padding: 8px 16px;
-  border-radius: 999999px;
-  margin-block: 16px;
-  border: 2px groove var(--background-color-primary-foreground-accent);
-  width: 400px;
-  max-width: 100%;
+  &.danger {
+    background: var(--danger-color);
+    color: var(--background-color-primary)
+  }
 }
 
 dl {
   max-width: 100%;
 
   &.country-data-list, &.quiz-data-list {
+    max-width: var(--layout-max-width);
     display: flex;
     flex-direction: column;
     gap: 16px 32px;
@@ -207,120 +203,60 @@ dl {
       margin: 0;
       display: flex;
       justify-content: center;
+
+      > * {
+        flex-shrink: 1;
+      }
+
+      &.large-number {
+        font-size: 2rem;
+      }
     }
   }
 
-
+  /* Beware of selector specificity issues when trying to
+  extract this to another stylesheet */
   &.country-data-list {
     .country-data-wrapper {
+      /* flex-grow would cause the two stacked sections to take
+      equal vertical space rather than align to the top */
+      flex-shrink: 1;
       display: flex;
       flex-direction: column;
       gap: 16px 32px;
     }
 
     @media (min-width: 600px) {
-      flex-direction: row;
+      /* Use grid instead of flex to allow for centering equal-width columns */
+      display: grid;
+      grid-template-columns: 1fr 1fr;
     }
   }
-}
 
-.directory {
-  max-width: 1280px;
+  &.quiz-data-list .quiz-data-wrapper {
+    flex-shrink: 1;
+    display: flex;
+    justify-content: center;
+    gap: 16px 32px;
+    flex-wrap: wrap;
 
-  ul {
-    display: grid;
-    grid-template-columns: repeat(4, minmax(auto, 1fr));
-
-    li, a {
-      width: 100%;
-    }
-
-    @media (max-width: 900px) {
-      grid-template-columns: repeat(2, minmax(auto, 1fr));
-    }
-
-    @media (max-width: 500px) {
-      grid-template-columns: minmax(auto, 1fr);
+    > div {
+      flex-shrink: 1;
     }
   }
-}
-
-.flag {
-  max-width: 100%;
-  width: 300px;
-
-  /* Border doesn't quite meet the img edge on iOS Safari */
-  background: var(--shadow-color);
-
-  /* Make sure the alt text can be read on top of the background color */
-  color: var(--shadow-color-foreground);
-
-  border: 1px solid var(--shadow-color);
-  box-shadow: 0 4px 8px 0px var(--shadow-color);
-  margin-block: 6px;
 }
 
 .error {
-  color: var(--background-color-primary-foreground-error);
+  color: var(--danger-color);
   padding-inline: 8px;
-}
-
-.loading {
-  margin-top: 64px;
-
-  @media not (prefers-reduced-motion: reduce) {
-    animation: animateScale 3s ease-in-out infinite;
-  }
+  font-weight: 500;
 }
 
 .smooth-loading {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 
-  &.loaded {
+  &.done-loading {
     opacity: 1;
-  }
-}
-
-@keyframes animateScale {
-  0% {
-    transform: scale(1);
-  }
-  50% {
-    transform: scale(1.25);
-  }
-  100% {
-    transform: scale(1);
-  }
-}
-
-.quiz-action-button {
-  margin-block: 16px;
-}
-
-/* TODO */
-.quiz-matcher {
-  padding: 12px 16px;
-  cursor: pointer;
-}
-
-#portfolio-link {
-  margin-top: 64px;
-  display: inline-flex;
-  background-color: #edb526;
-  border: 2px solid #edb526;
-  border-radius: 99999px;
-  box-shadow: 0 0 4px 0 #f9b70f;
-
-  @media (hover: hover) {
-    &:hover {
-      box-shadow: 0 0 6px 1px #f9b70f;
-    }
-  }
-
-  > img {
-    height: 128px;
-    border-radius: 99999px;
-    pointer-events: none;
   }
 }

@@ -1,10 +1,13 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
-import { COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from "../consts";
 import useCountries from "../hooks/useCountries";
-import useInitialized from "../hooks/useInitialized";
 import RenderWithLoading from "../RenderWithLoading";
+import {
+  COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
+  NO_COUNTRIES_MATCHED_MESSAGE
+} from "../utils/consts";
+import "./Countries.css";
 import Page from "./Page";
 
 /**
@@ -13,42 +16,65 @@ import Page from "./Page";
  */
 function Countries() {
   const [searchTerm, setSearchTerm] = useState("");
-  const { storedCountries, error, loading, fetchCountryNamesAndCodes } = useCountries();
-  const loaded = useInitialized(loading, fetchCountryNamesAndCodes);
+  const { independentOnly, storedCountryData, error,
+      fetchShallowDataForAllCountries } = useCountries();
 
+  useEffect(() => {
+    if (!error && !storedCountryData.shallowDataRequested) {
+      fetchShallowDataForAllCountries();
+    }
+  }, [error, storedCountryData.shallowDataRequested, fetchShallowDataForAllCountries]);
+
+  // TODO - support sorting by size, population, etc.
   const countryCodes: Cca3Code[] = useMemo(() => {
-    if (loaded && !error && Object.keys(storedCountries).length) {
-      return Object.values(storedCountries).sort((a, b) => {
+    if (!error && storedCountryData.shallowDataLoaded
+        && Object.keys(storedCountryData.countries).length) {
+      return Object.values(storedCountryData.countries).sort((a, b) => {
         // Sort alphabetically by name
-        return a.name.localeCompare(b.name);
-      }).map((country) => country.cca3);
+        return a?.data?.name.localeCompare(b?.data?.name ?? "") ?? 0;
+      }).map((country) => country?.data?.cca3).filter(Boolean) as Cca3Code[];
     } else {
       return [];
     }
-  }, [storedCountries, loaded, error]);
+  }, [storedCountryData, error]);
 
+  // Filter by independence
+  const countryCodesFilteredByIndependence = useMemo(() => {
+    if (independentOnly) {
+      return countryCodes.filter(countryCode =>
+          storedCountryData.countries[countryCode]?.data?.independent);
+    } else {
+      return countryCodes;
+    }
+  }, [countryCodes, independentOnly, storedCountryData]);
 
-  // Filter by name
-  const filteredCountryCodes = countryCodes.filter(countryCode => {
-    return !searchTerm || storedCountries[countryCode].name.toLowerCase()
-        .includes(searchTerm.toLowerCase());
-  });
+  // Filter by search
+  const countryCodesFilteredBySearch = useMemo(() => {
+    return countryCodesFilteredByIndependence.filter(countryCode => {
+      return !searchTerm
+          || storedCountryData.countries[countryCode]?.data?.name?.toLowerCase()
+          .includes(searchTerm.toLowerCase());
+    });
+  }, [countryCodesFilteredByIndependence, searchTerm, storedCountryData]);
 
   return (
     <Page pageTitle={COUNTRIES_TITLE}>
-      <RenderWithLoading loaded={loaded} error={error}
-          dataExists={countryCodes.length > 0} noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
-        <>
-          <input type="search" placeholder="🔍︎ Filter Countries..."
-              aria-label={COUNTRIES_SEARCH_ACCESSIBLE_NAME}
-              onChange={(e) => setSearchTerm(e.currentTarget.value)} />
+      <RenderWithLoading loaded={storedCountryData.shallowDataLoaded} error={error}
+          dataExists={countryCodesFilteredByIndependence.length > 0}
+          noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
+        <div className="countries-component">
+          <label>
+            {COUNTRIES_SEARCH_ACCESSIBLE_NAME}
+            <input type="search" id="countries-filter" placeholder="🔍︎ Start typing to filter..."
+                onChange={(e) => setSearchTerm(e.currentTarget.value)} />
+          </label>
 
-          {!filteredCountryCodes.length && <p>{NO_COUNTRIES_MATCHED_MESSAGE}</p>}
+          {!countryCodesFilteredBySearch.length && <p>{NO_COUNTRIES_MATCHED_MESSAGE}</p>}
 
-          {!!filteredCountryCodes.length && <nav className="directory" aria-labelledby="page-title">
+          {!!countryCodesFilteredBySearch.length && <nav className="directory" aria-labelledby="page-title">
             <ul>
-              {filteredCountryCodes.map((countryCode) => {
-                const countryName = storedCountries[countryCode].name;
+              {countryCodesFilteredBySearch.map((countryCode) => {
+                const countryName = storedCountryData.countries[countryCode]?.data?.name ?? "ERROR";
 
                 return (
                   <li key={countryName}>
@@ -60,7 +86,7 @@ function Countries() {
               })}
             </ul>
           </nav>}
-        </>
+        </div>
       </RenderWithLoading>
     </Page>
   );

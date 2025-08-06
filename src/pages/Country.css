@@ -1,0 +1,19 @@
+.flag {
+  max-width: 100%;
+  width: 300px;
+
+  /* Border doesn't quite meet the img edge on iOS Safari */
+  background: var(--shadow-color);
+
+  /* Make sure the alt text can be read on top of the background color */
+  color: var(--shadow-color-foreground);
+
+  border: 1px solid var(--shadow-color);
+  box-shadow: 0 4px 8px 0px var(--shadow-color);
+  margin-block: 6px;
+
+  .load-failed & {
+    /* Render the alt text with some padding */
+    padding: 4px 8px;
+  }
+}

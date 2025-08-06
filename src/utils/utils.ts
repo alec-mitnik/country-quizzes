@@ -32,6 +32,12 @@ export function convertToOrdinal(n: number) {
 
   const stringN = String(n);
   const singlesDigit = parseInt(stringN.charAt(stringN.length - 1));
+  const tensDigit = stringN.length > 1 ? parseInt(stringN.charAt(stringN.length - 2)) : 0;
+
+  // If the tens digit is 1 (10-19), always use "th"
+  if (tensDigit === 1) {
+    return `${n}th`;
+  }
 
   return `${n}${suffixMap[singlesDigit] || "th"}`;
 }

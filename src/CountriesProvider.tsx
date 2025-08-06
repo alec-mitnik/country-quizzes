@@ -1,33 +1,20 @@
 import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
-import { convertToOrdinal } from "./utils";
+import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
+import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, setAreaLabels, setPopulationLabels } from "./utils/countryUtils";
 
-/*
-For reference, partial data info for Country from the API:
-
-type Country = {
-  code: Cca3Code;                        // e.g. "USA"
-  currencies?: Record<string, {          // e.g. { USD: { name: "United States dollar", symbol: "$" } }
-    name: string;
-    symbol: string;
-  }>;
-  capital?: Capital[];                   // e.g. ["Washington, D.C."]
-  languages?: Record<string, string>;    // e.g. { eng: "English" }
-  borders?: Cca3Code[];                  // e.g. ["CAN", "MEX"]
-  area: number;                          // e.g. 9372610 (square km)
-  population: number;                    // e.g. 329484123
-  continents: string[];                  // e.g. ["North America"]
-  flags: {
-    png: string;                         // URL
-    svg: string;                         // URL
-    alt?: string;                        // Description of flag, typically starting like:
-                                         // "The flag of the United States of America is composed of..."
-  };
+interface FormattedCountryField<T> {
+  label: string,
+  rawValue?: T,
+  formattedValue?: string,
 }
-*/
 
-const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
+interface IndependenceDependentFormattedCountryField<T> {
+  rawValue?: T,
+  formattedValueForAll?: string,
+  formattedValueForIndependentOnly?: string,
+}
 
 /**
  * Restructured country data for use in quizzes and display
@@ -35,213 +22,275 @@ const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
 export interface StoredCountry {
   cca3: Cca3Code;
   name: string;
-  flag?: string;            // SVG URL
-  flagDescription?: string; // Descriptive for accessibility, but obfuscating the country name for quizzing
-  // borders?: Cca3Code[];  // TODO
-  continents?: string[];
-  capitals?: Capital[];
-  languages?: string[];
-  currencies?: string[];
-  area?: number;
-  areaLabel?: string;       // Includes calculated rank
-  population?: number;
-  populationLabel?: string; // Includes calculated rank
-};
+  independent: boolean;
+  flag?: string;                                // SVG URL
+  flagDescription?: string;                     // Descriptive for accessibility,
+                                                // but obfuscating the country name for quizzing
+  borders?: Cca3Code[];                         // Might reference non-independent countries
+  continents?: FormattedCountryField<string[]>;
+  capitals?: FormattedCountryField<Capital[]>;
+  languages?: FormattedCountryField<string[]>;
+  currencies?: FormattedCountryField<string[]>;
+  area?: Partial<IndependenceDependentFormattedCountryField<number>>;         // Includes calculated rank
+  population?: Partial<IndependenceDependentFormattedCountryField<number>>;   // Includes calculated rank
+}
+
+export interface StoredCountryWrapper {
+  data?: StoredCountry,
+  requested?: boolean,
+  fullyLoaded?: boolean,
+}
+
+export interface CountryStorage {
+  countries: Partial<Record<Cca3Code, StoredCountryWrapper>>,
+  rankings: {
+    independentOnly: {
+      byArea: Cca3Code[],
+      byPopulation: Cca3Code[],
+    },
+    all: {
+      byArea: Cca3Code[],
+      byPopulation: Cca3Code[],
+    }
+  },
+  shallowDataRequested: boolean,
+  shallowDataLoaded: boolean,
+}
 
 /**
  * Handles the restructuring and storage of accumulated countries data
- * @param child content to pass the countries context to
+ * @param [props.children] content to pass the countries context to
  */
 function CountriesProvider({ children }: { children: React.ReactNode }) {
-  const [storedCountries, setStoredCountries] = useState<Record<string, StoredCountry>>({});
-  const [namesAndCodesLoaded, setNamesAndCodesLoaded] = useState(false);
+  const [storedCountryData, setStoredCountryData] =
+      useState<CountryStorage>(DEFAULT_COUNTRY_STORAGE);
 
-  function extractCurrencies(country: Partial<Country>) {
-    let currencies: string[] = [];
+  // Load from and save to local storage
+  const [independentOnly, setIndependentOnlyInternal] = useState(
+      localStorage.getItem("independentOnly") === "true");
 
-    if (country?.currencies) {
-      // Extract currencies using just the last word ("dollar" vs. "United States dollar")
-      // For the purpose of quizzing on
-      currencies = Object.values({...country?.currencies})
-          .map((valueEntry) => {
-            let currency: string | undefined = undefined;
+  const setIndependentOnly = useCallback((independentOnly: boolean) => {
+    setIndependentOnlyInternal(independentOnly);
+    localStorage.setItem("independentOnly", independentOnly.toString());
+  }, [setIndependentOnlyInternal]);
 
-            if (valueEntry?.symbol && valueEntry?.name) {
-              const nameArray = valueEntry.name.split(" ");
-              currency = `${valueEntry.symbol} (${nameArray[nameArray.length - 1]})`;
-            }
+  const markShallowDataAsRequested = useCallback(() => {
+    setStoredCountryData(prev => {
+      return {
+        ...prev,
+        shallowDataRequested: true
+      };
+    })
+  }, [setStoredCountryData]);
 
-            return currency;
-          }).filter(currency => currency) as string[];
+  const markCountriesAsRequested = useCallback((countryCodes: Cca3Code[]) => {
+    setStoredCountryData(prev => {
+      const newData = {...prev};
 
-      // Remove duplicates (in the case of e.g. multiple types of $ dollar)
-      currencies = [...new Set(currencies)];
-    }
+      for (const cca3 of countryCodes) {
+        newData.countries[cca3] ??= {};
+        newData.countries[cca3].requested = true;
+      }
 
-    return currencies;
-  }
-
-  function extractLanguages(country: Partial<Country>) {
-    let languages: string[] = [];
-
-    if (country?.languages) {
-      languages = Object.values({...country?.languages})
-          .filter(language => language);
-    }
-
-    return languages;
-  }
+      return newData;
+    })
+  }, [setStoredCountryData]);
 
   const updateStoredCountriesFromData = useCallback((data: Partial<Country>[],
-      namesAndCodesData = false) => {
+      shallowData = false) => {
     if (data?.length) {
-      setStoredCountries(prev => {
+      setStoredCountryData(prev => {
         const newData = {...prev};
 
         for (const country of data) {
-          if (!country?.cca3) {
+          if (!country.cca3) {
             console.error("Country data is missing its code:", country);
             continue;
           }
-          if (!country?.name?.common) {
+          if (!country.name?.common) {
             console.error("Country data is missing its name:", country);
             continue;
           }
+          if (country.independent == null) {
+            console.error("Country data is missing its independence status:", country);
+            continue;
+          }
 
-          if (!country?.area || isNaN(country.area)) {
+          // Log errors for these but allow the country data to be kept
+          if (country.area == null || isNaN(country.area)) {
             console.error("Country data is missing its area:", country);
           }
-          if (!country?.population || isNaN(country.population)) {
+          if (country.population == null || isNaN(country.population)) {
             console.error("Country data is missing its population:", country);
           }
 
           const cca3 = country.cca3;
           const countryName = country.name.common;
+          const independent = country.independent;
 
-          const area = country.area && !isNaN(country.area) ? country.area : undefined;
-          const population = country.population && !isNaN(country.population) ?
+          const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
+          const population = country.population != null && !isNaN(country.population) ?
               country.population : undefined;
 
-          if (namesAndCodesData) {
-            // Update of all country names, codes, areas, and populations only
-            newData[cca3] = {
-              ...newData[cca3],
+          if (shallowData) {
+            // Update of all country names, codes, independence status,
+            // areas, and populations only
+            const newCountryData: StoredCountry = {
+              ...newData.countries[cca3]?.data,
               cca3,
               name: countryName,
-              area,
-              population,
+              independent,
+              area: {
+                ...newData.countries[cca3]?.data?.area,
+                rawValue: area,
+              },
+              population: {
+                ...newData.countries[cca3]?.data?.population,
+                rawValue: population,
+              },
             };
 
-            setNamesAndCodesLoaded(true);
+            if (!newData.countries[cca3]) {
+              newData.countries[cca3] = {
+                data: newCountryData,
+                fullyLoaded: false,
+              };
+            } else {
+              newData.countries[cca3].data = newCountryData;
+            }
           } else {
             // Update of a single country's data
-            if (!newData[cca3]) {
-              // Names and codes haven't been fetched yet, which shouldn't occur
-              console.error(`All country names and codes not yet stored \
-when fetching specific country data for country:`, country);
-
-              newData[cca3] = {
-                cca3,
-                name: countryName,
-                area,
-                population,
-              };
-            }
-
-            const flagAlt = country.flags?.alt;
-            let flagDescription = flagAlt;
-
-            if (flagDescription) {
-              const countryNames = [countryName, `the ${countryName}`];
-
-              if (country.name.official) {
-                countryNames.push(country.name.official, `the ${country.name.official}`);
-              }
-
-              // Sort names by length, longest first
-              countryNames.sort((a, b) => b.length - a.length);
-
-              for (const name of countryNames) {
-                // Replace the country name (case insensitive) with "this country" to obfuscate it,
-                // enabling quizzing while remaining accessible
-                flagDescription = flagDescription?.replace(new RegExp(name, "gi"), "this country");
-              }
-            }
-
-            const flag = flagDescription && country.flags?.svg ? country.flags.svg : undefined;
-            // TODO - borders
+            const flag = country.flags?.svg;
+            const flagDescription = extractFlagAltDescription(country);
+            const borders = country.borders;
             const currencies = extractCurrencies(country);
             const capitals = country.capital;
             const languages = extractLanguages(country);
             const continents = country.continents;
 
-            newData[cca3] = {
-              ...newData[cca3],
-              flag,
-              flagDescription,
-              currencies,
-              capitals,
-              languages,
-              continents,
+            // Shallow data may not have been fetched yet
+            newData.countries[cca3] = {
+              ...newData.countries[cca3],
+              data: {
+                ...newData.countries[cca3]?.data,
+                cca3,
+                name: countryName,
+                independent,
+                area: {
+                  ...newData.countries[cca3]?.data?.area,
+                  rawValue: area,
+                },
+                population: {
+                  ...newData.countries[cca3]?.data?.population,
+                  rawValue: population,
+                },
+                flag,
+                flagDescription,
+                borders,
+                currencies: {
+                  label: currencies.length === 1 ? "Currency" : "Currencies",
+                  rawValue: currencies,
+                  formattedValue: formatCountryDataArray(currencies),
+                },
+                capitals: {
+                  label: capitals?.length === 1 ? "Capital" : "Capitals",
+                  rawValue: capitals,
+                  formattedValue: formatCountryDataArray(capitals),
+                },
+                languages: {
+                  label: languages.length === 1 ? "Language" : "Languages",
+                  rawValue: languages,
+                  formattedValue: formatCountryDataArray(languages),
+                },
+                continents: {
+                  label: continents?.length === 1 ? "Continent" : "Continents",
+                  rawValue: continents,
+                  formattedValue: formatCountryDataArray(continents),
+                },
+              },
+              fullyLoaded: true,
             };
           }
         }
 
-        if (namesAndCodesData) {
-          // Set the area and population labels with ranks
-          const countryCodesSortedByArea = Object.keys(newData).sort((a, b) => {
-            return (newData[b].area ?? 0) - (newData[a].area ?? 0)
+        if (shallowData) {
+          newData.shallowDataLoaded = true;
+
+          const areaValueFunction =
+              (cca3: Cca3Code) => newData.countries[cca3]?.data?.area?.rawValue ?? 0;
+          const populationValueFunction =
+              (cca3: Cca3Code) => newData.countries[cca3]?.data?.population?.rawValue ?? 0;
+
+          // Calculate and set the area and population ranks
+          const countryCodesSortedByArea = Object.keys(newData.countries).sort((a, b) => {
+            return areaValueFunction(b) - (areaValueFunction(a));
           });
-          const countryCodesSortedByPopulation = Object.keys(newData).sort((a, b) => {
-            return (newData[b].population ?? 0) - (newData[a].population ?? 0)
+          const countryCodesSortedByPopulation = Object.keys(newData.countries).sort((a, b) => {
+            return populationValueFunction(b) - (populationValueFunction(a));
           });
 
-          for (const cca3 of Object.keys(newData)) {
-            const area = newData[cca3].area;
-            const population = newData[cca3].population;
-
-            const areaLabelWithoutRank = area ?
-                `${Math.round(area / SQUARE_KM_PER_SQUARE_MILE).toLocaleString()
-                } sq mi (${area.toLocaleString()} sq km)` : undefined;
-            const populationLabelWithoutRank = population ?
-                `${population.toLocaleString()} people` : undefined;
-
-            let sizeRankText = "";
-            let populationRankText = "";
-
-            const sizeRank = countryCodesSortedByArea.indexOf(cca3) + 1;
-
-            if (sizeRank > 0) {
-              const sizeRankOrdinal = convertToOrdinal(sizeRank);
-              sizeRankText = ` — ${sizeRankOrdinal} largest`;
+          newData.rankings = {
+            all: {
+              byArea: countryCodesSortedByArea.filter(cca3 => newData.countries?.[cca3]?.data?.area),
+              byPopulation: countryCodesSortedByPopulation
+                  .filter(cca3 => newData.countries?.[cca3]?.data?.population),
+            },
+            independentOnly: {
+              byArea: countryCodesSortedByArea.filter(cca3 => newData.countries?.[cca3]?.data?.area
+                  && newData.countries?.[cca3]?.data.independent),
+              byPopulation: countryCodesSortedByPopulation
+                  .filter(cca3 => newData.countries?.[cca3]?.data?.population
+                  && newData.countries?.[cca3]?.data.independent),
             }
+          };
 
-            const populationRank = countryCodesSortedByPopulation.indexOf(cca3) + 1;
+          // Construct and set the area and population formatted values
+          for (const cca3 of Object.keys(newData.countries)) {
+            const country = newData.countries[cca3]?.data;
 
-            if (populationRank > 0) {
-              const populationRankOrdinal = convertToOrdinal(populationRank);
-              populationRankText = ` — ${populationRankOrdinal} largest`;
-            }
-
-            const areaLabel = `${areaLabelWithoutRank}${sizeRankText}`;
-            const populationLabel = `${populationLabelWithoutRank}${populationRankText}`;
-
-            newData[cca3] = {
-              ...newData[cca3],
-              areaLabel,
-              populationLabel,
-            }
+            setAreaLabels(country, areaValueFunction, newData.rankings.all.byArea,
+                newData.rankings.independentOnly.byArea);
+            setPopulationLabels(country, populationValueFunction, newData.rankings.all.byPopulation,
+                newData.rankings.independentOnly.byPopulation);
           }
         }
 
         return newData;
       });
     }
-  }, [setStoredCountries, setNamesAndCodesLoaded]);
+  }, [setStoredCountryData]);
+
+  // For any requests that failed, allow them to be retried
+  const resetNonLoadedRequestStates = useCallback(() => {
+    setStoredCountryData(prev => {
+      return {
+        ...prev,
+        shallowDataRequested: !prev.shallowDataLoaded ? false : prev.shallowDataRequested,
+        countries: {
+          ...Object.fromEntries(Object.keys(prev.countries).map(cca3 => {
+            return [cca3, {
+              ...prev.countries[cca3],
+              requested: !prev.countries[cca3]!.fullyLoaded ? false : prev.countries[cca3]!.requested,
+            }];
+          }))
+        }
+      };
+    });
+  }, [setStoredCountryData]);
 
   const contextValue = useMemo(() => {
-    return { storedCountries, updateStoredCountriesFromData, namesAndCodesLoaded };
-  }, [storedCountries, updateStoredCountriesFromData, namesAndCodesLoaded]);
+    return {
+      independentOnly,
+      setIndependentOnly,
+      storedCountryData,
+      markShallowDataAsRequested,
+      markCountriesAsRequested,
+      updateStoredCountriesFromData,
+      resetNonLoadedRequestStates,
+    };
+  }, [independentOnly, storedCountryData, setIndependentOnly,
+      markShallowDataAsRequested, markCountriesAsRequested,
+      updateStoredCountriesFromData, resetNonLoadedRequestStates]);
 
   return (
     <CountriesContext value={contextValue}>

@@ -1,0 +1,41 @@
+.home-component {
+  display: contents;
+
+  .home-intro {
+    margin-block: 32px;
+
+    p {
+      margin-block: 0.5rem;
+    }
+  }
+
+  #portfolio-link {
+    margin-top: 16px;
+    display: inline flex;
+    background-color: #edb526;
+    border: 2px solid #edb526;
+    border-radius: 99999px;
+    box-shadow: 0 0 4px 0 #f9b70f;
+
+    @media (hover: hover) {
+      &:hover {
+        box-shadow: 0 0 6px 1px #f9b70f;
+      }
+    }
+
+    &.load-failed {
+      padding-inline: 8px;
+      background: transparent;
+
+      > img {
+        display: none;
+      }
+    }
+
+    > img {
+      height: 128px;
+      border-radius: 99999px;
+      pointer-events: none;
+    }
+  }
+}

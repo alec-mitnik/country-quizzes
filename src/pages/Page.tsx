@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { APP_TITLE } from "../consts";
+import { APP_TITLE } from "../utils/consts";
 
 interface PageProps {
   pageTitle?: string;

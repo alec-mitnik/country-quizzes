@@ -1,16 +1,31 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useCallback, useEffect, useState } from "react";
-import { NO_COUNTRIES_LOADED_MESSAGE, QUIZ_COUNTRY_COUNT_INCREASE, QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT, QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE } from "../consts";
-import type { StoredCountry } from "../CountriesProvider";
+import { useCallback, useEffect, useMemo, useState } from "react";
+import type { StoredCountryWrapper } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
-import useInitialized from "../hooks/useInitialized";
+import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
-import { extractRandomArrayElement, getRandomArrayElement } from "../utils";
+import {
+    NO_COUNTRIES_LOADED_MESSAGE, QUIZ_COUNTRY_COUNT_INCREASE,
+    QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT,
+    QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE
+} from "../utils/consts";
+import { extractRandomArrayElement, getRandomArrayElement } from "../utils/utils";
 import Page from "./Page";
+import "./Quiz.css";
 
-type QuizStructure = "matching" | "ranking";
-type QuizTypeKey = "MATCH_NAMES_TO_FLAGS" | "MATCH_NAMES_TO_CAPITALS"
-    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
+/*
+ * More types can be added in the future, like grouping countries into categories,
+ * such as independent or not, has a star on its flag, is an island (no bordering countries),
+ * higher or lower than the median population density, hemisphere, etc.
+ *
+ * Another type could be showing countries in a fixed order, and having to mark them as
+ * higher or lower that the previous country in terms of ranking order (size, population, etc.).
+ *
+ * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
+ */
+type QuizStructure = "matching" | "ranking"; // grouping...
+type QuizTypeKey = /* "MATCH_NAMES_TO_FLAGS" | "MATCH_NAMES_TO_CAPITALS"
+    | */ "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
 interface QuizType {
   key: QuizTypeKey;
@@ -18,9 +33,9 @@ interface QuizType {
   structure: QuizStructure;
 };
 
-// More types can be added in the future
+// TODO - could rank by population density, number of bordering countries, latitude...
 const QUIZ_TYPES: Record<QuizTypeKey, QuizType> = {
-  MATCH_NAMES_TO_FLAGS: {
+  /* MATCH_NAMES_TO_FLAGS: {
     key: "MATCH_NAMES_TO_FLAGS",
     description: "Match the countries to their flags.",
     structure: "matching",
@@ -29,7 +44,7 @@ const QUIZ_TYPES: Record<QuizTypeKey, QuizType> = {
     key: "MATCH_NAMES_TO_CAPITALS",
     description: "Match the countries to their capitals.",
     structure: "matching",
-  },
+  }, */
   ORDER_BY_SIZE: {
     key: "ORDER_BY_SIZE",
     description: "Order the countries by size, largest first.",
@@ -48,16 +63,37 @@ function getRandomQuizTypeKey() {
   return randomTypeKey;
 }
 
-function getRandomCountryCodes(storedCountries: Record<string, Partial<StoredCountry>>, count: number) {
-  const countryNames = Object.keys(storedCountries);
-  const selectedCountryNames: string[] = [];
+function getRandomCountryCodes(independentOnly: boolean,
+    storedCountries: Partial<Record<Cca3Code, StoredCountryWrapper>>, count: number) {
+  let countryCodes = Object.keys(storedCountries);
 
-  while (countryNames.length && count > 0) {
-    selectedCountryNames.push(extractRandomArrayElement<string>(countryNames));
+  if (independentOnly) {
+    countryCodes = countryCodes.filter(cca3 => storedCountries[cca3]?.data?.independent);
+  }
+
+  const selectedCountryCodes: string[] = [];
+
+  while (countryCodes.length && count > 0) {
+    selectedCountryCodes.push(extractRandomArrayElement<string>(countryCodes));
     count--;
   }
 
-  return selectedCountryNames;
+  return selectedCountryCodes;
+}
+
+function renderQuizOutcomeMessage(quiz: Quiz) {
+  if (quiz.round >= 11) {
+    // Cleared 10 rounds
+    return "Amazing! You really know your stuff!";
+  } else if (quiz.round >= 8) {
+    // Cleared 7 rounds
+    return "Well done! You lasted a while.";
+  } else if (quiz.round >= 5) {
+    // Cleared 4 rounds
+    return "Not bad. Go again?";
+  } else {
+    return "Better luck next time.";
+  }
 }
 
 interface Quiz {
@@ -69,183 +105,237 @@ interface Quiz {
   round: number;
 };
 
+interface QuizState {
+  quiz?: Quiz;
+  countriesForQuizRoundRequested: boolean;
+}
+
+/*
+ * TODO - ideas:
+ *
+ * Could perhaps make difficulty adjust by using less well-known countries
+ * (referring to a ranking by tourism or something).
+ *
+ * Maybe more roguelike elements could be introduced, like items and bonuses that
+ * reveal more values of the countries involved (languages, currencies, continent, etc.),
+ * or submit a country correctly for you, or reveal all info for locked-in countries.
+ * Bonuses could be earned for feats like beating a round in one attempt.
+ *
+ * Could track correct/incorrect submissions per country in local storage,
+ * and show stats on how well you know each country.
+ */
+
 /**
  * Displays dynamically generated quizzes on randomly selected countries.
- *
  * The way quizzes work, you get limited submission attempts.
  * You can choose how much to submit, and it will either lock in
  * for all correct, or fail for any incorrect.  Only relative order
  * matters for valid submission in ranking quizzes, not absolute order.
  * Quizzes gradually get harder by involving more countries.
- *
- * Could perhaps make difficulty adjust by using less well-known countries
- * (referring to a ranking by tourism or something).
- * Maybe more roguelike elements could be introduced, like items and bonuses that
- * reveal more values of the countries involved (languages, currencies, continent, etc.).
  */
 function Quiz() {
-  const [quiz, setQuiz] = useState<Quiz | null>(null);
-  const [quizzingReadyToStart, setQuizzingReadyToStart] = useState(false);
-  const [quizRoundStarted, setQuizRoundStarted] = useState(false);
+  const [state, setState] = useState<QuizState>({
+    countriesForQuizRoundRequested: false,
+  });
 
-  const { storedCountries, error, loading, fetchCountryNamesAndCodes, fetchCountries } = useCountries();
-  const countryNamesAndCodesLoaded = useInitialized(loading, fetchCountryNamesAndCodes);
+  const { independentOnly, storedCountryData, error, fetchShallowDataForAllCountries,
+      fetchCountries } = useCountries();
 
   // When all countries are correctly locked in, a new round is ready to start
-  const newRoundReadyToStart = !!quiz
-      && quiz.countryCodesLockedInAsCorrect.length === quiz.countryCodes.length;
+  const nextRoundReadyToStart = !!state.quiz
+      && state.quiz.countryCodesLockedInAsCorrect.length === state.quiz.countryCodes.length;
+
+  const quizzingActive = state.quiz && (nextRoundReadyToStart || state.quiz.submissionsRemaining > 0);
 
   // When there are no more submissions remaining, the quiz is over
-  const quizzingEnded = !newRoundReadyToStart && quiz?.submissionsRemaining === 0;
+  // const quizzingEnded = !newRoundReadyToStart && state.quiz?.submissionsRemaining === 0;
 
-  const loadCountriesForNewQuizRound = useCallback((countryCodes: Cca3Code[]) => {
-    if (fetchCountries(countryCodes)) {
-      // Countries already loaded
-      return true;
-    } else {
-      // Need to wait for country data to be fetched
-      setQuizRoundStarted(false);
+  const countriesForQuizRoundLoaded = useMemo(() => {
+    if (!state.quiz) {
       return false;
     }
-  }, [fetchCountries, setQuizRoundStarted]);
+
+    return state.quiz.countryCodes.every(
+        cca3 => storedCountryData.countries[cca3]?.fullyLoaded);
+  }, [state.quiz, storedCountryData]);
+
+  useEffect(() => {
+    if (!error && !storedCountryData.shallowDataRequested) {
+      // Make sure the shallow data is loaded from the get go
+      fetchShallowDataForAllCountries();
+    }
+  }, [error, storedCountryData, fetchShallowDataForAllCountries]);
+
+  useEffect(() => {
+    if (countriesForQuizRoundLoaded && state.countriesForQuizRoundRequested) {
+      // Once countries for the quiz round are loaded, reset the requested flag
+      setState({
+        ...state,
+        countriesForQuizRoundRequested: false,
+      });
+    }
+  }, [countriesForQuizRoundLoaded, state, setState]);
+
+  const loadCountriesForNewQuizRound = useCallback((countryCodes: Cca3Code[]) => {
+    fetchCountries(countryCodes);
+  }, [fetchCountries]);
 
   const startNewQuiz = useCallback(() => {
-    const randomQuizTypeKey = getRandomQuizTypeKey();
-    const countryCodes = getRandomCountryCodes(storedCountries, QUIZ_STARTING_COUNTRY_COUNT);
-
-    setQuiz({
-      type: QUIZ_TYPES[randomQuizTypeKey],
-      submissionsRemaining: QUIZ_STARTING_SUBMISSIONS_COUNT,
-      countryCodes,
-      countryCodesLockedInAsCorrect: [],
-      countryCount: QUIZ_STARTING_COUNTRY_COUNT,
-      round: 1,
-    });
-
-    loadCountriesForNewQuizRound(countryCodes);
-  }, [storedCountries, loadCountriesForNewQuizRound, setQuiz]);
-
-  const startNewRound = useCallback(() => {
-    if (!quiz) {
-      return
+    if (state.countriesForQuizRoundRequested) {
+      return;
     };
 
     const randomQuizTypeKey = getRandomQuizTypeKey();
-    const newCountryCount = quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
-    const countryCodes = getRandomCountryCodes(storedCountries, newCountryCount);
-
-    setQuiz({
-      ...quiz,
-      type: QUIZ_TYPES[randomQuizTypeKey],
-      submissionsRemaining: quiz.submissionsRemaining + QUIZ_SUBMISSION_COUNT_INCREASE,
-      countryCodes,
-      countryCodesLockedInAsCorrect: [],
-      countryCount: newCountryCount,
-      round: quiz.round++,
-    });
+    const countryCodes = getRandomCountryCodes(independentOnly,
+        storedCountryData.countries, QUIZ_STARTING_COUNTRY_COUNT);
 
     loadCountriesForNewQuizRound(countryCodes);
-  }, [quiz, storedCountries, loadCountriesForNewQuizRound, setQuiz]);
 
-  function attemptSubmit() {
-    // TODO
-  }
+    setState({
+      countriesForQuizRoundRequested: true,
+      quiz: {
+        type: QUIZ_TYPES[randomQuizTypeKey],
+        submissionsRemaining: QUIZ_STARTING_SUBMISSIONS_COUNT,
+        countryCodes,
+        countryCodesLockedInAsCorrect: [],
+        countryCount: QUIZ_STARTING_COUNTRY_COUNT,
+        round: 1,
+      },
+    });
+  }, [state.countriesForQuizRoundRequested, independentOnly, storedCountryData,
+        loadCountriesForNewQuizRound]);
 
-  useEffect(() => {
-    if (countryNamesAndCodesLoaded && !quizzingReadyToStart) {
-      // Country names and codes loaded, ready to start quizzing
-      setQuizzingReadyToStart(true);
-      startNewQuiz();
-    }
-  }, [countryNamesAndCodesLoaded, quizzingReadyToStart, setQuizzingReadyToStart, startNewQuiz]);
+  const startNextRound = useCallback(() => {
+    if (!state.quiz || state.countriesForQuizRoundRequested) {
+      return;
+    };
 
-  useEffect(() => {
-    if (!loading && !quizRoundStarted && quizzingReadyToStart) {
-      // Countries loaded for the quiz round, ready to start the round
-      setQuizRoundStarted(true);
-    }
-  }, [loading, quizRoundStarted, quizzingReadyToStart, quizzingEnded, setQuizRoundStarted]);
+    const randomQuizTypeKey = getRandomQuizTypeKey();
+    const newCountryCount = state.quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
+    const countryCodes = getRandomCountryCodes(independentOnly,
+        storedCountryData.countries, newCountryCount);
+
+    loadCountriesForNewQuizRound(countryCodes);
+
+    setState({
+      countriesForQuizRoundRequested: true,
+      quiz: {
+        ...state.quiz,
+        type: QUIZ_TYPES[randomQuizTypeKey],
+        submissionsRemaining: state.quiz.submissionsRemaining
+            + QUIZ_SUBMISSION_COUNT_INCREASE,
+        countryCodes,
+        countryCodesLockedInAsCorrect: [],
+        countryCount: newCountryCount,
+        round: state.quiz.round + 1,
+      },
+    });
+  }, [state, storedCountryData, independentOnly, loadCountriesForNewQuizRound]);
 
   // TODO - get dataExists to properly reflect quiz round loading as well.
-  // Really, all the loading handling needs an overhaul...
+  // Also need to consider filtering out ineligible countries,
+  // like those missing flag descriptions...
+  // Could maybe preserve quiz state in local storage, but don't want to encourage cheating...
   return (
     <Page pageTitle={QUIZ_TITLE}>
       <RenderWithLoading
-          loaded={quizRoundStarted || (!!error && countryNamesAndCodesLoaded)}
-          error={error} dataExists={!!quiz?.countryCodes.length} noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
-        <>
+          loaded={storedCountryData.shallowDataLoaded}
+          error={error} dataExists={!!Object.keys(storedCountryData.countries).length}
+          noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
+        <div className="quiz-component">
           <details className="quiz-instructions">
             <summary>
               <h2 id="how-to-play">{QUIZ_INSTRUCTIONS_SUBHEADER}</h2>
             </summary>
 
             <ol aria-labelledby="how-to-play">
-              <li>You can submit the full answer in one go, or through multiple smaller submissions.</li>
-              <li>When you submit your guess, it will lock in if and only if no part of it is incorrect.</li>
-              <li>You have a limited number of submission attempts.  If you run out, the quiz ends.</li>
-              <li>Once the full correct answer has been submitted, a new round begins.</li>
-              <li>The quiz type is randomly selected for each round.</li>
-              <li>Remaining submission attempts carry over, with new rounds granting additional attempts.</li>
-              <li>New rounds increase the number of countries involved.  Keep going for as long as you can!</li>
+              <li>You can submit the full answer in one go or piece by piece through multiple submissions.</li>
+              <li>When you make a submission, it will lock in if and only if no part of it is incorrect.</li>
+              <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
+              <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
+              <li>There are various quiz types, with one being randomly selected for each round.</li>
+              <li>When a quiz involves ranking countries in order, only relative order matters for locking in.</li>
+              <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
+              <li>The number of countries involved increases with each round. Keep going for as long as you can!</li>
             </ol>
           </details>
 
-          <dl className="quiz-data-list">
-            <div>
-              <dt>Round:</dt>
-              <dd>{quiz?.round}</dd>
-            </div>
+          <RenderWithLoading
+              loaded={!state.countriesForQuizRoundRequested || countriesForQuizRoundLoaded}
+              focusOnLoad="quiz-type-description"
+              error={error}>
+            <>
+              {/* Quiz Data List */}
+              {!!state.quiz && <dl className="quiz-data-list">
+                <div className="quiz-data-wrapper">
+                  <div>
+                    <dt>Round</dt>
+                    <dd className="large-number">#{state.quiz?.round}</dd>
+                  </div>
 
-            <div>
-              <dt>Submissions Remaining:</dt>
-              <dd>{quiz?.submissionsRemaining}</dd>
-            </div>
+                  <div className={state.quiz?.submissionsRemaining === 1
+                      && state.quiz.countryCodesLockedInAsCorrect.length < state.quiz.countryCodes.length ?
+                      "danger" : ""}>
+                    <dt>Submissions Remaining</dt>
+                    <dd className="large-number">{state.quiz?.submissionsRemaining}</dd>
+                  </div>
+                </div>
 
-            <div>
-              <dt>Quiz Type:</dt>
-              <dd>{quiz?.type.description}</dd>
-            </div>
+                <div>
+                  <dt>Quiz Type</dt>
+                  <dd id="quiz-type-description" tabIndex={-1}>{state.quiz?.type.description}</dd>
+                </div>
 
-            <div>
-              <dt>Countries:</dt>
-              <dd>{quiz?.countryCodes.map(countryCode => storedCountries[countryCode]
-                  .name).join(" | ")}</dd>
-            </div>
+                {/* <div>
+                  <dt>Countries</dt>
+                  <dd>{state.quiz?.countryCodes.map(countryCode => storedCountryData.countries[countryCode]
+                      ?.data?.name).join(" | ")}</dd>
+                </div> */}
 
-            {quiz?.type.key === "MATCH_NAMES_TO_CAPITALS" && <div>
-              <dt>Capitals:</dt>
-              <dd>{quiz?.countryCodes.map(countryCode => storedCountries[countryCode]
-                  .capitals?.join(", ")).join(" | ")}</dd>
-            </div>}
+                {/* {state.quiz?.type.key === "MATCH_NAMES_TO_CAPITALS" && <div>
+                  <dt>Capitals</dt>
+                  <dd>{state.quiz?.countryCodes.map(countryCode => storedCountryData.countries[countryCode]
+                      ?.data?.capitals?.formattedValue).join(" | ")}</dd>
+                </div>} */}
+              </dl>}
 
-            {/* {quiz?.type.structure === "ranking" && (
+              {/* Quiz Controls */}
+              {state.quiz && countriesForQuizRoundLoaded
+                  && state.quiz.type.structure === "ranking"
+                  && <QuizControlsForRanking quiz={state.quiz}
+                setQuiz={(quiz) => setState(prev => {
+                  return {
+                    ...prev,
+                    quiz,
+                  }
+                })} />
 
-            )}
-            {quiz?.type.structure === "matching" && (
+                // state.quiz.type.structure === "matching" && <QuizControlsForMatching quiz={state.quiz} />
+              }
+            </>
+          </RenderWithLoading>
 
-            )} */}
-          </dl>
+          {!quizzingActive && !!state.quiz && <p className="quiz-outcome-message">
+            {renderQuizOutcomeMessage(state.quiz)}
+          </p>}
 
-          {/* TODO */}
-          <p>Actual quiz mechanics coming soon...</p>
-
-          {newRoundReadyToStart && <button type="button"
-              className="quiz-action-button" onClick={startNewRound}>
-            Start New Round
-          </button>}
-
-          {quizzingEnded && <button type="button"
-              className="quiz-action-button" onClick={startNewQuiz}>
+          {/* Start New Quiz Button */}
+          {!quizzingActive
+              && <button type="button" disabled={state.countriesForQuizRoundRequested}
+              className="quiz-action-button" onClick={() => startNewQuiz()}>
+            {/* Not sure whether to include this */}
+            {/* {!!state.quiz && <span aria-hidden="true">✗&nbsp; </span>} */}
             Start New Quiz
           </button>}
 
-          {/* Disable if no new guesses have been made - TODO */}
-          {!newRoundReadyToStart && !quizzingEnded
-              && <button type="button" className="quiz-action-button"
-              disabled={true} onClick={attemptSubmit}>
-            Submit
+          {/* Start Next Round Button */}
+          {quizzingActive && nextRoundReadyToStart && <button type="button"
+              disabled={state.countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
+              className="quiz-action-button" onClick={() => startNextRound()}>
+            <span aria-hidden="true">✓&nbsp; </span>
+            Start Next Round
           </button>}
-        </>
+        </div>
       </RenderWithLoading>
     </Page>
   );

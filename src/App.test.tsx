@@ -1,31 +1,30 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
 import { AppWithoutRouter } from './App';
-import {
-  APP_TITLE, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE, HOME_NAV_TEXT,
-  NO_PAGE_TITLE, QUIZ_NAV_TEXT, QUIZ_TITLE
-} from './consts';
 import useCountries from './hooks/useCountries';
-import useInitialized from './hooks/useInitialized';
-import { countryData } from './test/data';
+import { testCountry, testStoredCountryData } from './test/data';
+import {
+    APP_TITLE, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE, HOME_NAV_TEXT,
+    NO_PAGE_TITLE, QUIZ_NAV_TEXT, QUIZ_TITLE
+} from './utils/consts';
 
-// Mock the hooks
+// Mock the hook
 vi.mock('./hooks/useCountries');
-vi.mock('./hooks/useInitialized');
 
 beforeEach(() => {
   vi.clearAllMocks();
 
   // Default tests to mock having a country loaded
   vi.mocked(useCountries).mockReturnValue({
-    storedCountries: { [countryData.cca3]: countryData },
+    storedCountryData: testStoredCountryData,
     loading: false,
     error: null,
-    fetchCountry: vi.fn().mockReturnValue(true),
-    fetchCountries: vi.fn().mockReturnValue(true),
-    fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+    independentOnly: true,
+    setIndependentOnly: vi.fn(),
+    fetchCountry: vi.fn(),
+    fetchCountries: vi.fn(),
+    fetchShallowDataForAllCountries: vi.fn(),
   });
-  vi.mocked(useInitialized).mockReturnValue(true);
 });
 
 afterEach(() => {
@@ -78,7 +77,7 @@ describe('App', () => {
   });
 
   it('renders the country page for a specific country path', () => {
-    const slug = encodeURIComponent(countryData.cca3);
+    const slug = encodeURIComponent(testCountry.cca3);
 
     render(
       <MemoryRouter initialEntries={[`/countries/${slug}`]}>
@@ -87,10 +86,10 @@ describe('App', () => {
     );
 
     // Check for the expected document title
-    expect(document.title).toBe(`${countryData.name} - ${APP_TITLE}`);
+    expect(document.title).toBe(`${testCountry.name} - ${APP_TITLE}`);
 
     // Check for page title displayed as a header
-    expect(screen.getByRole('heading', { name: countryData.name })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: testCountry.name })).toBeInTheDocument();
 
     // Check that the countries nav link isn't active
     const quizLink = screen.getByRole('link', { name: COUNTRIES_NAV_TEXT });
@@ -121,7 +120,7 @@ describe('App', () => {
 
   it('renders the 404 page for an unrecognized path', () => {
     render(
-      <MemoryRouter initialEntries={['/foo']}>
+      <MemoryRouter initialEntries={['/invalid']}>
         <AppWithoutRouter />
       </MemoryRouter>
     );

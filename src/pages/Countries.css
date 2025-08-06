@@ -1,0 +1,43 @@
+.countries-component {
+  display: contents;
+
+  label {
+    margin-block: 16px;
+    display: flex;
+    flex-direction: column;
+    font-weight: bold;
+  }
+
+  input[type=search] {
+    margin-top: 4px;
+    font-size: inherit;
+    font-family: inherit;
+    padding: 8px 16px;
+    border-radius: 999999px;
+    border: 2px groove var(--background-color-primary-foreground-accent);
+    width: 400px;
+    max-width: 100%;
+    outline-offset: 2px;
+  }
+
+  .directory {
+    max-width: var(--layout-max-width);
+
+    ul {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(auto, 1fr));
+
+      li, a {
+        width: 100%;
+      }
+
+      @media (max-width: 900px) {
+        grid-template-columns: repeat(2, minmax(auto, 1fr));
+      }
+
+      @media (max-width: 500px) {
+        grid-template-columns: minmax(auto, 1fr);
+      }
+    }
+  }
+}

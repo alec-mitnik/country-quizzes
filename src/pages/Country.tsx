@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
-import { BACK_TO_COUNTRIES_LINK_TEXT, NO_COUNTRY_DATA_MESSAGE } from "../consts";
-import type { StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
-import useInitialized from "../hooks/useInitialized";
+import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
 import RenderWithLoading from "../RenderWithLoading";
+import { BACK_TO_COUNTRIES_LINK_TEXT, NO_COUNTRY_DATA_MESSAGE } from "../utils/consts";
+import "./Country.css";
 import Page from "./Page";
 
 /**
@@ -13,61 +14,35 @@ import Page from "./Page";
 function Country() {
   // This component can't be reached without a country in the route,
   // so the `country` param can be safely assumed to exist
-  const countryCode = useParams<{ country: string }>().country!;
-  const [ranksLoaded, setRanksLoaded] = useState(false);
-  const [countryLoaded, setCountryLoaded] = useState(false);
-  const [loadingCountry, setLoadingCountry] = useState(false);
-  const [flagImageLoaded, setFlagImageLoaded] = useState(false);
-  const { storedCountries, error, loading, fetchCountry, fetchCountryNamesAndCodes } = useCountries();
-  const country: StoredCountry | undefined = storedCountries[countryCode];
+  const countryCode = useParams<{ country: string }>().country!.toUpperCase();
 
-  // Needed in order to display size and population rankings
-  const loaded = useInitialized(loading, fetchCountryNamesAndCodes);
+  const { independentOnly, storedCountryData, error,
+      fetchShallowDataForAllCountries, fetchCountry } = useCountries();
 
-  // My networking needs have evolved beyond what I had originally designed the handling for.
-  // It definitely needs an overhaul when I have time.
+  const countryWrapper = storedCountryData.countries[countryCode];
+  const country = countryWrapper?.data;
 
   useEffect(() => {
-    if (ranksLoaded && !countryLoaded && !loading && !error && !loadingCountry) {
-      // Ranks are loaded, so ready to load data for this page's country
-      if (fetchCountry(countryCode)) {
-        // Country data had already been loaded
-        setCountryLoaded(true);
+    if (!error) {
+      if (!storedCountryData.shallowDataRequested) {
+        // Needed in order to display size and population rankings
+        fetchShallowDataForAllCountries();
+      }
+
+      if (!countryWrapper?.requested) {
+        fetchCountry(countryCode);
       }
     }
-  }, [ranksLoaded, countryLoaded, loading, error, countryCode, loadingCountry, fetchCountry]);
+  }, [countryCode, error, storedCountryData, countryWrapper,
+      fetchShallowDataForAllCountries, fetchCountry]);
 
-  useEffect(() => {
-    if (loading) {
-      if (ranksLoaded && !countryLoaded) {
-        // Ranks are already loaded, so the loading state must be for the country
-        setLoadingCountry(true);
-      }
-    } else {
-      if (loaded && !ranksLoaded) {
-        // Ranks have been loaded
-        setRanksLoaded(true);
-      } else if (loadingCountry) {
-        // Country data has been loaded
-        setCountryLoaded(true);
-        setLoadingCountry(false);
-      }
-    }
-  }, [loading, loadingCountry, loaded, ranksLoaded, countryLoaded, setCountryLoaded, setLoadingCountry]);
+  const { name, independent, borders, flag, flagDescription, currencies, capitals,
+      languages, area, population, continents } = country ?? {};
 
-  const { name, flag, flagDescription, currencies, capitals,
-      languages, areaLabel, populationLabel, continents } = country ?? {};
+  const { imgRef, doneLoadingClassName, loadFailedClassName } =
+      useSmoothLoadingImageRef(flag, flagDescription);
 
-  function renderCountryDataArray(key: string, value: string[] | undefined) {
-    return (
-      <div>
-        <dt>{key}</dt>
-        <dd>{value?.length ? value.join(", ") : "None"}</dd>
-      </div>
-    );
-  }
-
-  function renderCountryDataValue(key: string, value = "Unknown") {
+  function renderCountryDataValue(key = "Unknown", value: React.ReactNode = "Unknown") {
     return (
       <div>
         <dt>{key}</dt>
@@ -76,35 +51,57 @@ function Country() {
     );
   }
 
-  function onFlagLoaded() {
-    setFlagImageLoaded(true);
+  function renderBordersValue(value: Cca3Code[] = []) {
+    if (value.length === 0) {
+      return "None";
+    } else {
+      return (
+        <span>
+          {value.map((code, index) => (
+            <React.Fragment key={code}>
+              {index > 0 ? ", " : ""}
+              <Link to={`/countries/${code}`}>
+                {storedCountryData.countries[code]?.data?.name ?? "ERROR"}
+              </Link>
+            </React.Fragment>
+          ))}
+        </span>
+      );
+    }
   }
 
   return (
     <>
-      <Link to="/countries"><span aria-hidden="true">← </span>{BACK_TO_COUNTRIES_LINK_TEXT}</Link>
+      <Link to="/countries"><span aria-hidden="true">🡐 </span>{BACK_TO_COUNTRIES_LINK_TEXT}</Link>
+
       <Page pageTitle={name ?? ""}>
-        <RenderWithLoading loaded={(ranksLoaded && !!error) || countryLoaded}
+        <RenderWithLoading loaded={!!countryWrapper?.fullyLoaded}
             error={error} dataExists={!!country} noDataMessage={NO_COUNTRY_DATA_MESSAGE}>
-          <dl className="country-data-list">
-            <div>
-              <dt>Flag</dt>
-              <dd>
-                {flagDescription ?
-                    <img className={`flag smooth-loading ${flagImageLoaded ? "loaded" : ""}`}
-                    onLoad={onFlagLoaded} onError={onFlagLoaded} src={flag} alt={flagDescription} />
-                    : "Unavailable"}
-              </dd>
+          <dl className={`country-data-list smooth-loading${doneLoadingClassName}${loadFailedClassName}`}>
+            <div className="country-data-wrapper">
+              <div>
+                <dt>Flag</dt>
+                <dd>
+                  {flag || flagDescription ?
+                      <img ref={imgRef} className="flag" src={flag} alt={flagDescription ??
+                          "The flag of this country. No additional description available."} />
+                      : "Unavailable"}
+                </dd>
+              </div>
+              {renderCountryDataValue(continents?.label, continents?.formattedValue)}
+              {renderCountryDataValue(borders?.length === 1 ? "Bordering Country" : "Bordering Countries",
+                  renderBordersValue(borders))}
             </div>
 
             <div className="country-data-wrapper">
-              {renderCountryDataArray(continents?.length === 1 ? "Continent" : "Continents", continents)}
-              {/* TODO - borders */}
-              {renderCountryDataArray(capitals?.length === 1 ? "Capital" : "Capitals", capitals)}
-              {renderCountryDataArray(languages?.length === 1 ? "Language" : "Languages", languages)}
-              {renderCountryDataArray(currencies?.length === 1 ? "Currency" : "Currencies", currencies)}
-              {renderCountryDataValue("Size", areaLabel)}
-              {renderCountryDataValue("Population", populationLabel)}
+              {renderCountryDataValue(capitals?.label, capitals?.formattedValue)}
+              {renderCountryDataValue(languages?.label, languages?.formattedValue)}
+              {renderCountryDataValue(currencies?.label, currencies?.formattedValue)}
+              {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
+              {renderCountryDataValue("Size", independentOnly ?
+                  area?.formattedValueForIndependentOnly : area?.formattedValueForAll)}
+              {renderCountryDataValue("Population", independentOnly ?
+                  population?.formattedValueForIndependentOnly : population?.formattedValueForAll)}
             </div>
           </dl>
         </RenderWithLoading>

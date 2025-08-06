@@ -1,13 +1,10 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import { use, useCallback, useEffect, useState } from "react";
 import { CountriesContext } from "../CountriesContext";
-import type { StoredCountry } from "../CountriesProvider";
 import useFetch from "./useFetch";
 
-// Doing just independent countries, since it's odd to think of something like
-// "United States Virgin Islands" as a country in this context.
-// Get area and population as well to allow for displaying the overall ranking.
-const NAMES_AND_CODES_URL = "https://restcountries.com/v3.1/independent?fields=cca3,name,area,population";
+// Include area and population to allow for displaying the overall rankings.
+const SHALLOW_DATA_URL = "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population";
 
 /**
  * Gives the full fetch URL to use for getting full data for specified countries
@@ -17,12 +14,7 @@ const NAMES_AND_CODES_URL = "https://restcountries.com/v3.1/independent?fields=c
 function getFullCountryFetchUrl(countryCodes: string[]) {
   return `https://restcountries.com/v3.1/alpha?codes=${
     countryCodes.join(",")
-  }&fields=cca3,name,capital,flags,currencies,borders,continents,languages,area,population`;
-}
-
-function isCountryFullyLoaded(storedCountry: StoredCountry | undefined) {
-  return storedCountry?.currencies && storedCountry.capitals && storedCountry.languages
-      && storedCountry.areaLabel && storedCountry.populationLabel && storedCountry.continents;
+  }&fields=cca3,name,independent,capital,flags,currencies,borders,continents,languages,area,population`;
 }
 
 /**
@@ -38,7 +30,14 @@ function useCountries() {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const { storedCountries, updateStoredCountriesFromData, namesAndCodesLoaded } = use(CountriesContext);
+  const { independentOnly, setIndependentOnly, storedCountryData,
+      markShallowDataAsRequested, markCountriesAsRequested,
+      updateStoredCountriesFromData, resetNonLoadedRequestStates } = use(CountriesContext);
+
+  // On mount, reset all non-loaded request flags
+  useEffect(() => {
+    resetNonLoadedRequestStates();
+  }, [resetNonLoadedRequestStates]);
 
   /**
    * Gets data for the country with the specified cca3 code,
@@ -47,18 +46,17 @@ function useCountries() {
    * Country data doesn't need to be refreshed often,
    * so it's fine to only fetch once per session.
    * @param cca3 Code of the country to get data for
-   * @returns true if already loaded
    */
   const fetchCountry = useCallback((cca3: Cca3Code) => {
-    if (isCountryFullyLoaded(storedCountries[cca3])) {
-      return true;
+    const countryUrl = getFullCountryFetchUrl([cca3]);
+
+    if (storedCountryData.countries[cca3]?.requested) {
+      return;
     }
 
-    const countryUrl = getFullCountryFetchUrl([cca3]);
+    markCountriesAsRequested([cca3]);
     void initiateFetch(countryUrl);
-
-    return false;
-  }, [storedCountries, initiateFetch]);
+  }, [storedCountryData, markCountriesAsRequested, initiateFetch]);
 
   /**
    * Gets data for the countries with the specified cca3 codes,
@@ -67,45 +65,50 @@ function useCountries() {
    * Country data doesn't need to be refreshed often,
    * so it's fine to only fetch once per session.
    * @param countryCodes cca3 codes of the countries to get data for
-   * @returns true if all requested countries are already loaded
    */
-  const fetchCountries = useCallback((countryCodes: string[]) => {
-    const countryCodesToLoad = [];
+  const fetchCountries = useCallback((countryCodes: Cca3Code[]) => {
+    const countryCodesToLoad: Cca3Code[] = [];
 
     for (const cca3 of countryCodes) {
-      if (!isCountryFullyLoaded(storedCountries[cca3])) {
+      if (!storedCountryData.countries[cca3]?.requested) {
         countryCodesToLoad.push(cca3);
+
+        storedCountryData.countries[cca3] = {
+          ...storedCountryData.countries[cca3],
+          requested: true,
+        };
       }
     }
 
     if (!countryCodesToLoad.length) {
       // All requested countries are already loaded
-      return true;
+      return;
     }
 
     const countriesUrl = getFullCountryFetchUrl(countryCodesToLoad);
-    void initiateFetch(countriesUrl);
 
-    return false;
-  }, [storedCountries, initiateFetch]);
+    markCountriesAsRequested(countryCodesToLoad);
+    void initiateFetch(countriesUrl);
+  }, [storedCountryData, markCountriesAsRequested, initiateFetch]);
 
   /**
-   * Gets the names and cca3 codes for all independent countries,
+   * Gets the shallow data for all independent countries,
    * fetching from the API if not already stored,
    * and updates the context values and state accordingly.
    * Country data doesn't need to be refreshed often,
    * so it's fine to only fetch once per session.
-   * @returns true if already loaded
    */
-  const fetchCountryNamesAndCodes = useCallback(() => {
-    if (namesAndCodesLoaded) {
-      return true;
+  const fetchShallowDataForAllCountries = useCallback(() => {
+    if (storedCountryData.shallowDataRequested) {
+      return;
     }
 
-    void initiateFetch(NAMES_AND_CODES_URL);
-    return false;
-  }, [namesAndCodesLoaded, initiateFetch]);
+    markShallowDataAsRequested();
+    void initiateFetch(SHALLOW_DATA_URL);
+  }, [storedCountryData, markShallowDataAsRequested, initiateFetch]);
 
+  // Set the combined error and loading states,
+  // and store any new country data
   useEffect(() => {
     const combinedError = [];
     let combinedLoading = false;
@@ -118,7 +121,7 @@ function useCountries() {
       combinedLoading ||= loading;
 
       if (!loading && !error && data?.length) {
-        updateStoredCountriesFromData(data, url === NAMES_AND_CODES_URL);
+        updateStoredCountriesFromData(data, url === SHALLOW_DATA_URL);
         setStateForUrl({data: null}, url);
       }
     }
@@ -132,11 +135,11 @@ function useCountries() {
     if (combinedLoading !== loading) {
       setLoading(combinedLoading);
     }
-  }, [state, namesAndCodesLoaded, storedCountries, error, loading,
+  }, [state, storedCountryData, error, loading,
       setError, setLoading, updateStoredCountriesFromData, setStateForUrl]);
 
-  return { storedCountries, error, loading,
-      fetchCountryNamesAndCodes, fetchCountry, fetchCountries };
+  return { independentOnly, setIndependentOnly, storedCountryData, error, loading,
+      fetchShallowDataForAllCountries, fetchCountry, fetchCountries };
 }
 
 export default useCountries;

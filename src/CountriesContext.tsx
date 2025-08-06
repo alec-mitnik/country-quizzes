@@ -1,21 +1,29 @@
 import type { Country } from "@yusifaliyevpro/countries/types";
 import { createContext } from "react";
-import type { StoredCountry } from "./CountriesProvider";
+import type { CountryStorage } from "./CountriesProvider";
+import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
 
 interface CountriesContextType {
-  // TypeScript doesn't support typing the key to Cca3Code
-  // without requiring that all possible codes have entries
-  storedCountries: Record<string, StoredCountry>;
-  updateStoredCountriesFromData: (data: Partial<Country>[], onlyNamesAndCodes?: boolean) => void;
-  namesAndCodesLoaded: boolean;
+  // Whether to restrict to independent countries for the directory page and quizzes
+  independentOnly: boolean;
+  setIndependentOnly: (independentOnly: boolean) => void;
+  storedCountryData: CountryStorage;
+  markShallowDataAsRequested: () => void;
+  markCountriesAsRequested: (countryCodes: string[]) => void;
+  updateStoredCountriesFromData: (data: Partial<Country>[], shallowData?: boolean) => void;
+  resetNonLoadedRequestStates: () => void;
 };
 
 /**
  * Context for the accumulated and restructured countries data
  */
+/* eslint-disable @typescript-eslint/no-empty-function */
 export const CountriesContext = createContext<CountriesContextType>({
-  storedCountries: {},
-  // eslint-disable-next-line @typescript-eslint/no-empty-function
+  independentOnly: false,
+  setIndependentOnly: () => {},
+  storedCountryData: DEFAULT_COUNTRY_STORAGE,
+  markShallowDataAsRequested: () => {},
+  markCountriesAsRequested: () => {},
   updateStoredCountriesFromData: (_data: Partial<Country>[]) => {},
-  namesAndCodesLoaded: false,
+  resetNonLoadedRequestStates: () => {},
 });

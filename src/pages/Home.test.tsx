@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL } from '../consts';
+import { HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL, REST_COUNTRIES_API_LINK_TEXT, REST_COUNTRIES_API_LINK_URL } from '../utils/consts';
 import Home from './Home';
 
 describe('Home', () => {
@@ -10,6 +10,17 @@ describe('Home', () => {
 
     // Check for the subheader element
     expect(screen.getByRole('heading', { name: HOME_SUBHEADER })).toBeInTheDocument();
+  });
+
+  it('renders the REST Countries API link', () => {
+    render(
+      <Home />
+    );
+
+    // Check for the REST Countries API link
+    const apiLink = screen.getByRole('link', { name: REST_COUNTRIES_API_LINK_TEXT });
+    expect(apiLink).toBeInTheDocument();
+    expect(apiLink).toHaveAttribute('href', REST_COUNTRIES_API_LINK_URL);
   });
 
   it('renders the portfolio link', () => {

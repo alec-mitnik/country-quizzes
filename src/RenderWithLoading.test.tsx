@@ -1,7 +1,7 @@
 import { render, screen } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { LOADING_MESSAGE } from './consts';
 import RenderWithLoading from './RenderWithLoading';
+import { LOADING_MESSAGE } from './utils/consts';
 
 const noDataMessage = "No data";
 const contentText = "Test";
@@ -23,27 +23,27 @@ describe('RenderWithLoading', () => {
     expect(screen.getByText(LOADING_MESSAGE)).toBeInTheDocument();
   });
 
-  it('renders the loading message when not loaded and with an error', () => {
+  it('renders the error message when loaded with an error', () => {
     render(
       <MemoryRouter>
-        <RenderWithLoading loaded={false} error={errorMessage} dataExists={false}
+        <RenderWithLoading loaded={true} error={errorMessage} dataExists={false}
             noDataMessage={noDataMessage}>
           {renderedContent}
         </RenderWithLoading>
       </MemoryRouter>
     );
 
-    // Check for the loading message
-    expect(screen.getByText(LOADING_MESSAGE)).toBeInTheDocument();
+    // Check for the loading message's absence
+    expect(screen.queryByText(LOADING_MESSAGE)).not.toBeInTheDocument();
 
-    // Check for the error message's absence
-    expect(screen.queryByText(errorMessage)).not.toBeInTheDocument();
+    // Check for the error message
+    expect(screen.getByText(errorMessage)).toBeInTheDocument();
   });
 
-  it('renders the error message when loaded with an error', () => {
+  it('renders the error message when not loaded with an error', () => {
     render(
       <MemoryRouter>
-        <RenderWithLoading loaded={true} error={errorMessage} dataExists={false}
+        <RenderWithLoading loaded={false} error={errorMessage} dataExists={false}
             noDataMessage={noDataMessage}>
           {renderedContent}
         </RenderWithLoading>
@@ -91,3 +91,5 @@ describe('RenderWithLoading', () => {
     expect(screen.getByText(contentText)).toBeInTheDocument();
   });
 });
+
+// TODO - test focusOnLoad...

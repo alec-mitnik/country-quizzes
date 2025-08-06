@@ -1,31 +1,28 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
-import { COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../consts';
 import useCountries from '../hooks/useCountries';
-import useInitialized from '../hooks/useInitialized';
+import { testCountry, testShallowStoredCountryData } from '../test/data';
+import { COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../utils/consts';
 import Countries from './Countries';
 
 // Mock the hooks
 vi.mock('../hooks/useCountries');
-vi.mock('../hooks/useInitialized');
 
 beforeEach(() => {
   vi.clearAllMocks();
 
   // Default tests to mock having countries loaded
   vi.mocked(useCountries).mockReturnValue({
-    storedCountries: {
-      CAN: {cca3: "CAN", name: "Canada"},
-      GBR: {cca3: "GBR", name: "United Kingdom"}
-    },
+    storedCountryData: testShallowStoredCountryData,
     loading: false,
     error: null,
-    fetchCountry: vi.fn().mockReturnValue(true),
-    fetchCountries: vi.fn().mockReturnValue(true),
-    fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+    independentOnly: true,
+    setIndependentOnly: vi.fn(),
+    fetchCountry: vi.fn(),
+    fetchCountries: vi.fn(),
+    fetchShallowDataForAllCountries: vi.fn(),
   });
-  vi.mocked(useInitialized).mockReturnValue(true);
 });
 
 afterEach(() => {
@@ -39,12 +36,18 @@ afterAll(() => {
 describe('Countries', () => {
   it('renders the corresponding message when there are no countries', () => {
     vi.mocked(useCountries).mockReturnValue({
-      storedCountries: {},
+      storedCountryData: {
+        ...DEFAULT_COUNTRY_STORAGE,
+        shallowDataRequested: true,
+        shallowDataLoaded: true,
+      },
       loading: false,
       error: null,
-      fetchCountry: vi.fn().mockReturnValue(true),
-      fetchCountries: vi.fn().mockReturnValue(true),
-      fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+      independentOnly: true,
+      setIndependentOnly: vi.fn(),
+      fetchCountry: vi.fn(),
+      fetchCountries: vi.fn(),
+      fetchShallowDataForAllCountries: vi.fn(),
     });
 
     render(
@@ -75,7 +78,7 @@ describe('Countries', () => {
         .toBeInTheDocument();
   });
 
-  it('renders country links', () => {
+  it('renders independent only country links', () => {
     render(
       // MemoryRouter required when possibly rendering Link components
       <MemoryRouter>
@@ -90,17 +93,21 @@ describe('Countries', () => {
     // Check links
     expect(within(nav).getAllByRole('link')).toHaveLength(2);
 
-    const canadaLink = within(nav).getByRole('link', { name: 'Canada' });
-    expect(canadaLink).toBeInTheDocument();
-    expect(canadaLink).toHaveAttribute('href', '/countries/CAN');
+    const testCountryLink = within(nav).getByRole('link', { name: testCountry.name });
+    expect(testCountryLink).toBeInTheDocument();
+    expect(testCountryLink).toHaveAttribute('href', `/countries/${testCountry.cca3}`);
 
-    const unitedKingdomLink = within(nav).getByRole('link', { name: 'United Kingdom' });
-    expect(unitedKingdomLink).toBeInTheDocument();
-    expect(unitedKingdomLink).toHaveAttribute('href', '/countries/GBR');
+    // A country that isn't independent shouldn't appear while independentOnly is true
+    const nonIndependentCountryLink = within(nav).queryByRole('link', { name: 'Test Country A' });
+    expect(nonIndependentCountryLink).not.toBeInTheDocument();
+
+    const independentCountryLink = within(nav).getByRole('link', { name: 'Test Country B' });
+    expect(independentCountryLink).toBeInTheDocument();
+    expect(independentCountryLink).toHaveAttribute('href', '/countries/TCB');
   });
 });
 
-describe('Countries search input filters correctly', () => {
+describe('Countries search input filters on independent countries correctly', () => {
   it('when there is one match', async () => {
     const user = userEvent.setup();
 
@@ -113,12 +120,19 @@ describe('Countries search input filters correctly', () => {
 
     // Simulate filter input
     const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
-    await user.type(searchInput, 'k');
-    expect(searchInput).toHaveValue('k');
+    await user.type(searchInput, 'u');
+    expect(searchInput).toHaveValue('u');
 
-    // Only United Kingdom should remain, with Canada filtered out
-    expect(screen.queryByRole('link', { name: 'Canada' })).not.toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'United Kingdom' })).toBeInTheDocument();
+    // Check for the nav element
+    const nav = screen.getByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).toBeInTheDocument();
+
+    // Check links
+    expect(within(nav).getAllByRole('link')).toHaveLength(1);
+
+    // Only Test Country B should remain, with Trinidad and Tobago filtered out
+    expect(screen.queryByRole('link', { name: testCountry.name })).not.toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Test Country B' })).toBeInTheDocument();
   });
 
   it('when there are multiple matches', async () => {
@@ -133,12 +147,19 @@ describe('Countries search input filters correctly', () => {
 
     // Simulate filter input
     const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
-    await user.type(searchInput, 'n');
-    expect(searchInput).toHaveValue('n');
+    await user.type(searchInput, 't');
+    expect(searchInput).toHaveValue('t');
+
+    // Check for the nav element
+    const nav = screen.getByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).toBeInTheDocument();
+
+    // Check links
+    expect(within(nav).getAllByRole('link')).toHaveLength(2);
 
     // Both countries should remain
-    expect(screen.getByRole('link', { name: 'Canada' })).toBeInTheDocument();
-    expect(screen.getByRole('link', { name: 'United Kingdom' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: testCountry.name })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'Test Country B' })).toBeInTheDocument();
   });
 
   it('when there are no matches', async () => {
@@ -156,11 +177,138 @@ describe('Countries search input filters correctly', () => {
     await user.type(searchInput, 'z');
     expect(searchInput).toHaveValue('z');
 
+    // Check that there is no nav element
+    const nav = screen.queryByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).not.toBeInTheDocument();
+
     // Both countries should be filtered out
-    expect(screen.queryByRole('link', { name: 'Canada' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'United Kingdom' })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: testCountry.name })).not.toBeInTheDocument();
+    expect(screen.queryByRole('link', { name: 'Test Country B' })).not.toBeInTheDocument();
 
     // Check for the no countries matched message
     expect(screen.getByText(NO_COUNTRIES_MATCHED_MESSAGE)).toBeInTheDocument();
+  });
+});
+
+describe('Countries search input filters on all countries correctly', () => {
+  beforeEach(() => {
+    vi.clearAllMocks();
+
+    // Set these tests to mock not restricting to independent countries only
+    vi.mocked(useCountries).mockReturnValue({
+      storedCountryData: testShallowStoredCountryData,
+      loading: false,
+      error: null,
+      independentOnly: false,
+      setIndependentOnly: vi.fn(),
+      fetchCountry: vi.fn(),
+      fetchCountries: vi.fn(),
+      fetchShallowDataForAllCountries: vi.fn(),
+    });
+  });
+
+  it('when there is no filter', async () => {
+    const user = userEvent.setup();
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Countries />
+      </MemoryRouter>
+    );
+
+    // Simulate filter input
+    const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
+    await user.type(searchInput, 'z');
+    expect(searchInput).toHaveValue('z');
+    await user.clear(searchInput);
+    expect(searchInput).toHaveValue('');
+
+    // Check for the nav element
+    const nav = screen.getByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).toBeInTheDocument();
+
+    // Check links
+    expect(within(nav).getAllByRole('link')).toHaveLength(3);
+
+    const testCountryLink = within(nav).getByRole('link', { name: testCountry.name });
+    expect(testCountryLink).toBeInTheDocument();
+    expect(testCountryLink).toHaveAttribute('href', `/countries/${testCountry.cca3}`);
+
+    const nonIndependentCountryLink = within(nav).getByRole('link', { name: 'Test Country A' });
+    expect(nonIndependentCountryLink).toBeInTheDocument();
+    expect(nonIndependentCountryLink).toHaveAttribute('href', '/countries/TCA');
+
+    const independentCountryLink = within(nav).getByRole('link', { name: 'Test Country B' });
+    expect(independentCountryLink).toBeInTheDocument();
+    expect(independentCountryLink).toHaveAttribute('href', '/countries/TCB');
+  });
+
+  it('when a non-independent country is filtered out', async () => {
+    const user = userEvent.setup();
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Countries />
+      </MemoryRouter>
+    );
+
+    // Simulate filter input
+    const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
+    await user.type(searchInput, 'b');
+    expect(searchInput).toHaveValue('b');
+
+    // Check for the nav element
+    const nav = screen.getByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).toBeInTheDocument();
+
+    // Check links
+    expect(within(nav).getAllByRole('link')).toHaveLength(2);
+
+    const testCountryLink = within(nav).getByRole('link', { name: testCountry.name });
+    expect(testCountryLink).toBeInTheDocument();
+    expect(testCountryLink).toHaveAttribute('href', `/countries/${testCountry.cca3}`);
+
+    const nonIndependentCountryLink = within(nav).queryByRole('link', { name: 'Test Country A' });
+    expect(nonIndependentCountryLink).not.toBeInTheDocument();
+
+    const independentCountryLink = within(nav).getByRole('link', { name: 'Test Country B' });
+    expect(independentCountryLink).toBeInTheDocument();
+    expect(independentCountryLink).toHaveAttribute('href', '/countries/TCB');
+  });
+
+  it('when an independent country is filtered out', async () => {
+    const user = userEvent.setup();
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Countries />
+      </MemoryRouter>
+    );
+
+    // Simulate filter input
+    const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
+    await user.type(searchInput, 'a');
+    expect(searchInput).toHaveValue('a');
+
+    // Check for the nav element
+    const nav = screen.getByRole('navigation', { name: COUNTRIES_TITLE });
+    expect(nav).toBeInTheDocument();
+
+    // Check links
+    expect(within(nav).getAllByRole('link')).toHaveLength(2);
+
+    const testCountryLink = within(nav).getByRole('link', { name: testCountry.name });
+    expect(testCountryLink).toBeInTheDocument();
+    expect(testCountryLink).toHaveAttribute('href', `/countries/${testCountry.cca3}`);
+
+    const nonIndependentCountryLink = within(nav).getByRole('link', { name: 'Test Country A' });
+    expect(nonIndependentCountryLink).toBeInTheDocument();
+    expect(nonIndependentCountryLink).toHaveAttribute('href', '/countries/TCA');
+
+    const independentCountryLink = within(nav).queryByRole('link', { name: 'Test Country B' });
+    expect(independentCountryLink).not.toBeInTheDocument();
   });
 });

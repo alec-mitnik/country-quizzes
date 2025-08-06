@@ -1,4 +1,4 @@
-import { NO_PAGE_TITLE } from "../consts";
+import { NO_PAGE_TITLE } from "../utils/consts";
 import Page from "./Page";
 
 /**

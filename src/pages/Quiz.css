@@ -1,0 +1,257 @@
+.quiz-component {
+  display: contents;
+
+  details {
+    margin-bottom: 16px;
+
+    summary {
+      /* Nicer presentation of focus outline */
+      padding-inline: 16px;
+      cursor: pointer;
+
+      > * {
+        /* Modern version of the legacy inline-block value */
+        display: inline flow-root;
+      }
+    }
+
+    &.quiz-instructions {
+      summary::marker {
+        font-size: 1.5rem;
+      }
+
+      ol {
+        margin: 0 auto;
+
+        li {
+          text-align: left;
+          margin-block: 0.25rem;
+        }
+      }
+    }
+  }
+
+  .quiz-outcome-message {
+    margin-block: 8px;
+    font-size: 1.25rem;
+  }
+
+  .quiz-action-button {
+    margin-block: 16px;
+  }
+
+  .draggable-country {
+    /* The largest size it can be (at 100% zoom)
+    before Chrome makes only part of the ghost image visible */
+    width: 299px;
+    max-width: 100%;
+    margin: auto;
+    padding: 12px;
+    border-radius: 8px;
+    background: var(--background-color-primary);
+
+    &.being-dragged-over {
+      &:not(.dragged + &) {
+        /* Center the border between the two elements but keep the hit box stable */
+        border-top: 8px solid var(--background-color-accent);
+        border-radius: 0;
+        padding-block: 8px 16px;
+        margin-block: -4px -4px;
+
+        > * {
+          /* Prevent onDragLeave from being triggered by child elements */
+          pointer-events: none;
+        }
+      }
+
+      .dragged + & {
+        /* Keep hover hit box consistent to prevent flicker */
+        padding-bottom: 16px;
+        margin-bottom: -4px;
+      }
+    }
+
+    &.selected, &.dragged {
+      padding: 10px;
+      border: 2px dashed var(--background-color-accent);
+      color: var(--background-color-primary-foreground-accent);
+    }
+
+    &.dragged {
+      /* border-style: solid; */
+
+      /* Change styles after a delay when dragged so that
+      the ghost image isn't affected */
+      transition: color 0.1s 0s allow-discrete,
+          border 0.1s 0s allow-discrete;
+
+      button {
+        visibility: hidden;
+      }
+    }
+
+    &.locked-in {
+      cursor: default;
+
+      .grip {
+        display: none;
+      }
+    }
+
+    &:not(.locked-in) {
+      .check-mark {
+        visibility: hidden;
+      }
+    }
+
+    @media (hover: hover) {
+      &[draggable="true"]:hover:not(.locked-in):not(.dragged) {
+        filter: brightness(0.9);
+        cursor: move;
+        border: 2px solid var(--background-color-accent);
+        padding: 10px;
+        /* padding: calc(10px + 1rem) 10px 10px; */
+      }
+    }
+
+    .button-controls {
+      float: right;
+      display: flex;
+      gap: 8px;
+      margin-left: 12px;
+
+      button {
+        /* Keep the button symbol aligned with the text baseline
+        and allow the second line to pass underneath */
+        margin-block: -2px;
+        border-width: 2px;
+        padding: 0 8px;
+        box-shadow: 0 1px 1px 0 var(--shadow-color);
+        outline-offset: 2px;
+
+        &.remove-button {
+          border-color: var(--danger-color);
+          background: var(--background-color-primary);
+          color: var(--danger-color);
+
+          > span {
+            /* Modern version of the legacy inline-block value */
+            display: inline flow-root;
+            transform: rotate(45deg);
+            transform-origin: 50% 56%;
+          }
+        }
+      }
+    }
+
+    /* Ensure either displayed symbol takes up the same space
+    to maintain alignment */
+    .symbol-wrapper {
+      .grip {
+        /* position: absolute;
+        left: 0; */
+
+        /* Works better for Firefox */
+        float: left;
+        width: 0;
+      }
+    }
+  }
+
+  .quiz-controls-for-ranking {
+    margin-block: 16px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    width: var(--layout-max-width);
+    max-width: 100%;
+
+    .ranked-list, .unranked-pool {
+      /* Add extra padding on the bottom for dropping a ranked country at the end */
+      padding: 16px 16px 24px;
+      max-width: 100%;
+      border-radius: 16px;
+      border: 8px solid var(--background-color-accent);
+      box-shadow: 0 0 3px 1px var(--background-color-accent);
+      text-align: left;
+
+      > p, > h2 {
+        text-align: center;
+      }
+
+      > h2 {
+        font-size: 1.25rem;
+      }
+
+      > p {
+        padding: 12px 16px;
+        width: 299px;
+        max-width: 100%;
+      }
+    }
+
+    .ranked-list {
+      border-color: rgba(255, 255, 255, 0.3);
+
+      &.being-dragged-over {
+        &:not(:has(.draggable-country)) {
+          border-color: var(--background-color-accent);
+        }
+
+        > :not(.draggable-country) {
+          /* Prevent onDragLeave from being triggered by other child elements */
+          pointer-events: none;
+        }
+
+        .draggable-country:last-child:not(.dragged) {
+          /* Center the border between the element and container edge
+          but keep the hit box stable */
+          border-bottom: 8px solid var(--background-color-accent);
+          border-radius: 0;
+          padding-bottom: 8px;
+          margin-bottom: -4px;
+        }
+      }
+
+      &.shake {
+        @media not (prefers-reduced-motion: reduce) {
+          animation: animateShake 0.25s 2 ease-in-out;
+        }
+      }
+    }
+
+    .unranked-pool {
+      border-color: rgba(0, 0, 0, 0.3);
+
+      &.being-dragged-over {
+        &:not(:has(.dragged)) {
+          border-color: var(--background-color-accent);
+        }
+
+        > * {
+          /* Prevent onDragLeave from being triggered by child elements */
+          pointer-events: none;
+        }
+      }
+    }
+  }
+}
+
+@keyframes animateShake {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-8px);
+  }
+  50% {
+    transform: translateX(0);
+  }
+  75% {
+    transform: translateX(8px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

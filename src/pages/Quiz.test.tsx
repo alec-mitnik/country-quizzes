@@ -1,30 +1,27 @@
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
-import { NO_COUNTRIES_LOADED_MESSAGE, QUIZ_INSTRUCTIONS_SUBHEADER } from '../consts';
 import useCountries from '../hooks/useCountries';
-import useInitialized from '../hooks/useInitialized';
+import { testShallowStoredCountryData } from '../test/data';
+import { DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, QUIZ_INSTRUCTIONS_SUBHEADER } from '../utils/consts';
 import Quiz from './Quiz';
 
-// Mock the hooks
+// Mock the hook
 vi.mock('../hooks/useCountries');
-vi.mock('../hooks/useInitialized');
 
 beforeEach(() => {
   vi.clearAllMocks();
 
   // Default tests to mock having countries loaded
   vi.mocked(useCountries).mockReturnValue({
-    storedCountries: {
-      CAN: {cca3: "CAN", name: "Canada"},
-      GBR: {cca3: "GBR", name: "United Kingdom"},
-    },
+    storedCountryData: testShallowStoredCountryData,
     loading: false,
     error: null,
-    fetchCountry: vi.fn().mockReturnValue(true),
-    fetchCountries: vi.fn().mockReturnValue(true),
-    fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+    independentOnly: true,
+    setIndependentOnly: vi.fn(),
+    fetchCountry: vi.fn(),
+    fetchCountries: vi.fn(),
+    fetchShallowDataForAllCountries: vi.fn(),
   });
-  vi.mocked(useInitialized).mockReturnValue(true);
 });
 
 afterEach(() => {
@@ -38,12 +35,18 @@ afterAll(() => {
 describe('Quiz', () => {
   it('renders the corresponding message when there are no countries', () => {
     vi.mocked(useCountries).mockReturnValue({
-      storedCountries: {},
+      storedCountryData: {
+        ...DEFAULT_COUNTRY_STORAGE,
+        shallowDataRequested: true,
+        shallowDataLoaded: true,
+      },
       loading: false,
       error: null,
-      fetchCountry: vi.fn().mockReturnValue(true),
-      fetchCountries: vi.fn().mockReturnValue(true),
-      fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+      independentOnly: true,
+      setIndependentOnly: vi.fn(),
+      fetchCountry: vi.fn(),
+      fetchCountries: vi.fn(),
+      fetchShallowDataForAllCountries: vi.fn(),
     });
 
     render(

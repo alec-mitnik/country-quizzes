@@ -2,26 +2,28 @@ import { render, screen } from '@testing-library/react';
 import { userEvent } from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import { AppWithoutRouter } from '../App';
-import {
-  APP_TITLE, BACK_TO_COUNTRIES_LINK_TEXT, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE,
-  QUIZ_NAV_TEXT, QUIZ_TITLE
-} from '../consts';
 import useCountries from '../hooks/useCountries';
-import { countryData } from './data';
+import {
+    APP_TITLE, BACK_TO_COUNTRIES_LINK_TEXT, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE,
+    QUIZ_NAV_TEXT, QUIZ_TITLE
+} from '../utils/consts';
+import { testCountry, testShallowStoredCountryData } from './data';
 
 vi.mock('../hooks/useCountries');
 
 beforeEach(() => {
   vi.clearAllMocks();
 
-  // Default tests to mock having a country loaded
+  // Default tests to mock having countries loaded
   vi.mocked(useCountries).mockReturnValue({
-    storedCountries: { [countryData.cca3]: countryData },
+    storedCountryData: testShallowStoredCountryData,
     loading: false,
     error: null,
-    fetchCountry: vi.fn().mockReturnValue(true),
-    fetchCountries: vi.fn().mockReturnValue(true),
-    fetchCountryNamesAndCodes: vi.fn().mockReturnValue(true),
+    independentOnly: true,
+    setIndependentOnly: vi.fn(),
+    fetchCountry: vi.fn(),
+    fetchCountries: vi.fn(),
+    fetchShallowDataForAllCountries: vi.fn(),
   });
 });
 
@@ -74,14 +76,14 @@ describe(APP_TITLE, () => {
     expect(screen.getByRole('heading', { name: COUNTRIES_TITLE })).toBeInTheDocument();
 
     // Navigate to a Country page
-    const countryLink = screen.getByRole('link', { name: countryData.name });
+    const countryLink = screen.getByRole('link', { name: testCountry.name });
     await user.click(countryLink);
 
     // Check for Country page title displayed as a header
-    expect(screen.getByRole('heading', { name: countryData.name })).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: testCountry.name })).toBeInTheDocument();
 
     // Check for the flag image with alt text
-    expect(screen.getByRole('img', { name: countryData.flagDescription })).toBeInTheDocument();
+    expect(screen.getByRole('img', { name: testCountry.flagDescription })).toBeInTheDocument();
 
     // Navigate back to the Countries page using the back link
     const backLink = screen.getByRole('link', { name: BACK_TO_COUNTRIES_LINK_TEXT });
@@ -91,5 +93,5 @@ describe(APP_TITLE, () => {
     expect(screen.getByRole('heading', { name: COUNTRIES_TITLE })).toBeInTheDocument();
   });
 
-  // TODO - more to come
+  // TODO - more to come (quiz functionality, etc.)
 });

@@ -69,9 +69,6 @@ function useFetch<T = unknown>(
       return;
     }
 
-    // For quick manual testing
-    // await new Promise(resolve => setTimeout(resolve, 1000));
-
     let controller = controllersMap.current.get(url);
 
     if (controller) {
@@ -84,6 +81,9 @@ function useFetch<T = unknown>(
       error: null,
       loading: true,
     }, url);
+
+    // For quick manual testing
+    // await new Promise((resolve) => setTimeout(resolve, 5000));
 
     try {
       console.log("Fetching data:", url);

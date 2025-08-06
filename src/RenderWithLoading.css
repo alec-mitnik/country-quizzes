@@ -1,0 +1,23 @@
+.render-with-loading-component {
+  display: contents;
+
+  .loading {
+    margin-top: 64px;
+
+    @media not (prefers-reduced-motion: reduce) {
+      animation: animateScale 3s ease-in-out infinite;
+    }
+  }
+}
+
+@keyframes animateScale {
+  0% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.25);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
