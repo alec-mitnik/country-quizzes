@@ -5,9 +5,9 @@ import useCountries from "../hooks/useCountries";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
 import {
-    NO_COUNTRIES_LOADED_MESSAGE, QUIZ_COUNTRY_COUNT_INCREASE,
-    QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT,
-    QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE
+  NO_COUNTRIES_LOADED_MESSAGE, QUIZ_COUNTRY_COUNT_INCREASE,
+  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT,
+  QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE
 } from "../utils/consts";
 import { extractRandomArrayElement, getRandomArrayElement } from "../utils/utils";
 import Page from "./Page";
@@ -114,7 +114,8 @@ interface QuizState {
  * TODO - ideas:
  *
  * Could perhaps make difficulty adjust by using less well-known countries
- * (referring to a ranking by tourism or something).
+ * (referring to a ranking by tourism or something).  For ranking quizzes, could
+ * adjust difficulty based on how close in ranking the selected countries are.
  *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),

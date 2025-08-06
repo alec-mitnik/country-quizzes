@@ -34,9 +34,9 @@ function useCountries() {
       markShallowDataAsRequested, markCountriesAsRequested,
       updateStoredCountriesFromData, resetNonLoadedRequestStates } = use(CountriesContext);
 
-  // On mount, reset all non-loaded request flags
+  // On unmount, reset all non-loaded request flags
   useEffect(() => {
-    resetNonLoadedRequestStates();
+    return () => resetNonLoadedRequestStates();
   }, [resetNonLoadedRequestStates]);
 
   /**
