@@ -8,7 +8,7 @@
 (which otherwise don't display on iOS Safari) */
 @font-face {
   font-family: "Symbola";
-  src: url("./assets/Symbola.ttf");
+  src: url("/Symbola.ttf");
 }
 
 *, *::before, *::after {

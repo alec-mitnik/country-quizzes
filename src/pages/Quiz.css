@@ -78,8 +78,6 @@
     }
 
     &.dragged {
-      /* border-style: solid; */
-
       /* Change styles after a delay when dragged so that
       the ghost image isn't affected */
       transition: color 0.1s 0s allow-discrete,
@@ -140,7 +138,7 @@
             transform: rotate(45deg);
 
             /* This is the one calibrated for the symbol font */
-            transform-origin: 50% 44%;
+            transform-origin: 50% 45%;
             /* transform-origin: 50% 56%; */
           }
         }
