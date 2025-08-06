@@ -4,6 +4,13 @@
  * styled with display: contents as needed to avoid the wrapper affecting layout unnecessarily.
  */
 
+/* Font that can render symbolic unicode characters
+(which otherwise don't display on iOS Safari) */
+@font-face {
+  font-family: "Symbola";
+  src: url("./assets/Symbola.ttf");
+}
+
 *, *::before, *::after {
   box-sizing: border-box;
   flex: 0 0 auto;
@@ -61,6 +68,10 @@ html, body {
   display: flex;
   flex-direction: column;
   text-align: center;
+}
+
+.symbol-font {
+  font-family: "Symbola", system-ui, Arial, sans-serif;
 }
 
 nav {

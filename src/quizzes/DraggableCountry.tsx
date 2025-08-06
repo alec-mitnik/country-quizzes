@@ -67,19 +67,29 @@ function DraggableCountry({cca3, rankIndex, rankedValueLabel, isSelected,
       <p aria-description={isLockedIn ? "Locked in." : ""}>
         {/* Cannot go after the text content or wrapped text will push it down */}
         <span className="button-controls">
-          {roundActive && onMoveUp && !isLockedIn && <button type="button" className="move-up-button"
-              aria-label={`Move ${countryName} up.`} onClick={onMoveUp}>🠝</button>}
+          {/* Putting the symbol font on a span rather than the button directly
+          preserves height better, so do it for all the buttons, for consistency */}
+          {roundActive && onMoveUp && !isLockedIn && <button type="button"
+              className="move-up-button" aria-label={`Move ${countryName} up.`}
+              onClick={onMoveUp}>
+            <span aria-hidden="true" className="symbol-font">🠝</span>
+          </button>}
 
-          {roundActive && onMoveDown && !isLockedIn && <button type="button" className="move-down-button"
-              aria-label={`Move ${countryName} down.`} onClick={onMoveDown}>🠟</button>}
+          {roundActive && onMoveDown && !isLockedIn && <button type="button"
+              className="move-down-button" aria-label={`Move ${countryName} down.`}
+              onClick={onMoveDown}>
+            <span aria-hidden="true" className="symbol-font">🠟</span>
+          </button>}
 
-          {roundActive && onRemove && !isLockedIn && <button type="button" className="remove-button"
-              aria-label={`Remove ${countryName}.`} onClick={onRemove}>
-            <span aria-hidden="true">🞥</span>
+          {roundActive && onRemove && !isLockedIn && <button type="button"
+              className="remove-button" aria-label={`Remove ${countryName}.`} onClick={onRemove}>
+            <span aria-hidden="true" className="symbol-font">🞥</span>
           </button>}
 
           {roundActive && onAdd && <button type="button" className="add-button"
-              aria-label={`Add ${countryName}.`} onClick={onAdd}>🞥</button>}
+              aria-label={`Add ${countryName}.`} onClick={onAdd}>
+            <span aria-hidden="true" className="symbol-font">🞥</span>
+          </button>}
         </span>
 
         <span aria-hidden="true" className="symbol-wrapper">

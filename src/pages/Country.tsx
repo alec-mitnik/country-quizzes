@@ -72,7 +72,10 @@ function Country() {
 
   return (
     <>
-      <Link to="/countries"><span aria-hidden="true">🡐 </span>{BACK_TO_COUNTRIES_LINK_TEXT}</Link>
+      <Link to="/countries">
+        <span aria-hidden="true" className="symbol-font">🡐 </span>
+        {BACK_TO_COUNTRIES_LINK_TEXT}
+      </Link>
 
       <Page pageTitle={name ?? ""}>
         <RenderWithLoading loaded={!!countryWrapper?.fullyLoaded}

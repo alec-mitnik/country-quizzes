@@ -138,7 +138,10 @@
             /* Modern version of the legacy inline-block value */
             display: inline flow-root;
             transform: rotate(45deg);
-            transform-origin: 50% 56%;
+
+            /* This is the one calibrated for the symbol font */
+            transform-origin: 50% 44%;
+            /* transform-origin: 50% 56%; */
           }
         }
       }
