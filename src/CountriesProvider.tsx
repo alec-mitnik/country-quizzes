@@ -61,6 +61,10 @@ export interface CountryStorage {
 function formatCurrenciesMarkup(currencies: CurrenciesData): React.ReactNode {
   const currencyEntries = Object.entries(currencies);
 
+  if (!currencyEntries.length) {
+    return "None";
+  }
+
   // Wrap everything in a span so that spaces after the commas
   // aren't collapsed by the flex display of the parent
   return <span>

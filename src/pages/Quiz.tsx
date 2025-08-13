@@ -96,8 +96,8 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
   },
 };
 
-function getRandomQuizTypeKey() {
-  const quizTypes = Object.keys(QUIZ_TYPES) as QuizTypeKey[];
+function getRandomNewQuizTypeKey(currentTypeKey?: QuizTypeKey) {
+  const quizTypes = Object.keys(QUIZ_TYPES).filter(key => key !== currentTypeKey) as QuizTypeKey[];
   const randomTypeKey = getRandomArrayElement<QuizTypeKey>(quizTypes);
   return randomTypeKey;
 }
@@ -225,7 +225,7 @@ function Quiz() {
       return;
     };
 
-    const randomQuizTypeKey = getRandomQuizTypeKey();
+    const randomQuizTypeKey = getRandomNewQuizTypeKey();
     const countryCodes = getRandomCountryCodes(independentOnly,
         storedCountryData.countries, QUIZ_STARTING_COUNTRY_COUNT);
 
@@ -250,7 +250,7 @@ function Quiz() {
       return;
     };
 
-    const randomQuizTypeKey = getRandomQuizTypeKey();
+    const randomQuizTypeKey = getRandomNewQuizTypeKey(state.quiz.type.key);
     const newCountryCount = state.quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
     const countryCodes = getRandomCountryCodes(independentOnly,
         storedCountryData.countries, newCountryCount);
@@ -293,7 +293,7 @@ function Quiz() {
               <li>When you make a submission, it will lock in if and only if no part of it is incorrect.</li>
               <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
               <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
-              <li>There are various quiz types, with one being randomly selected for each round.</li>
+              <li>There are various quiz types, with a new one being randomly selected for each round.</li>
               <li>When a quiz involves ranking countries in order, only relative order matters for locking in.</li>
               <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
               <li>The number of countries involved increases with each round. Keep going for as long as you can!</li>
@@ -364,6 +364,7 @@ function Quiz() {
             </>
           </RenderWithLoading>
 
+          {/* TODO - show more messages, like encouragement for getting everything right in one go */}
           {!quizzingActive && !!state.quiz && <p className="quiz-outcome-message">
             {renderQuizOutcomeMessage(state.quiz)}
           </p>}
