@@ -99,7 +99,7 @@ function Country() {
             <div className="country-data-wrapper">
               {renderCountryDataValue(capitals?.label, capitals?.formattedValue)}
               {renderCountryDataValue(languages?.label, languages?.formattedValue)}
-              {renderCountryDataValue(currencies?.label, currencies?.formattedValue)}
+              {renderCountryDataValue(currencies?.label, currencies?.markupValue)}
               {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
               {renderCountryDataValue("Size", independentOnly ?
                   area?.formattedValueForIndependentOnly : area?.formattedValueForAll)}

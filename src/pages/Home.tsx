@@ -19,6 +19,9 @@ function Home() {
             Learn about countries and play fun quizzes!
           </p>
           <p>
+            Stay tuned for new features as I continue to develop this.
+          </p>
+          <p>
             Data is provided by the <a href="https://restcountries.com/"
                 target="_blank" rel="noopener noreferrer author">
               REST Countries API

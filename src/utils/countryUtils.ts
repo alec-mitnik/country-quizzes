@@ -1,5 +1,6 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import type { StoredCountry } from "../CountriesProvider";
+import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
 import { convertToOrdinal } from "./utils";
 
 /*
@@ -35,8 +36,6 @@ type Country = {
 }
 */
 
-export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
-
 export function getRankAccountingForTies(rankedArray: Cca3Code[], cca3: Cca3Code,
     valueFunction: (cca3: Cca3Code) => number) {
   let index = rankedArray.indexOf(cca3);
@@ -53,26 +52,31 @@ export function formatCountryDataArray(value: string[] | undefined) {
   return value?.length ? value.join(", ") : "None";
 }
 
+export type CurrenciesData = Record<string, { symbol: string, term: string }>;
+
 export function extractCurrencies(country: Partial<Country>) {
-  let currencies: string[] = [];
+  // Keep separate references to the currency symbol and term
+  // so that the symbol can be hidden from screen readers
+  const currencies: CurrenciesData = {};
 
   if (country?.currencies) {
-    // Extract currencies using just the last word ("dollar" vs. "United States dollar")
-    // For the purpose of quizzing on
-    currencies = Object.values({...country?.currencies})
-        .map((valueEntry) => {
-          let currency: string | undefined = undefined;
+    for (const valueEntry of Object.values({...country.currencies})) {
+      if (valueEntry.symbol && valueEntry.name) {
+        // Extract currencies using just the last word ("dollar" vs. "United States dollar")
+        // For the purpose of quizzing on
+        const nameArray = valueEntry.name.split(" ");
+        const currencyTerm = nameArray[nameArray.length - 1];
 
-          if (valueEntry?.symbol && valueEntry?.name) {
-            const nameArray = valueEntry.name.split(" ");
-            currency = `${valueEntry.symbol} (${nameArray[nameArray.length - 1]})`;
-          }
+        // This prevents duplicates (in the case of e.g. multiple types of $ dollar)
+        // and can also be used for simple string comparison for matching
+        const formattedValue = `${valueEntry.symbol} (${currencyTerm})`;
 
-          return currency;
-        }).filter(currency => currency) as string[];
-
-    // Remove duplicates (in the case of e.g. multiple types of $ dollar)
-    currencies = [...new Set(currencies)];
+        currencies[formattedValue] = {
+          symbol: valueEntry.symbol,
+          term: currencyTerm,
+        };
+      }
+    }
   }
 
   return currencies;

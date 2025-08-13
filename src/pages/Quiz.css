@@ -149,17 +149,14 @@
     to maintain alignment */
     .symbol-wrapper {
       .grip {
-        /* position: absolute;
-        left: 0; */
-
-        /* Works better for Firefox */
+        /* Works better absolute positioning for Firefox */
         float: left;
         width: 0;
       }
     }
   }
 
-  .quiz-controls-for-ranking {
+  .quiz-controls {
     margin-block: 16px;
     display: flex;
     flex-wrap: wrap;
@@ -168,21 +165,25 @@
     width: var(--layout-max-width);
     max-width: 100%;
 
-    .ranked-list, .unranked-pool {
-      /* Add extra padding on the bottom for dropping a ranked country at the end */
-      padding: 16px 16px 24px;
+    .draggable-country-pool, .draggable-country-list {
+      padding: 16px;
       max-width: 100%;
       border-radius: 16px;
       border: 8px solid var(--background-color-accent);
       box-shadow: 0 0 3px 1px var(--background-color-accent);
       text-align: left;
 
-      > p, > h2 {
+      > p, > h2, > h3, > h4, > h5, > h6 {
+        margin: auto;
         text-align: center;
+        max-width: 315px;
       }
 
       > h2 {
         font-size: 1.25rem;
+      }
+      > h3 {
+        font-size: 1.15rem;
       }
 
       > p {
@@ -190,30 +191,33 @@
         width: 299px;
         max-width: 100%;
       }
-    }
 
-    .ranked-list {
-      border-color: rgba(255, 255, 255, 0.3);
+      ul, ol {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+      }
 
-      &.being-dragged-over {
-        &:not(:has(.draggable-country)) {
-          border-color: var(--background-color-accent);
-        }
+      .draggable-country-pool {
+        border-width: 4px;
+        margin-top: 8px;
+        padding: 4px;
 
-        > :not(.draggable-country) {
-          /* Prevent onDragLeave from being triggered by other child elements */
-          pointer-events: none;
-        }
-
-        .draggable-country:last-child:not(.dragged) {
-          /* Center the border between the element and container edge
-          but keep the hit box stable */
-          border-bottom: 8px solid var(--background-color-accent);
-          border-radius: 0;
-          padding-bottom: 8px;
-          margin-bottom: -4px;
+        > h2, > h3, > h4, > h5, > h6 {
+          padding-inline: 8px;
+          max-width: 299px;
         }
       }
+    }
+
+    .draggable-country-list {
+      /* Add extra padding on the bottom for dropping a ranked country at the end */
+      padding: 16px 16px 24px;
+    }
+
+    .draggable-country-list,
+    .draggable-country-pool.target-container {
+      border-color: rgba(255, 255, 255, 0.3);
 
       &.shake {
         @media not (prefers-reduced-motion: reduce) {
@@ -222,7 +226,33 @@
       }
     }
 
-    .unranked-pool {
+    .draggable-country-list {
+      &.being-dragged-over {
+        &:not(:has(.draggable-country)) {
+          border-color: var(--background-color-accent);
+        }
+
+        > * {
+          /* Prevent onDragLeave from being triggered by other child elements */
+          pointer-events: none;
+        }
+
+        .draggable-country {
+          pointer-events: all;
+        }
+
+        li:last-child > .draggable-country:not(.dragged) {
+          /* Center the border between the element and container edge
+          but keep the hit box stable */
+          border-bottom: 8px solid var(--background-color-accent);
+          border-radius: 0;
+          padding-bottom: 8px;
+          margin-bottom: -4px;
+        }
+      }
+    }
+
+    .draggable-country-pool {
       border-color: rgba(0, 0, 0, 0.3);
 
       &.being-dragged-over {

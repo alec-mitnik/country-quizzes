@@ -1,13 +1,14 @@
 import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
-import { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
-import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, setAreaLabels, setPopulationLabels } from "./utils/countryUtils";
+import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, setAreaLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
 
 interface FormattedCountryField<T> {
   label: string,
   rawValue?: T,
   formattedValue?: string,
+  markupValue?: React.ReactNode,
 }
 
 interface IndependenceDependentFormattedCountryField<T> {
@@ -55,6 +56,21 @@ export interface CountryStorage {
   },
   shallowDataRequested: boolean,
   shallowDataLoaded: boolean,
+}
+
+function formatCurrenciesMarkup(currencies: CurrenciesData): React.ReactNode {
+  const currencyEntries = Object.entries(currencies);
+
+  // Wrap everything in a span so that spaces after the commas
+  // aren't collapsed by the flex display of the parent
+  return <span>
+    {currencyEntries.flatMap(([formattedCurrency, currencyData], index) => [
+      <React.Fragment key={formattedCurrency}>
+        <span aria-hidden="true">{currencyData.symbol} </span>
+        ({currencyData.term}){index < currencyEntries.length - 1 && ', '}
+      </React.Fragment>
+    ])}
+  </span>;
 }
 
 /**
@@ -164,6 +180,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             const flagDescription = extractFlagAltDescription(country);
             const borders = country.borders;
             const currencies = extractCurrencies(country);
+            const formattedCurrencies = Object.keys(currencies);
             const capitals = country.capital;
             const languages = extractLanguages(country);
             const continents = country.continents;
@@ -188,9 +205,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                 flagDescription,
                 borders,
                 currencies: {
-                  label: currencies.length === 1 ? "Currency" : "Currencies",
-                  rawValue: currencies,
-                  formattedValue: formatCountryDataArray(currencies),
+                  label: formattedCurrencies.length === 1 ? "Currency" : "Currencies",
+                  rawValue: formattedCurrencies,
+                  formattedValue: formatCountryDataArray(formattedCurrencies),
+                  markupValue: formatCurrenciesMarkup(currencies),
                 },
                 capitals: {
                   label: capitals?.length === 1 ? "Capital" : "Capitals",

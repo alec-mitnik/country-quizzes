@@ -6,7 +6,7 @@ import useCountries from "../hooks/useCountries";
 interface DraggableCountryProps {
   cca3: Cca3Code;
   rankIndex?: number;
-  rankedValueLabel?: string;
+  revealedValueLabel?: React.ReactNode;
   isSelected: boolean;
   isDragged: boolean;
   isLockedIn?: boolean;
@@ -26,7 +26,7 @@ interface DraggableCountryProps {
 }
 
 // Render a country's capital(s) for matching in a quiz
-function DraggableCountry({cca3, rankIndex, rankedValueLabel, isSelected,
+function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
     isDragged, isLockedIn = false, roundActive, quizActive, countryCodeBeingDraggedOver,
     onDragStart, onDragEnd, onDragEnter, onDragOver, onDragLeave,
     onDrop, onRemove, onAdd, onMoveUp, onMoveDown}: DraggableCountryProps) {
@@ -54,6 +54,7 @@ function DraggableCountry({cca3, rankIndex, rankedValueLabel, isSelected,
     }
   }
 
+  // TODO - if round not active and not locked in, show relevant match value
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
         isDragged ? " dragged" : ""}${isLockedIn ? " locked-in" : ""}${
@@ -99,9 +100,9 @@ function DraggableCountry({cca3, rankIndex, rankedValueLabel, isSelected,
 
         {showRank && `${rankIndex + 1}. `}{
           quizActive ? countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
-        }{roundActive ? "" : ` (${
-          storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continent Unavailable"
-        }): ${rankedValueLabel}`}
+        }{roundActive ? "" : <> ({
+          storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
+        }){revealedValueLabel && <>: {revealedValueLabel}</>}</>}
       </p>
     </div>
   );

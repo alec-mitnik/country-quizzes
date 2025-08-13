@@ -15,6 +15,7 @@ hoist-side corner to the lower fly-side corner of the field.`,
       "$ (dollar)"
     ],
     formattedValue: "$ (dollar)",
+    markupValue: "$ (dollar) markup",
   },
   capitals: {
     label: "Capital",

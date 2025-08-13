@@ -30,6 +30,9 @@ export const QUIZ_STARTING_SUBMISSIONS_COUNT = 6;
 export const QUIZ_COUNTRY_COUNT_INCREASE = 1;
 export const QUIZ_SUBMISSION_COUNT_INCREASE = 6;
 
+export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
+export const CUSTOM_DRAG_TYPE = 'application/country-code';
+
 export const DEFAULT_COUNTRY_STORAGE: CountryStorage = {
   countries: {},
   rankings: {

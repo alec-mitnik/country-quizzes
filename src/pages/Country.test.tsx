@@ -256,7 +256,7 @@ describe('Country rendered data', () => {
     const currencyDataDescription = currencyDataTerm.nextElementSibling as HTMLElement;
     expect(currencyDataDescription).toBeInTheDocument();
     expect(currencyDataDescription).toHaveRole('definition');
-    expect(currencyDataDescription).toHaveTextContent(testCountry.currencies.formattedValue);
+    expect(currencyDataDescription).toHaveTextContent(testCountry.currencies.markupValue);
   });
 
   it('includes the independence', () => {

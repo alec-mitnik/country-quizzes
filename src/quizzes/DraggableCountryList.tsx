@@ -1,0 +1,91 @@
+import React, { useState, type DragEvent } from "react";
+import { CUSTOM_DRAG_TYPE } from "../utils/consts";
+
+interface DraggableCountryListProps {
+  headerId: string;
+  headerText: React.ReactNode;
+  headerLevel?: number;
+  emptyMessage: string
+  children: React.ReactNode;
+  onDrop?: (event: DragEvent) => void;
+}
+
+/**
+ * Holds draggable countries in an ordered list that can be rearranged
+ * @param {string} [props.headerId] ID of the header element
+ * @param {React.ReactNode} [props.headerText] Text or markup to go inside the header element
+ * @param {number} [props.headerLevel=2] Level of the header element
+ * @param {string} [props.emptyMessage] Message to display when the list is empty
+ * @param {React.ReactNode} props.children Draggable country components held by the list
+ * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the list
+ */
+function DraggableCountryList({ headerId, headerText, headerLevel = 2,
+    emptyMessage, children, onDrop }: DraggableCountryListProps) {
+  const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
+
+  function handleDragOver(event: DragEvent) {
+    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+      event.preventDefault();
+    }
+  }
+
+  function handleDragEnter(event: DragEvent) {
+    const isRankedList = event.target instanceof HTMLElement
+        && event.target.matches('.draggable-country-list');
+
+    if (isRankedList
+        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+      event.preventDefault();
+      setIsBeingDraggedOver(true);
+      event.dataTransfer.dropEffect = 'move';
+    } else {
+      event.dataTransfer.dropEffect = 'none';
+    }
+  }
+
+  function handleDragLeave(event: DragEvent) {
+    const isRankedList = event.target instanceof HTMLElement
+        && event.target.matches('.draggable-country-list');
+
+    if (isRankedList
+        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+      event.preventDefault();
+      setIsBeingDraggedOver(false);
+    }
+  }
+
+  function handleDrop(event: DragEvent) {
+    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+      event.preventDefault();
+      event.stopPropagation();
+      setIsBeingDraggedOver(false);
+
+      if (onDrop) {
+        onDrop(event);
+      }
+    }
+  }
+
+  // eslint-disable-next-line react-x/no-children-count
+  const hasChildren = React.Children.count(children);
+
+  return <section className={`draggable-country-list${isBeingDraggedOver ? " being-dragged-over" : ""}`}
+      aria-labelledby={headerId}
+      onDragEnter={event => handleDragEnter(event)}
+      onDragOver={handleDragOver}
+      onDragLeave={event => handleDragLeave(event)}
+      onDrop={handleDrop}>
+    {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
+    {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}
+    {headerLevel === 3 && <h3 id={headerId}>{headerText}</h3>}
+    {headerLevel === 4 && <h4 id={headerId}>{headerText}</h4>}
+    {headerLevel === 5 && <h5 id={headerId}>{headerText}</h5>}
+    {headerLevel === 6 && <h6 id={headerId}>{headerText}</h6>}
+
+    {hasChildren ? (<ol>
+      {children}
+    </ol>) : (!!emptyMessage && <p>{emptyMessage}</p>)}
+  </section>
+}
+
+export default DraggableCountryList;

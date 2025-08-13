@@ -1,7 +1,8 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { StoredCountryWrapper } from "../CountriesProvider";
+import type { CountryStorage, StoredCountryWrapper } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
+import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
 import {
@@ -23,37 +24,75 @@ import "./Quiz.css";
  *
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
-type QuizStructure = "matching" | "ranking"; // grouping...
-type QuizTypeKey = /* "MATCH_NAMES_TO_FLAGS" | "MATCH_NAMES_TO_CAPITALS"
-    | */ "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
+type QuizTypeKey = "MATCH_NAMES_TO_CURRENCY" | "MATCH_NAMES_TO_CAPITALS"
+    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
-interface QuizType {
+// TODO - grouping quiz types, etc.
+export interface MatchingQuizType {
   key: QuizTypeKey;
   description: string;
-  structure: QuizStructure;
+  structure: "matching";
+  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => string;
+  labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => React.ReactNode;
+};
+
+export interface RankingQuizType {
+  key: QuizTypeKey;
+  description: string;
+  structure: "ranking";
+  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => number;
+  labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean,
+      cca3: Cca3Code) => React.ReactNode;
 };
 
 // TODO - could rank by population density, number of bordering countries, latitude...
-const QUIZ_TYPES: Record<QuizTypeKey, QuizType> = {
-  /* MATCH_NAMES_TO_FLAGS: {
-    key: "MATCH_NAMES_TO_FLAGS",
-    description: "Match the countries to their flags.",
+const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
+  // Use formatted value for match value functions for easy string comparison
+  MATCH_NAMES_TO_CURRENCY: {
+    key: "MATCH_NAMES_TO_CURRENCY",
+    description: "Match the countries to their currency.",
     structure: "matching",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.currencies?.formattedValue ?? "Unknown",
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.currencies?.markupValue ?? "Unknown",
   },
   MATCH_NAMES_TO_CAPITALS: {
     key: "MATCH_NAMES_TO_CAPITALS",
     description: "Match the countries to their capitals.",
     structure: "matching",
-  }, */
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
+  },
   ORDER_BY_SIZE: {
     key: "ORDER_BY_SIZE",
     description: "Order the countries by size, largest first.",
     structure: "ranking",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.area?.rawValue ?? 0,
+    labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean, cca3: Cca3Code) => {
+      if (independentOnly) {
+        return storedCountryData.countries[cca3]?.data?.area?.formattedValueForIndependentOnly ?? 0;
+      } else {
+        return storedCountryData.countries[cca3]?.data?.area?.formattedValueForAll ?? 0;
+      }
+    },
   },
   ORDER_BY_POPULATION: {
     key: "ORDER_BY_POPULATION",
     description: "Order the countries by population, largest first.",
     structure: "ranking",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.population?.rawValue ?? 0,
+    labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean, cca3: Cca3Code) => {
+      if (independentOnly) {
+        return storedCountryData.countries[cca3]?.data?.population?.formattedValueForIndependentOnly ?? 0;
+      } else {
+        return storedCountryData.countries[cca3]?.data?.population?.formattedValueForAll ?? 0;
+      }
+    },
   },
 };
 
@@ -97,7 +136,7 @@ function renderQuizOutcomeMessage(quiz: Quiz) {
 }
 
 interface Quiz {
-  type: QuizType;
+  type: MatchingQuizType | RankingQuizType;
   submissionsRemaining: number;
   countryCodes: Cca3Code[];
   countryCodesLockedInAsCorrect: Cca3Code[];
@@ -310,8 +349,17 @@ function Quiz() {
                     quiz,
                   }
                 })} />
+              }
 
-                // state.quiz.type.structure === "matching" && <QuizControlsForMatching quiz={state.quiz} />
+              {state.quiz && countriesForQuizRoundLoaded
+                  && state.quiz.type.structure === "matching"
+                  && <QuizControlsForMatching quiz={state.quiz}
+                setQuiz={(quiz) => setState(prev => {
+                  return {
+                    ...prev,
+                    quiz,
+                  }
+                })} />
               }
             </>
           </RenderWithLoading>
