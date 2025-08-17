@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import useStateRef from "./useStateRef";
 
 /**
@@ -11,14 +11,62 @@ import useStateRef from "./useStateRef";
  */
 function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   const imgRef = useRef<HTMLImageElement>(null);
+  const [imgHasAttached, setImgHasAttached] = useState(false);
   const [, setCurrentSrc, currentSrcRef] = useStateRef('');
   const [doneLoading, setDoneLoading, doneLoadingRef] = useStateRef(false);
   const [loadFailed, setLoadFailed] = useState(false);
+  const imagesDisabled = useRef(false);
+
+  // A callback ref can be used like a useRef value, but will automatically
+  // be called when the element attaches
+  const imgCallbackRef = useCallback((imgElement: HTMLImageElement) => {
+    imgRef.current = imgElement;
+    const hasAttached = !!imgElement;
+
+    if (hasAttached !== imgHasAttached) {
+      setImgHasAttached(hasAttached);
+    }
+  }, [setImgHasAttached]);
+
+  // The events won't be triggered if images are disabled by the browser,
+  // so attempt to detect that with a test image
+  useEffect(() => {
+    const timeoutId = setTimeout(() => {
+      // If the timeout was reached, images are probably disabled
+      imagesDisabled.current = true;
+
+      // Mark loading as failed immediately
+      setDoneLoading(true);
+      setLoadFailed(true);
+    }, 50);
+
+    function onImageLoad() {
+      clearTimeout(timeoutId);
+      img.removeEventListener('load', onImageLoad);
+      img.removeEventListener('error', onImageLoad);
+      img.remove();
+      imagesDisabled.current = false;
+    }
+
+    const img = new Image();
+    img.addEventListener('load', onImageLoad, { once: true });
+    img.addEventListener('error', onImageLoad, { once: true });
+
+    // 1x1 transparent gif
+    img.src = "data:image/gif;base64,R0lGODlhAQABAAAAACw=";
+
+    return () => {
+      clearTimeout(timeoutId);
+      img.removeEventListener('load', onImageLoad);
+      img.removeEventListener('error', onImageLoad);
+      img.remove();
+    }
+  }, []);
 
   useEffect(() => {
     const img = imgRef.current;
 
-    if (!img?.src) {
+    if (!imgHasAttached || !img?.src) {
       setCurrentSrc('');
       setDoneLoading(false);
       setLoadFailed(false);
@@ -45,6 +93,12 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
       // Image is still loading, so attach event listeners
       img.addEventListener('load', handleLoad);
       img.addEventListener('error', handleError);
+
+      // If images are disabled, immediately fail
+      if (imagesDisabled.current) {
+        setDoneLoading(true);
+        setLoadFailed(true);
+      }
     }
 
     return () => {
@@ -52,13 +106,12 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
       img.removeEventListener('load', handleLoad);
       img.removeEventListener('error', handleError);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...dependencies, imgRef, currentSrcRef, doneLoadingRef,
+  }, [...dependencies, imgHasAttached, imgRef, currentSrcRef, doneLoadingRef,
       setCurrentSrc, setDoneLoading, setLoadFailed]);
 
   // Class names can be interpolated directly into className attributes, and double as status flags
   return {
-    imgRef,
+    imgCallbackRef,
     doneLoadingClassName: doneLoading ? ' done-loading' : '',
     loadFailedClassName: loadFailed ? ' load-failed' : '',
   };

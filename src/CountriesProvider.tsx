@@ -154,7 +154,11 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
 
           if (shallowData) {
             // Update of all country names, codes, independence status,
-            // areas, and populations only
+            // flags, areas, and populations only
+
+            const flag = country.flags?.svg;
+            const flagDescription = extractFlagAltDescription(country);
+
             const newCountryData: StoredCountry = {
               ...newData.countries[cca3]?.data,
               cca3,
@@ -168,6 +172,8 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                 ...newData.countries[cca3]?.data?.population,
                 rawValue: population,
               },
+              flag,
+              flagDescription,
             };
 
             if (!newData.countries[cca3]) {
@@ -179,7 +185,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               newData.countries[cca3].data = newCountryData;
             }
           } else {
-            // Update of a single country's data
+            // Update of all of a single country's data that will be used
             const flag = country.flags?.svg;
             const flagDescription = extractFlagAltDescription(country);
             const borders = country.borders;

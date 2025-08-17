@@ -33,6 +33,10 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
   const elementRef = useRef<HTMLDivElement>(null);
   const { storedCountryData } = useCountries();
 
+  // For easy testing
+  // roundActive = false;
+  // quizActive = false;
+
   const showRank = rankIndex != null && !isNaN(rankIndex);
   const countryName = storedCountryData.countries[cca3]?.data?.name ?? cca3;
 

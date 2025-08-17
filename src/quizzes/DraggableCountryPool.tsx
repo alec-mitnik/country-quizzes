@@ -51,6 +51,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
     }
   }
 
+  // TODO - DraggedOver isn't always set correctly for pool (when matching to flags?)
   function handleDragLeave(event: DragEvent) {
     if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
         && canBeDroppedIntoDirectly) {
@@ -85,6 +86,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
       onDragOver={handleDragOver}
       onDragLeave={event => handleDragLeave(event)}
       onDrop={handleDrop}>
+    {headerLevel === 0 && <div id={headerId}>{headerText}</div>}
     {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
     {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}
     {headerLevel === 3 && <h3 id={headerId}>{headerText}</h3>}

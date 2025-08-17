@@ -1,4 +1,8 @@
 .quiz-component {
+  /* The largest size it can be (at 100% zoom)
+  before Chrome makes only part of the ghost image visible */
+  --drag-width: 299px;
+
   display: contents;
 
   details {
@@ -41,9 +45,8 @@
   }
 
   .draggable-country {
-    /* The largest size it can be (at 100% zoom)
-    before Chrome makes only part of the ghost image visible */
-    width: 299px;
+    clear: both;
+    width: var(--drag-width);
     max-width: 100%;
     margin: auto;
     padding: 12px;
@@ -188,7 +191,7 @@
 
       > p {
         padding: 12px 16px;
-        width: 299px;
+        width: var(--drag-width);
         max-width: 100%;
       }
 
@@ -205,7 +208,11 @@
 
         > h2, > h3, > h4, > h5, > h6 {
           padding-inline: 8px;
-          max-width: 299px;
+          max-width: var(--drag-width);
+        }
+
+        > p {
+          clear: both;
         }
       }
     }
@@ -263,6 +270,41 @@
         > * {
           /* Prevent onDragLeave from being triggered by child elements */
           pointer-events: none;
+        }
+      }
+    }
+
+    figure {
+      margin: auto;
+      padding: 8px;
+      max-width: var(--drag-width);
+
+      img.flag{
+        margin: 0 16px 8px 0;
+        max-width: 100px;
+        width: auto;
+        float: left;
+
+        /* TODO */
+        &.load-failed {
+          filter: none;
+          border: none;
+        }
+      }
+
+      figcaption {
+        p {
+          padding-top: 8px;
+          font-size: 0.875rem;
+          font-weight: 500;
+        }
+      }
+
+      details {
+        margin: 0;
+
+        summary {
+          padding: 0 0 8px;
         }
       }
     }

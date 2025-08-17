@@ -103,6 +103,12 @@ export function extractFlagAltDescription(country: Partial<Country>) {
     return undefined;
   }
 
+  if (country.cca3 === "STP") {
+    // For São Tomé and Príncipe, the REST Countries API
+    // erroneously gives the flag description for South Sudan
+    return undefined;
+  }
+
   let flagDescription = country?.flags?.alt;
   const countryName = country?.name?.common;
 
@@ -122,9 +128,13 @@ export function extractFlagAltDescription(country: Partial<Country>) {
     // First, try to replace statements like "The flag of the Islamic Emirate of Afghanistan"
     for (const name of countryNames) {
       // Use non-greedy quantifier *? to match the shortest possible string
-      const regexName = `^The flag of .*?${name}`;
-      // Replace only once if at the start of the string (case insensitive)
-      flagDescription = flagDescription?.replace(new RegExp(regexName, "i"), "The flag of this country");
+      const regex = new RegExp(`^The flag of .*?${name}`);
+
+      if (regex.test(flagDescription)) {
+        // Replace only once if at the start of the string (case insensitive)
+        flagDescription = flagDescription?.replace(regex, "The flag of this country");
+        break;
+      }
     }
 
     // Then just try to replace any mentions of the country name

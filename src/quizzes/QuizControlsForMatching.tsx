@@ -30,15 +30,41 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
 
   const quizType = quiz.type as MatchingQuizType;
 
-  // TODO - support more match types
-  const matchTypeLabel = quizType.key === "MATCH_NAMES_TO_CAPITALS" ? "Capitals" : "Currencies";
-
   const sortedMatchValues = useMemo(() => {
-    const matchValues: {value: string, label: React.ReactNode}[]
+    const matchValues: {cca3: Cca3Code, value: string, label: React.ReactNode}[]
         = quiz.countryCodes.map((countryCode) => {
+      const value = quizType.valueFunction(storedCountryData, countryCode);
+      let label = quizType.labelFunction(storedCountryData, countryCode);
+
+      if (quizType.key === "MATCH_TO_FLAGS") {
+        label = <>
+          {/* TODO - handle loading {!doneLoadingClassName && LOADING_MESSAGE}
+          <span className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
+            <img ref={imgCallbackRef} className="flag" src={flag} alt={flagDescription ??
+                "The flag of this country. No additional description available."} />
+          </span> */}
+          <figure aria-describedby={`${countryCode}-flag-description`}>
+            <img className="flag" alt="Country Flag"
+                src={storedCountryData.countries[countryCode]?.data?.flag} />
+
+            <figcaption>
+              <details name="flag">
+                <summary>
+                  Show Description
+                </summary>
+                <p id={`${countryCode}-flag-description`}>
+                  {label ?? "The flag of this country. No additional description available."}
+                </p>
+              </details>
+            </figcaption>
+          </figure>
+        </>;
+      }
+
       return {
-        value: quizType.valueFunction(storedCountryData, countryCode),
-        label: quizType.labelFunction(storedCountryData, countryCode),
+        cca3: countryCode,
+        value,
+        label,
       };
     });
 
@@ -175,7 +201,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
     if (quiz.countryCodes.length === newLockedInCountryCodes.length) {
       screenReaderMessageParts.push(" All countries correctly matched. Ready for the next round.");
     } else if (submissionsRemaining <= 0) {
-      screenReaderMessageParts.push(" The quiz has ended on round ${quiz.round}.");
+      screenReaderMessageParts.push(` The quiz has ended on round ${quiz.round}.`);
     }
 
     announceForScreenReaders(<>{screenReaderMessageParts}</>);
@@ -201,8 +227,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
         return next;
       });
 
+      // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
-          } unmatched from {matchedData.label}.</>);
+          } unmatched from {quizType.labelFunction(storedCountryData, matchedData.cca3)}.</>);
     }
   }
 
@@ -246,8 +273,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
         return next;
       });
 
+      // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
-          } now matched to {sortedMatchValues[index].label}{countryCodeAtSlot ? `, swapped with ${
+          } now matched to {quizType.labelFunction(storedCountryData, sortedMatchValues[index].cca3)}{countryCodeAtSlot ? `, swapped with ${
             storedCountryData.countries[countryCodeAtSlot]?.data?.name ?? countryCodeAtSlot
           }` : ""}.</>);
     }
@@ -307,8 +335,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       return next;
     });
 
+    // Use the original label to avoid using the markup for flags
     announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
-        } moved up, now matched to {sortedMatchValues[newMatchValueIndex].label}{
+        } moved up, now matched to {quizType.labelFunction(storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
         countryCodeAtSlot ? `, swapped with ${
           storedCountryData.countries[countryCodeAtSlot]?.data?.name ?? countryCodeAtSlot
         }.` : ""}</>);
@@ -368,8 +397,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       return next;
     });
 
+    // Use the original label to avoid using the markup for flags
     announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
-        } moved down, now matched to {sortedMatchValues[newMatchValueIndex].label}{
+        } moved down, now matched to {quizType.labelFunction(storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
         countryCodeAtSlot ? `, swapped with ${
           storedCountryData.countries[countryCodeAtSlot]?.data?.name ?? countryCodeAtSlot
         }.` : ""}</>);
@@ -387,7 +417,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
           {unmatchedCountryCodes.map((countryCode) => (
             <li key={countryCode}>
               <DraggableCountry cca3={countryCode}
-                  revealedValueLabel={quizType.labelFunction(storedCountryData, countryCode)}
+                  revealedValueLabel={sortedMatchValues.find(matchData => matchData.cca3 === countryCode)?.label}
                   isSelected={countryCode === selectedCountryCode}
                   isDragged={countryCode === selectedCountryCode && isDraggingCountryCode}
                   roundActive={quiz.submissionsRemaining > 0
@@ -402,7 +432,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
         </DraggableCountryPool>
 
         <DraggableCountryPool headerId="matched-pool-header"
-            headerText={`Country ${matchTypeLabel} to Match to`}
+            headerText={`Country ${quizType.matchTypeLabel} to Match to`}
             canBeDroppedIntoDirectly={false}
             isTargetContainer
             emptyMessage="Error">
@@ -415,7 +445,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
               <li key={countryCodeMatchValueIsMatchedTo ?? index}>
                 <DraggableCountryPool headerId="matched-pool-header"
                     headerText={matchData.label}
-                    headerLevel={3}
+                    headerLevel={quizType.key === "MATCH_TO_FLAGS" ? 0 : 3}
                     singleCapacity
                     canBeDroppedIntoDirectly={!countryCodeMatchValueIsMatchedTo
                         || !quiz.countryCodesLockedInAsCorrect.includes(countryCodeMatchValueIsMatchedTo)}

@@ -12,6 +12,7 @@
   #portfolio-link {
     margin-top: 16px;
     display: inline flex;
+    align-items: center;
     background-color: #edb526;
     border: 2px solid #edb526;
     border-radius: 99999px;
@@ -33,7 +34,7 @@
     }
 
     > img {
-      height: 128px;
+      height: 64px;
       border-radius: 99999px;
       pointer-events: none;
     }

@@ -4,7 +4,9 @@ import { CountriesContext } from "../CountriesContext";
 import useFetch from "./useFetch";
 
 // Include area and population to allow for displaying the overall rankings.
-const SHALLOW_DATA_URL = "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population";
+// Include flags to be able to filter out countries with missing flag descriptions from flag quizzes.
+const SHALLOW_DATA_URL =
+    "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population,flags";
 
 /**
  * Gives the full fetch URL to use for getting full data for specified countries

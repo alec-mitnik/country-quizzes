@@ -1,6 +1,6 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import CountryDirectoryLink from "../CountryDirectoryLink";
 import useCountries from "../hooks/useCountries";
 import RenderWithLoading from "../RenderWithLoading";
 import {
@@ -75,13 +75,11 @@ function Countries() {
             <ul>
               {countryCodesFilteredBySearch.map((countryCode) => {
                 const countryName = storedCountryData.countries[countryCode]?.data?.name ?? "ERROR";
+                const flag = storedCountryData.countries[countryCode]?.data?.flag;
 
                 return (
-                  <li key={countryName}>
-                    <Link to={`/countries/${countryCode}`}>
-                      {countryName}
-                    </Link>
-                  </li>
+                  <CountryDirectoryLink key={countryName} cca3={countryCode}
+                      countryName={countryName} flag={flag} />
                 );
               })}
             </ul>

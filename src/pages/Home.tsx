@@ -7,7 +7,7 @@ import Page from "./Page";
  * A simple landing page for the app with a link to my portfolio site
  */
 function Home() {
-  const { imgRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
+  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return (
     <Page>
@@ -36,7 +36,7 @@ function Home() {
             href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer author"
             aria-label={PORTFOLIO_LINK_ACCESSIBLE_NAME}>
           {!!loadFailedClassName && PORTFOLIO_LINK_ACCESSIBLE_NAME}
-          <img ref={imgRef} src="./PXL_Avatar_1B.jpg" alt="" />
+          <img ref={imgCallbackRef} src="./PXL_Avatar_1B.jpg" alt="" />
         </a>
       </div>
     </Page>

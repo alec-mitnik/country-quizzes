@@ -1,6 +1,6 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CountryStorage, StoredCountryWrapper } from "../CountriesProvider";
+import type { CountryStorage, StoredCountry, StoredCountryWrapper } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
@@ -16,7 +16,7 @@ import "./Quiz.css";
 
 /*
  * More types can be added in the future, like grouping countries into categories,
- * such as independent or not, has a star on its flag, is an island (no bordering countries),
+ * such as independent or not, has a star on its flag, is landlocked, is an island (no bordering countries),
  * higher or lower than the median population density, hemisphere, etc.
  *
  * Another type could be showing countries in a fixed order, and having to mark them as
@@ -24,7 +24,7 @@ import "./Quiz.css";
  *
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
-type QuizTypeKey = "MATCH_NAMES_TO_CURRENCY" | "MATCH_NAMES_TO_CAPITALS"
+type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS"
     | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
 // TODO - grouping quiz types, etc.
@@ -32,6 +32,8 @@ export interface MatchingQuizType {
   key: QuizTypeKey;
   description: string;
   structure: "matching";
+  matchTypeLabel: string;
+  fieldToRequire?: keyof StoredCountry;
   valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => string;
   labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => React.ReactNode;
 };
@@ -40,31 +42,48 @@ export interface RankingQuizType {
   key: QuizTypeKey;
   description: string;
   structure: "ranking";
+  fieldToRequire?: keyof StoredCountry;
   valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => number;
   labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean,
       cca3: Cca3Code) => React.ReactNode;
 };
 
-// TODO - could rank by population density, number of bordering countries, latitude...
+// TODO - could rank by population density, number of bordering countries,
+// latitude (actually quite ambiguous in its calculation and maybe not good to quiz on)...
+
+// Note that fieldToRequire must be part of the shallow data expected to already be loaded
 const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
   // Use formatted value for match value functions for easy string comparison
-  MATCH_NAMES_TO_CURRENCY: {
-    key: "MATCH_NAMES_TO_CURRENCY",
+  MATCH_TO_CURRENCIES: {
+    key: "MATCH_TO_CURRENCIES",
     description: "Match the countries to their currency.",
     structure: "matching",
+    matchTypeLabel: "Currencies",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.markupValue ?? "Unknown",
   },
-  MATCH_NAMES_TO_CAPITALS: {
-    key: "MATCH_NAMES_TO_CAPITALS",
+  MATCH_TO_CAPITALS: {
+    key: "MATCH_TO_CAPITALS",
     description: "Match the countries to their capitals.",
     structure: "matching",
+    matchTypeLabel: "Capitals",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
+  },
+  MATCH_TO_FLAGS: {
+    key: "MATCH_TO_FLAGS",
+    description: "Match the countries to their flags.",
+    structure: "matching",
+    matchTypeLabel: "Flags",
+    fieldToRequire: "flagDescription",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
   },
   ORDER_BY_SIZE: {
     key: "ORDER_BY_SIZE",
@@ -97,17 +116,24 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
 };
 
 function getRandomNewQuizTypeKey(currentTypeKey?: QuizTypeKey) {
-  const quizTypes = Object.keys(QUIZ_TYPES).filter(key => key !== currentTypeKey) as QuizTypeKey[];
+  const quizTypeKeys = Object.keys(QUIZ_TYPES) as QuizTypeKey[];
+  const quizTypes = quizTypeKeys.length < 2 ? quizTypeKeys
+      : quizTypeKeys.filter(key => key !== currentTypeKey);
   const randomTypeKey = getRandomArrayElement<QuizTypeKey>(quizTypes);
   return randomTypeKey;
 }
 
-function getRandomCountryCodes(independentOnly: boolean,
-    storedCountries: Partial<Record<Cca3Code, StoredCountryWrapper>>, count: number) {
+// Note that fieldToRequire must be part of the shallow data expected to already be loaded
+function getRandomCountryCodes(independentOnly: boolean, storedCountries: Partial<Record<Cca3Code,
+  StoredCountryWrapper>>, count: number, fieldToRequire?: keyof StoredCountry) {
   let countryCodes = Object.keys(storedCountries);
 
   if (independentOnly) {
     countryCodes = countryCodes.filter(cca3 => storedCountries[cca3]?.data?.independent);
+  }
+
+  if (fieldToRequire) {
+    countryCodes = countryCodes.filter(cca3 => storedCountries[cca3]?.data?.[fieldToRequire]);
   }
 
   const selectedCountryCodes: string[] = [];
@@ -227,7 +253,8 @@ function Quiz() {
 
     const randomQuizTypeKey = getRandomNewQuizTypeKey();
     const countryCodes = getRandomCountryCodes(independentOnly,
-        storedCountryData.countries, QUIZ_STARTING_COUNTRY_COUNT);
+        storedCountryData.countries, QUIZ_STARTING_COUNTRY_COUNT,
+        QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
     loadCountriesForNewQuizRound(countryCodes);
 
@@ -253,7 +280,8 @@ function Quiz() {
     const randomQuizTypeKey = getRandomNewQuizTypeKey(state.quiz.type.key);
     const newCountryCount = state.quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
     const countryCodes = getRandomCountryCodes(independentOnly,
-        storedCountryData.countries, newCountryCount);
+        storedCountryData.countries, newCountryCount,
+        QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
     loadCountriesForNewQuizRound(countryCodes);
 

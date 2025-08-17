@@ -3,7 +3,9 @@ import { useEffect, useRef, useState } from "react";
 /**
  * Creates a state and ref that are kept in sync, so that
  * the ref always contains the latest value of the state
- * and can be used by useEffects without being a dependency trigger
+ * and can be used by useEffects without being a dependency trigger.
+ * Note that since the state needs a cycle to update, so does the ref,
+ * so if immediate updates are needed, just use useRef directly.
  * @param initialValue Initial value for the state
  * @returns the results of a useState and useRef call,
  * with the ref kept in sync with the state

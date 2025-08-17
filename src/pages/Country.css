@@ -1,19 +1,18 @@
-.flag {
-  max-width: 100%;
-  width: 300px;
+.country-component {
+  display: contents;
 
-  /* Border doesn't quite meet the img edge on iOS Safari */
-  background: var(--shadow-color);
+  .flag {
+    width: 300px;
 
-  /* Make sure the alt text can be read on top of the background color */
-  color: var(--shadow-color-foreground);
+    /* Keep some padding on the sides for the drop-shadow
+    to not become hidden overflow for the max-height transition */
+    margin: 6px;
 
-  border: 1px solid var(--shadow-color);
-  box-shadow: 0 4px 8px 0px var(--shadow-color);
-  margin-block: 6px;
-
-  .load-failed & {
-    /* Render the alt text with some padding */
-    padding: 4px 8px;
+    .load-failed & {
+      /* If the image fails to load, hide the border and shadow */
+      filter: none;
+      border: none;
+      margin: 0;
+    }
   }
 }

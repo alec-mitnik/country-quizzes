@@ -183,9 +183,9 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
       // TODO - sound effect
 
-      screenReaderMessage = `Submission incorrect.`;
+      screenReaderMessage = "Submission incorrect.";
     } else {
-      screenReaderMessage = `Submission correct and locked-in.`;
+      screenReaderMessage = "Submission correct and locked-in.";
     }
 
     screenReaderMessage += ` ${submissionsRemaining} submission${
@@ -194,7 +194,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
     const newLockedInCountryCodes = newRankedCountryCodes;
 
     if (quiz.countryCodes.length === newRankedCountryCodes.length) {
-      screenReaderMessage += ` All countries correctly ranked. Ready for the next round.`;
+      screenReaderMessage += " All countries correctly ranked. Ready for the next round.";
     } else if (submissionsRemaining <= 0) {
       screenReaderMessage += ` The quiz has ended on round ${quiz.round}.`;
     }

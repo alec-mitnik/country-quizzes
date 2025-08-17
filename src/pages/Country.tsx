@@ -4,7 +4,7 @@ import { Link, useParams } from "react-router-dom";
 import useCountries from "../hooks/useCountries";
 import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
 import RenderWithLoading from "../RenderWithLoading";
-import { BACK_TO_COUNTRIES_LINK_TEXT, NO_COUNTRY_DATA_MESSAGE } from "../utils/consts";
+import { BACK_TO_COUNTRIES_LINK_TEXT, LOADING_MESSAGE, NO_COUNTRY_DATA_MESSAGE } from "../utils/consts";
 import "./Country.css";
 import Page from "./Page";
 
@@ -39,8 +39,8 @@ function Country() {
   const { name, independent, borders, flag, flagDescription, currencies, capitals,
       languages, area, population, continents } = country ?? {};
 
-  const { imgRef, doneLoadingClassName, loadFailedClassName } =
-      useSmoothLoadingImageRef(flag, flagDescription);
+  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } =
+      useSmoothLoadingImageRef();
 
   function renderCountryDataValue(key = "Unknown", value: React.ReactNode = "Unknown") {
     return (
@@ -71,7 +71,7 @@ function Country() {
   }
 
   return (
-    <>
+    <div className="country-component">
       <Link to="/countries">
         <span aria-hidden="true" className="symbol-font">🡐 </span>
         {BACK_TO_COUNTRIES_LINK_TEXT}
@@ -80,15 +80,19 @@ function Country() {
       <Page pageTitle={name ?? ""}>
         <RenderWithLoading loaded={!!countryWrapper?.fullyLoaded}
             error={error} dataExists={!!country} noDataMessage={NO_COUNTRY_DATA_MESSAGE}>
-          <dl className={`country-data-list smooth-loading${doneLoadingClassName}${loadFailedClassName}`}>
+          <dl className={"country-data-list"}>
             <div className="country-data-wrapper">
               <div>
                 <dt>Flag</dt>
                 <dd>
                   {flag || flagDescription ?
-                      <img ref={imgRef} className="flag" src={flag} alt={flagDescription ??
-                          "The flag of this country. No additional description available."} />
-                      : "Unavailable"}
+                    <>
+                      {!doneLoadingClassName && LOADING_MESSAGE}
+                      <span className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
+                        <img ref={imgCallbackRef} className="flag" src={flag} alt={flagDescription ??
+                            "The flag of this country. No additional description available."} />
+                      </span>
+                    </> : "Unavailable"}
                 </dd>
               </div>
               {renderCountryDataValue(continents?.label, continents?.formattedValue)}
@@ -109,7 +113,7 @@ function Country() {
           </dl>
         </RenderWithLoading>
       </Page>
-    </>
+    </div>
   );
 }
 
