@@ -26,7 +26,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
     if (hasAttached !== imgHasAttached) {
       setImgHasAttached(hasAttached);
     }
-  }, [setImgHasAttached]);
+  }, [setImgHasAttached, imgHasAttached]);
 
   // The events won't be triggered if images are disabled by the browser,
   // so attempt to detect that with a test image
@@ -61,7 +61,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
       img.removeEventListener('error', onImageLoad);
       img.remove();
     }
-  }, []);
+  }, [setDoneLoading, setLoadFailed]);
 
   useEffect(() => {
     const img = imgRef.current;

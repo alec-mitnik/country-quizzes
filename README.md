@@ -4,12 +4,13 @@
 A deploy of this code is available at https://alec-mitnik-country-quizzes.netlify.app/
 
 Has a simple landing page, a Countries directory page with links to detail pages for each country,
-and a Quiz page, though that still needs more time to get the actual mechanics fully implemented.
-The groundwork is there at least, and I plan to see this project through to completion.
+and a Quiz page.  Additional quiz types and other features are still in the works.
 
 Supports light and dark color schemes, applying the preference detected by the browser.
 Works across different browsers and viewport sizes, and adheres to accessible practices, such as:
-* Keyboard and screen reader support
+* Providing alt text for images, including flag descriptions when supplied by the API
+    (and avoiding use of flags without proper descriptions in quizzes)
+* Keyboard and screen reader support, including alternatives to drag-and-drop
 * Semantic HTML and appropriate aria attributes
 * Supporting high zoom or text magnification without content getting cut off
 * Maintaining sufficient color contrast
@@ -18,6 +19,7 @@ Works across different browsers and viewport sizes, and adheres to accessible pr
 
 Includes automated unit tests and a few integration tests using vitest and testing-library.
 Tests favor detecting elements by role and accessible name where possible.
+This testing continues to be worked on in aims to reach more comprehensive coverage.
 
 To run this project locally, clone the repository, run `npm install`,
 then use the configured script commands in package.json to build or test the code.

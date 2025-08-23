@@ -179,13 +179,22 @@ interface QuizState {
  * TODO - ideas:
  *
  * Could perhaps make difficulty adjust by using less well-known countries
- * (referring to a ranking by tourism or something).  For ranking quizzes, could
- * adjust difficulty based on how close in ranking the selected countries are.
+ * (referring to a ranking by tourism or Google Trends).  For ranking quizzes,
+ * could adjust difficulty based on how close in ranking the selected countries are.
+ * This seems important for better scaling, and increasing the number of countries
+ * indefinitely becomes unwieldy.  Could structure it as 5 rounds per level,
+ * going from 4 - 8 countries each round, then resetting, with country selection being
+ * what increases difficulty between levels.
  *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),
  * or submit a country correctly for you, or reveal all info for locked-in countries.
  * Bonuses could be earned for feats like beating a round in one attempt.
+ *
+ * Might be fun to have special challenge rounds for all consecutive ranks or
+ * all similar flags, although the flag descriptions aren't always nuanced enough,
+ * as Monaco and Indonesia have identical descriptions despite having different
+ * aspect ratios and shades of red.  Could just manually edit one of them...
  *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
@@ -300,10 +309,8 @@ function Quiz() {
     });
   }, [state, storedCountryData, independentOnly, loadCountriesForNewQuizRound]);
 
-  // TODO - get dataExists to properly reflect quiz round loading as well.
-  // Also need to consider filtering out ineligible countries,
-  // like those missing flag descriptions...
-  // Could maybe preserve quiz state in local storage, but don't want to encourage cheating...
+  // TODO - Could maybe preserve quiz state in local storage,
+  // but don't want to encourage cheating...
   return (
     <Page pageTitle={QUIZ_TITLE}>
       <RenderWithLoading
@@ -353,18 +360,6 @@ function Quiz() {
                   <dt>Quiz Type</dt>
                   <dd id="quiz-type-description" tabIndex={-1}>{state.quiz?.type.description}</dd>
                 </div>
-
-                {/* <div>
-                  <dt>Countries</dt>
-                  <dd>{state.quiz?.countryCodes.map(countryCode => storedCountryData.countries[countryCode]
-                      ?.data?.name).join(" | ")}</dd>
-                </div> */}
-
-                {/* {state.quiz?.type.key === "MATCH_NAMES_TO_CAPITALS" && <div>
-                  <dt>Capitals</dt>
-                  <dd>{state.quiz?.countryCodes.map(countryCode => storedCountryData.countries[countryCode]
-                      ?.data?.capitals?.formattedValue).join(" | ")}</dd>
-                </div>} */}
               </dl>}
 
               {/* Quiz Controls */}
@@ -391,6 +386,8 @@ function Quiz() {
               }
             </>
           </RenderWithLoading>
+
+          {/* TODO - make scrolling internal, so that the action button is always shown? */}
 
           {/* TODO - show more messages, like encouragement for getting everything right in one go */}
           {!quizzingActive && !!state.quiz && <p className="quiz-outcome-message">

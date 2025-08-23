@@ -85,6 +85,8 @@ export const testShallowStoredCountryData = {
         cca3: "TCA",
         name: "Test Country A",
         independent: false,
+        flag: "Flag_URL_A",
+        flagDescription: "Flag description A",
         area: {
           rawValue: 10,
           formattedValueForIndependentOnly: "Test area A for independent only",
@@ -104,6 +106,8 @@ export const testShallowStoredCountryData = {
         cca3: "TCB",
         name: "Test Country B",
         independent: true,
+        flag: "Flag_URL_B",
+        flagDescription: "Flag description B",
         area: {
           rawValue: 30,
           formattedValueForIndependentOnly: "Test area B for independent only",
