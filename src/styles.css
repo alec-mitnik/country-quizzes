@@ -26,7 +26,7 @@
   --background-color-primary-foreground-primary: #29273a;
   --background-color-primary-foreground-accent: #5a4dd3;
   --danger-color: #c50000;
-  --background-color-accent: #10009e;
+  --background-color-accent: #10009e; /* Used as the meta theme color */
   --background-color-accent-foreground-primary: #e9e9e9;
   --shadow-color: rgba(0, 0, 0, 0.5);
   --shadow-color-foreground: white;

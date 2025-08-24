@@ -30,6 +30,9 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
   }
 
   function handleDragEnter(event: DragEvent) {
+    // Because the isBeingDraggedOverState is used to show the bottom drop border for the list,
+    // and because propagation is stopped when dropping on a ranked item,
+    // only treat the list as being dragged over when not dragging over any of its ranked children
     const isRankedList = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-list');
 
@@ -44,6 +47,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
   }
 
   function handleDragLeave(event: DragEvent) {
+    // Only care about leaving the actual container, not any of the children
     const isRankedList = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-list');
 
@@ -71,9 +75,9 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
 
   return <section className={`draggable-country-list${isBeingDraggedOver ? " being-dragged-over" : ""}`}
       aria-labelledby={headerId}
-      onDragEnter={event => handleDragEnter(event)}
+      onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
-      onDragLeave={event => handleDragLeave(event)}
+      onDragLeave={handleDragLeave}
       onDrop={handleDrop}>
     {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
     {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}

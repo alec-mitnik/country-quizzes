@@ -45,15 +45,25 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
         && canBeDroppedIntoDirectly) {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
-      setIsBeingDraggedOver(true);
+
+      // Allow for child triggers in case the drag originated from inside the container,
+      // or the container's entrance event isn't triggered due to fast movement
+      // and large overlap with children
+      if (!isBeingDraggedOver) {
+        setIsBeingDraggedOver(true);
+      }
     } else {
       event.dataTransfer.dropEffect = 'none';
     }
   }
 
-  // TODO - DraggedOver isn't always set correctly for pool (when matching to flags?)
   function handleDragLeave(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
+    // Only care about leaving the actual container, not any of the children
+    const isPool = event.target instanceof HTMLElement
+        && event.target.matches('.draggable-country-pool');
+
+    if (isPool
+        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
         && canBeDroppedIntoDirectly) {
       event.preventDefault();
       setIsBeingDraggedOver(false);
@@ -82,9 +92,9 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
   return <ComponentWrapper className={`draggable-country-pool${isBeingDraggedOver ? " being-dragged-over" : ""
       }${isTargetContainer ? " target-container" : ""}`}
       aria-labelledby={headerId}
-      onDragEnter={event => handleDragEnter(event)}
+      onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
-      onDragLeave={event => handleDragLeave(event)}
+      onDragLeave={handleDragLeave}
       onDrop={handleDrop}>
     {headerLevel === 0 && <div id={headerId}>{headerText}</div>}
     {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}

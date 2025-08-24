@@ -58,7 +58,6 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
     }
   }
 
-  // TODO - if round not active and not locked in, show relevant match value
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
         isDragged ? " dragged" : ""}${isLockedIn ? " locked-in" : ""}${
