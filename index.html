@@ -5,13 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="color-scheme" content="light dark" />
     <meta name="description" content="Learn about countries and play fun quizzes!" />
+    <meta name="theme-color" content="#10009e" />
 
     <!-- Preload the font so that it is immediately applied
     when first used (may give CORS error when local) -->
     <link rel="preload" href="/Symbola.ttf" as="font" type="font/ttf" crossorigin />
 
-    <!-- TODO - replace favicon -->
-    <!-- <link rel="icon" type="image/svg+xml" href="/vite.svg" /> -->
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">
+    <!-- Better to just use the ico file, since with PNGs,
+    PC browsers use the 32x32 one despite rendering at 16x16 -->
+    <!-- <link rel="icon" type="image/png" sizes="32x32" href="/images/icons/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/images/icons/favicon-16x16.png"> -->
+    <link rel="manifest" href="/site.webmanifest">
 
     <title>Country Quizzes</title>
   </head>

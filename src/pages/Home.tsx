@@ -11,7 +11,7 @@ function Home() {
 
   return (
     <Page>
-      <div className="home-component">
+      <div className="home-component component-wrapper">
         <h2>{HOME_SUBHEADER}</h2>
 
         <div className="home-intro">
@@ -36,7 +36,7 @@ function Home() {
             href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer author"
             aria-label={PORTFOLIO_LINK_ACCESSIBLE_NAME}>
           {!!loadFailedClassName && PORTFOLIO_LINK_ACCESSIBLE_NAME}
-          <img ref={imgCallbackRef} src="./PXL_Avatar_1B.jpg" alt="" />
+          <img ref={imgCallbackRef} src="/images/PXL_Avatar_1B.jpg" alt="" />
         </a>
       </div>
     </Page>

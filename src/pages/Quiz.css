@@ -3,8 +3,6 @@
   before Chrome makes only part of the ghost image visible */
   --drag-width: 299px;
 
-  display: contents;
-
   details {
     margin-bottom: 16px;
 

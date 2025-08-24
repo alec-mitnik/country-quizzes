@@ -62,7 +62,7 @@ function Countries() {
       <RenderWithLoading loaded={storedCountryData.shallowDataLoaded} error={error}
           dataExists={countryCodesFilteredByIndependence.length > 0}
           noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
-        <div className="countries-component">
+        <div className="countries-component component-wrapper">
           <label>
             {COUNTRIES_SEARCH_ACCESSIBLE_NAME}
             <input type="search" id="countries-filter" placeholder="🔍︎ Start typing to filter..."

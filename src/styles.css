@@ -296,3 +296,7 @@ dl {
     }
   }
 }
+
+.component-wrapper {
+  display: contents;
+}

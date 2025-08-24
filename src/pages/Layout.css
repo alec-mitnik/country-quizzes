@@ -1,6 +1,4 @@
 .layout-component {
-  display: contents;
-
   #settings-bar {
     width: 100%;
     background: var(--background-color-accent);

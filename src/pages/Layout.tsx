@@ -11,7 +11,7 @@ function Layout() {
   const { independentOnly, setIndependentOnly} = useCountries();
 
   return (
-    <div className="layout-component">
+    <div className="layout-component component-wrapper">
       <section id="settings-bar" aria-label="Settings bar">
         <label>
           <input type="checkbox" id="independent-only-checkbox" checked={independentOnly}

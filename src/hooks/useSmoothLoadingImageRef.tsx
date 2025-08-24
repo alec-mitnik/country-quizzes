@@ -106,6 +106,8 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
       img.removeEventListener('load', handleLoad);
       img.removeEventListener('error', handleError);
     };
+  // Spread operator prevents the linter from being able to analyze exhaustive dependencies
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...dependencies, imgHasAttached, imgRef, currentSrcRef, doneLoadingRef,
       setCurrentSrc, setDoneLoading, setLoadFailed]);
 

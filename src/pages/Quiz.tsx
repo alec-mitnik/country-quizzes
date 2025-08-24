@@ -317,7 +317,7 @@ function Quiz() {
           loaded={storedCountryData.shallowDataLoaded}
           error={error} dataExists={!!Object.keys(storedCountryData.countries).length}
           noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
-        <div className="quiz-component">
+        <div className="quiz-component component-wrapper">
           <details className="quiz-instructions">
             <summary>
               <h2 id="how-to-play">{QUIZ_INSTRUCTIONS_SUBHEADER}</h2>

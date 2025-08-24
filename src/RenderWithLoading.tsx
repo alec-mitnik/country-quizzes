@@ -20,51 +20,56 @@ interface RenderWithLoadingProps {
  * @param {boolean} [props.dataExists=true] - Whether the data exists
  * @param {string} [props.noDataMessage] - The no data message, if any
  * @param {string} [props.focusOnLoad] - Optional ID of the element to focus on load
- * @param {JSX.Element} props.children - The content to render when loaded with no error
+ * @param {JSX.Element} [props.children] - The content to render when loaded with no error
  */
 function RenderWithLoading({ loaded, error, dataExists = true,
     noDataMessage, focusOnLoad, children }: RenderWithLoadingProps) {
-  const [readyForFocusOnLoad, setReadyForFocusOnLoad] = useState(false);
-  const [focusedOnLoad, setFocusedOnLoad] = useState(false);
+  const [readyForLoad, setReadyForLoad] = useState(false);
+  const [handledLoad, setHandledLoad] = useState(false);
 
   useEffect(() => {
-    if (readyForFocusOnLoad && !focusedOnLoad && focusOnLoad) {
-      document.getElementById(focusOnLoad)?.focus();
-      setFocusedOnLoad(true);
-    }
-  }, [readyForFocusOnLoad, focusedOnLoad, focusOnLoad]);
+    if (readyForLoad && !handledLoad) {
+      if (focusOnLoad) {
+        document.getElementById(focusOnLoad)?.focus();
+      }
 
-  function resetFocusOnLoadStates() {
-    if (readyForFocusOnLoad) {
-      setReadyForFocusOnLoad(false);
+      // Allow time for the 0 opacity style to be applied to fade in from
+      setTimeout(() => setHandledLoad(true));
+    }
+  }, [readyForLoad, handledLoad, focusOnLoad]);
+
+  function resetLoadStates() {
+    if (readyForLoad) {
+      setReadyForLoad(false);
     }
 
-    if (focusedOnLoad) {
-      setFocusedOnLoad(false);
+    if (handledLoad) {
+      setHandledLoad(false);
     }
   }
 
   function renderContent() {
     if (error) {
-      resetFocusOnLoadStates();
+      resetLoadStates();
       return <p className="error">{error}</p>;
     } else if (!loaded) {
-      resetFocusOnLoadStates();
+      resetLoadStates();
       return <p className="loading">{LOADING_MESSAGE}</p>;
     } else if (!dataExists && noDataMessage) {
       // Kept separate in case we ever want to style it differently from other errors
-      resetFocusOnLoadStates();
+      resetLoadStates();
       return <p className="error">{noDataMessage}</p>;
     } else {
-      if (!readyForFocusOnLoad && !focusedOnLoad) {
-        setReadyForFocusOnLoad(true);
+      if (!readyForLoad && !handledLoad) {
+        setReadyForLoad(true);
       }
 
       return children;
     }
   }
 
-  return <div className="render-with-loading-component">
+  return <div className={`render-with-loading-component component-wrapper${
+      readyForLoad && !handledLoad ? " ready-for-load" : ""}`}>
     {renderContent()}
   </div>;
 }

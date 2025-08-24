@@ -1,6 +1,4 @@
 .countries-component {
-  display: contents;
-
   label {
     margin-block: 16px;
     display: flex;

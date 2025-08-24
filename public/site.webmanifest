@@ -1,0 +1,22 @@
+{
+  "name": "Country Quizzes",
+  "short_name": "Country Quizzes",
+  "description": "Learn about countries and play fun quizzes!",
+  "icons": [
+    {
+      "src": "/images/icons/android-chrome-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/images/icons/android-chrome-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "theme_color": "#10009e",
+  "background_color": "#10009e",
+  "display": "standalone"
+}

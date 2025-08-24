@@ -71,7 +71,7 @@ function Country() {
   }
 
   return (
-    <div className="country-component">
+    <div className="country-component component-wrapper">
       <Link to="/countries">
         <span aria-hidden="true" className="symbol-font">🡐 </span>
         {BACK_TO_COUNTRIES_LINK_TEXT}

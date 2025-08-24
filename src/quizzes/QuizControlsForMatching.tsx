@@ -3,6 +3,7 @@ import { useMemo, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import type Quiz from "../pages/Quiz";
 import type { MatchingQuizType } from "../pages/Quiz";
+import SmoothLoadingImage from "../SmoothLoadingImage";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
@@ -38,14 +39,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
 
       if (quizType.key === "MATCH_TO_FLAGS") {
         label = <>
-          {/* TODO - handle loading {!doneLoadingClassName && LOADING_MESSAGE}
-          <span className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
-            <img ref={imgCallbackRef} className="flag" src={flag} alt={flagDescription ??
-                "The flag of this country. No additional description available."} />
-          </span> */}
           <figure aria-describedby={`${countryCode}-flag-description`}>
-            <img className="flag" alt="Country Flag"
-                src={storedCountryData.countries[countryCode]?.data?.flag} />
+            <SmoothLoadingImage src={storedCountryData.countries[countryCode]?.data?.flag}
+                alt="Country Flag" className="flag" />
 
             <figcaption>
               <details name="flag">
