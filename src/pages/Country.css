@@ -2,8 +2,8 @@
   figure {
     > div {
       /* Don't take up any space if the image fails to load */
-      display: flex;
-      justify-content: center;
+      /* display: flex;
+      justify-content: center; */
     }
 
     figcaption {
