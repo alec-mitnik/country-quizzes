@@ -2,6 +2,11 @@
   figure {
     > div {
       /* Don't take up any space if the image fails to load */
+      img {
+        display: block;
+      }
+
+      /* Causes the image to not render on mobile until a reflow is triggered */
       /* display: flex;
       justify-content: center; */
     }
@@ -17,7 +22,7 @@
 
     /* Keep some padding on the sides for the drop-shadow
     to not become hidden overflow for the max-height transition */
-    margin: 6px 6px 10px;
+    margin: 6px auto 10px;
 
     .load-failed & {
       margin: 0;
