@@ -108,7 +108,7 @@ function Country() {
                         </div>}
 
                         <figcaption>
-                          <details name="location">
+                          <details name="location" open>
                             <summary>
                               Location Description
                             </summary>
@@ -144,7 +144,7 @@ function Country() {
                         </div>
 
                         <figcaption>
-                          <details name="flag">
+                          <details name="flag" open>
                             <summary>
                               Flag Description
                             </summary>

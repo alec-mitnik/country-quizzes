@@ -331,6 +331,17 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       return next;
     });
 
+    setTimeout(() => {
+      // Maintain focus on the button for the value element after moving
+      const moveUpButton = document.querySelector(`.draggable-country-pool.target-container li:nth-child(${
+        newMatchValueIndex + 1
+      }) .move-up-button`) as HTMLButtonElement | null;
+
+      if (moveUpButton) {
+        moveUpButton.focus();
+      }
+    });
+
     // Use the original label to avoid using the markup for flags
     announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
         } moved up, now matched to {quizType.labelFunction(storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
@@ -393,6 +404,17 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       return next;
     });
 
+    setTimeout(() => {
+      // Maintain focus on the button for the value element after moving
+      const moveDownButton = document.querySelector(`.draggable-country-pool.target-container li:nth-child(${
+        newMatchValueIndex + 1
+      }) .move-down-button`) as HTMLButtonElement | null;
+
+      if (moveDownButton) {
+        moveDownButton.focus();
+      }
+    });
+
     // Use the original label to avoid using the markup for flags
     announceForScreenReaders(<>{storedCountryData.countries[countryCode]?.data?.name ?? countryCode
         } moved down, now matched to {quizType.labelFunction(storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
@@ -435,10 +457,12 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
           {sortedMatchValues.map((matchData, index) => {
             const countryCodeMatchValueIsMatchedTo = matchedCountryCodes[index];
 
-            // Use the country code as the key when possible, so that focus remains
-            // on the country component's buttons when moved up/down
+            // Could use the country code as the key when available, so that focus
+            // automatically remains on the country component's buttons when moved up/down,
+            // but the key needs to be based on the slot in order to preserve image loading
+            // and details collapse states, so need to handle focus manually...
             return (
-              <li key={countryCodeMatchValueIsMatchedTo ?? index}>
+              <li key={`${String(matchData.label)}_${index}`}>
                 <DraggableCountryPool headerId="matched-pool-header"
                     headerText={matchData.label}
                     headerLevel={quizType.key === "MATCH_TO_FLAGS" ? 0 : 3}
