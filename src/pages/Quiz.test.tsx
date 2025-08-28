@@ -2,7 +2,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import useCountries from '../hooks/useCountries';
 import { testShallowStoredCountryData } from '../test/data';
-import { DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, QUIZ_INSTRUCTIONS_SUBHEADER } from '../utils/consts';
+import { QUIZ_INSTRUCTIONS_SUBHEADER } from '../utils/consts';
 import Quiz from './Quiz';
 
 // Mock the hook
@@ -33,30 +33,6 @@ afterAll(() => {
 });
 
 describe('Quiz', () => {
-  it('renders the corresponding message when there are no countries', () => {
-    vi.mocked(useCountries).mockReturnValue({
-      storedCountryData: {
-        ...DEFAULT_COUNTRY_STORAGE,
-        shallowDataRequested: true,
-        shallowDataLoaded: true,
-      },
-      loading: false,
-      error: null,
-      independentOnly: true,
-      setIndependentOnly: vi.fn(),
-      fetchCountry: vi.fn(),
-      fetchCountries: vi.fn(),
-      fetchShallowDataForAllCountries: vi.fn(),
-    });
-
-    render(
-      <Quiz />
-    );
-
-    // Check for the no countries message
-    expect(screen.getByText(NO_COUNTRIES_LOADED_MESSAGE)).toBeInTheDocument();
-  });
-
   it('renders the play instructions, collapsed by default', async () => {
     const user = userEvent.setup();
 

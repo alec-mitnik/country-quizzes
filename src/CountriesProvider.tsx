@@ -23,7 +23,10 @@ interface IndependenceDependentFormattedCountryField<T> {
 export interface StoredCountry {
   cca3: Cca3Code;
   name: string;
-  independent: boolean;
+  worldFactbookCountryKey?: string;             // For identifying the locator map
+  location?: string;
+  independent?: boolean;
+  parentCountryCca3?: Cca3Code;
   flag?: string;                                // SVG URL
   flagDescription?: string;                     // Descriptive for accessibility,
                                                 // but obfuscating the country name for quizzing
@@ -156,8 +159,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             // Update of all country names, codes, independence status,
             // flags, areas, and populations only
 
+            // Use the pre-loaded supplemental description if provided, indicating a need to override
+            const flagDescription =
+                newData.countries[cca3]?.data?.flagDescription ?? extractFlagAltDescription(country);
             const flag = country.flags?.svg;
-            const flagDescription = extractFlagAltDescription(country);
 
             const newCountryData: StoredCountry = {
               ...newData.countries[cca3]?.data,
@@ -186,8 +191,11 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             }
           } else {
             // Update of all of a single country's data that will be used
+
+            // Use the pre-loaded supplemental description if provided, indicating a need to override
+            const flagDescription =
+                newData.countries[cca3]?.data?.flagDescription ?? extractFlagAltDescription(country);
             const flag = country.flags?.svg;
-            const flagDescription = extractFlagAltDescription(country);
             const borders = country.borders;
             const currencies = extractCurrencies(country);
             const formattedCurrencies = Object.keys(currencies);

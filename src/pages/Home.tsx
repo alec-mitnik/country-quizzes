@@ -1,5 +1,5 @@
 import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
-import { HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL } from "../utils/consts";
+import { CIA_WORLD_FACTBOOK_LINK_TEXT, CIA_WORLD_FACTBOOK_LINK_URL, HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL, REST_COUNTRIES_API_LINK_TEXT, REST_COUNTRIES_API_LINK_URL } from "../utils/consts";
 import "./Home.css";
 import Page from "./Page";
 
@@ -22,13 +22,14 @@ function Home() {
             Stay tuned for new features as I continue to develop this.
           </p>
           <p>
-            Data is provided by the <a href="https://restcountries.com/"
+            Data is derived from the <a href={REST_COUNTRIES_API_LINK_URL}
                 target="_blank" rel="noopener noreferrer author">
-              REST Countries API
-            </a>.
+              {REST_COUNTRIES_API_LINK_TEXT}
+            </a>, the <a href={CIA_WORLD_FACTBOOK_LINK_URL}
+                target="_blank" rel="noopener noreferrer author">
+              {CIA_WORLD_FACTBOOK_LINK_TEXT}
+            </a>, and Wikipedia.
           </p>
-          {/* TODO - use public domain country locator maps (and edited descriptions)
-          from the CIA's World Factbook (https://www.cia.gov/the-world-factbook/) */}
         </div>
 
         {/* Portfolio Link */}

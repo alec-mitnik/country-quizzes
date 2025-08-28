@@ -1,5 +1,5 @@
 import { render, screen } from '@testing-library/react';
-import { HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL, REST_COUNTRIES_API_LINK_TEXT, REST_COUNTRIES_API_LINK_URL } from '../utils/consts';
+import { CIA_WORLD_FACTBOOK_LINK_TEXT, CIA_WORLD_FACTBOOK_LINK_URL, HOME_SUBHEADER, PORTFOLIO_LINK_ACCESSIBLE_NAME, PORTFOLIO_URL, REST_COUNTRIES_API_LINK_TEXT, REST_COUNTRIES_API_LINK_URL } from '../utils/consts';
 import Home from './Home';
 
 describe('Home', () => {
@@ -12,7 +12,7 @@ describe('Home', () => {
     expect(screen.getByRole('heading', { name: HOME_SUBHEADER })).toBeInTheDocument();
   });
 
-  it('renders the REST Countries API link', () => {
+  it('renders the data source links', () => {
     render(
       <Home />
     );
@@ -21,6 +21,11 @@ describe('Home', () => {
     const apiLink = screen.getByRole('link', { name: REST_COUNTRIES_API_LINK_TEXT });
     expect(apiLink).toBeInTheDocument();
     expect(apiLink).toHaveAttribute('href', REST_COUNTRIES_API_LINK_URL);
+
+    // Check for the CIA World Factbook link
+    const factbookLink = screen.getByRole('link', { name: CIA_WORLD_FACTBOOK_LINK_TEXT });
+    expect(factbookLink).toBeInTheDocument();
+    expect(factbookLink).toHaveAttribute('href', CIA_WORLD_FACTBOOK_LINK_URL);
   });
 
   it('renders the portfolio link', () => {

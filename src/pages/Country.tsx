@@ -4,7 +4,8 @@ import { Link, useParams } from "react-router-dom";
 import useCountries from "../hooks/useCountries";
 import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
 import RenderWithLoading from "../RenderWithLoading";
-import { BACK_TO_COUNTRIES_LINK_TEXT, LOADING_MESSAGE, NO_COUNTRY_DATA_MESSAGE } from "../utils/consts";
+import { BACK_TO_COUNTRIES_LINK_TEXT, LOADING_IMAGE_MESSAGE, NO_COUNTRY_DATA_MESSAGE } from "../utils/consts";
+import { getLocatorMapSrc } from "../utils/utils";
 import "./Country.css";
 import Page from "./Page";
 
@@ -36,11 +37,24 @@ function Country() {
   }, [countryCode, error, storedCountryData, countryWrapper,
       fetchShallowDataForAllCountries, fetchCountry]);
 
-  const { name, independent, borders, flag, flagDescription, currencies, capitals,
-      languages, area, population, continents } = country ?? {};
+  const { name, worldFactbookCountryKey, location, independent, parentCountryCca3,
+      borders, flag, flagDescription, currencies, capitals, languages,
+      area, population, continents } = country ?? {};
 
-  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } =
-      useSmoothLoadingImageRef();
+  const { imgCallbackRef: flagImgCallbackRef,
+      imgHasAttached: flagImgHasAttached,
+      doneLoadingClassName: doneLoadingFlagClassName,
+      loadFailedClassName: loadFlagFailedClassName } = useSmoothLoadingImageRef();
+
+  const { imgCallbackRef: mapImgCallbackRef,
+      imgHasAttached: mapImgHasAttached,
+      doneLoadingClassName: doneLoadingMapClassName,
+      loadFailedClassName: loadMapFailedClassName } = useSmoothLoadingImageRef();
+
+  // It's less jarring if the flag and map loading is synchronized
+  const combinedLoadingClassName = (!flagImgHasAttached || doneLoadingFlagClassName)
+      && (!mapImgHasAttached || doneLoadingMapClassName) ?
+      doneLoadingFlagClassName || doneLoadingMapClassName : "";
 
   function renderCountryDataValue(key = "Unknown", value: React.ReactNode = "Unknown") {
     return (
@@ -51,7 +65,7 @@ function Country() {
     );
   }
 
-  function renderBordersValue(value: Cca3Code[] = []) {
+  function renderCountryLinksValue(value: Cca3Code[] = []) {
     if (value.length === 0) {
       return "None";
     } else {
@@ -83,28 +97,71 @@ function Country() {
           <dl className={"country-data-list"}>
             <div className="country-data-wrapper">
               <div>
+                <dt>Location</dt>
+                <dd>
+                  {worldFactbookCountryKey || location ?
+                    <>
+                      {!!worldFactbookCountryKey && !combinedLoadingClassName && LOADING_IMAGE_MESSAGE}
+                      <figure aria-describedby={`${countryCode}-location-description`}>
+                        {!!worldFactbookCountryKey && <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadMapFailedClassName}`}>
+                          <img ref={mapImgCallbackRef} className="flag" src={getLocatorMapSrc(worldFactbookCountryKey)} alt="" />
+                        </div>}
+
+                        <figcaption>
+                          <details name="location">
+                            <summary>
+                              Location Description
+                            </summary>
+                            <p id={`${countryCode}-location-description`}>
+                              {location ?? "The location of this country. No additional description available."}
+                            </p>
+                          </details>
+                        </figcaption>
+                      </figure>
+                    </> : "Unavailable"}
+                </dd>
+              </div>
+
+              {renderCountryDataValue(continents?.label, continents?.formattedValue)}
+              {renderCountryDataValue(borders?.length === 1 ? "Bordering Country" : "Bordering Countries",
+                  renderCountryLinksValue(borders))}
+              {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
+              {!independent && parentCountryCca3 && renderCountryDataValue("Parent Country",
+                  renderCountryLinksValue([parentCountryCca3]))}
+            </div>
+
+            <div className="country-data-wrapper">
+              <div>
                 <dt>Flag</dt>
                 <dd>
                   {flag || flagDescription ?
                     <>
-                      {!doneLoadingClassName && LOADING_MESSAGE}
-                      <span className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
-                        <img ref={imgCallbackRef} className="flag" src={flag} alt={flagDescription ??
-                            "The flag of this country. No additional description available."} />
-                      </span>
+                      {!combinedLoadingClassName && LOADING_IMAGE_MESSAGE}
+                      {/* TODO - mark up foreign language phrases in flag banners appropriately */}
+                      <figure aria-describedby={`${countryCode}-flag-description`}>
+                        <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadFlagFailedClassName}`}>
+                          <img ref={flagImgCallbackRef} className="flag" src={flag} alt="" />
+                        </div>
+
+                        <figcaption>
+                          <details name="flag">
+                            <summary>
+                              Flag Description
+                            </summary>
+                            <p id={`${countryCode}-flag-description`}>
+                              {flagDescription ??
+                                  "The flag of this country. No additional description available."}
+                            </p>
+                          </details>
+                        </figcaption>
+                      </figure>
                     </> : "Unavailable"}
                 </dd>
               </div>
-              {renderCountryDataValue(continents?.label, continents?.formattedValue)}
-              {renderCountryDataValue(borders?.length === 1 ? "Bordering Country" : "Bordering Countries",
-                  renderBordersValue(borders))}
-            </div>
 
-            <div className="country-data-wrapper">
               {renderCountryDataValue(capitals?.label, capitals?.formattedValue)}
               {renderCountryDataValue(languages?.label, languages?.formattedValue)}
               {renderCountryDataValue(currencies?.label, currencies?.markupValue)}
-              {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
               {renderCountryDataValue("Size", independentOnly ?
                   area?.formattedValueForIndependentOnly : area?.formattedValueForAll)}
               {renderCountryDataValue("Population", independentOnly ?

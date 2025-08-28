@@ -1,4 +1,5 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import { localeIncludes } from "locale-includes";
 import { useEffect, useMemo, useState } from "react";
 import CountryDirectoryLink from "../CountryDirectoryLink";
 import useCountries from "../hooks/useCountries";
@@ -52,8 +53,11 @@ function Countries() {
   const countryCodesFilteredBySearch = useMemo(() => {
     return countryCodesFilteredByIndependence.filter(countryCode => {
       return !searchTerm
-          || storedCountryData.countries[countryCode]?.data?.name?.toLowerCase()
-          .includes(searchTerm.toLowerCase());
+          || localeIncludes(storedCountryData.countries[countryCode]?.data?.name ?? "",
+          searchTerm, {
+            usage: "search",    // Optimize for filtering
+            sensitivity: "base" // Ignore case and diacritics
+          });
     });
   }, [countryCodesFilteredByIndependence, searchTerm, storedCountryData]);
 

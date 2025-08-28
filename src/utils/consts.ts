@@ -1,4 +1,5 @@
 import type { CountryStorage } from "../CountriesProvider";
+import supplementalCountryData from "../supplementalData/supplementalCountryData.json";
 
 export const APP_TITLE = "Country Quizzes";
 export const COUNTRIES_TITLE = "Countries";
@@ -12,12 +13,15 @@ export const QUIZ_NAV_TEXT = QUIZ_TITLE;
 export const HOME_SUBHEADER = "By Alec Mitnik";
 export const REST_COUNTRIES_API_LINK_TEXT = "REST Countries API";
 export const REST_COUNTRIES_API_LINK_URL = "https://restcountries.com/";
+export const CIA_WORLD_FACTBOOK_LINK_TEXT = "CIA World Factbook";
+export const CIA_WORLD_FACTBOOK_LINK_URL = "https://www.cia.gov/the-world-factbook/countries/";
 export const PORTFOLIO_LINK_ACCESSIBLE_NAME = "Check out my other projects";
 export const PORTFOLIO_URL = "https://alec-mitnik.github.io/";
 
 export const COUNTRIES_SEARCH_ACCESSIBLE_NAME = "Filter countries by name";
 
 export const LOADING_MESSAGE = "Loading...";
+export const LOADING_IMAGE_MESSAGE = "Loading Image...";
 export const NO_COUNTRIES_LOADED_MESSAGE = "No countries could be loaded";
 export const NO_COUNTRIES_MATCHED_MESSAGE = "No countries match your search";
 
@@ -34,7 +38,7 @@ export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
 export const CUSTOM_DRAG_TYPE = 'application/country-code';
 
 export const DEFAULT_COUNTRY_STORAGE: CountryStorage = {
-  countries: {},
+  countries: supplementalCountryData,
   rankings: {
     independentOnly: {
       byArea: [],

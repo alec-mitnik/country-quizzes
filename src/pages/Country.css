@@ -1,15 +1,25 @@
 .country-component {
+  figure {
+    > div {
+      /* Don't take up any space if the image fails to load */
+      display: flex;
+      justify-content: center;
+    }
+
+    figcaption {
+      /* Keep the summary hit-box sized to the label, at least when collapsed */
+      display: inline flow-root;
+    }
+  }
+
   .flag {
     width: 300px;
 
     /* Keep some padding on the sides for the drop-shadow
     to not become hidden overflow for the max-height transition */
-    margin: 6px;
+    margin: 6px 6px 10px;
 
     .load-failed & {
-      /* If the image fails to load, hide the border and shadow */
-      filter: none;
-      border: none;
       margin: 0;
     }
   }

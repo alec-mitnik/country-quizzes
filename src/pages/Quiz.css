@@ -7,10 +7,6 @@
     margin-bottom: 16px;
 
     summary {
-      /* Nicer presentation of focus outline */
-      padding-inline: 16px;
-      cursor: pointer;
-
       > * {
         /* Modern version of the legacy inline-block value */
         display: inline flow-root;
@@ -273,28 +269,14 @@
     }
 
     figure {
-      margin: auto;
       padding: 8px;
       max-width: var(--drag-width);
 
-      img.flag{
+      img.flag {
         margin: 0 16px 8px 0;
         max-width: 100px;
         width: auto;
         float: left;
-
-        &.load-failed {
-          filter: none;
-          border: none;
-        }
-      }
-
-      figcaption {
-        p {
-          padding-top: 8px;
-          font-size: 0.875rem;
-          font-weight: 500;
-        }
       }
 
       details {

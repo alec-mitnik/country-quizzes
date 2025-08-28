@@ -114,6 +114,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   // Class names can be interpolated directly into className attributes, and double as status flags
   return {
     imgCallbackRef,
+    imgHasAttached,
     doneLoadingClassName: doneLoading ? ' done-loading' : '',
     loadFailedClassName: loadFailed ? ' load-failed' : '',
   };

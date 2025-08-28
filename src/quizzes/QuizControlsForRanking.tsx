@@ -289,7 +289,8 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
       {quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length && <QuizSubmitButton
           onSubmit={attemptSubmit}
-          disabled={rankedCountryCodes.length <= quiz.countryCodesLockedInAsCorrect.length}
+          disabled={rankedCountryCodes.length <= quiz.countryCodesLockedInAsCorrect.length
+              || rankedCountryCodes.length < 2}
           submissionsRemaining={quiz.submissionsRemaining} />}
     </>
   );

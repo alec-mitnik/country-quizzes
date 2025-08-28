@@ -46,7 +46,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
             <figcaption>
               <details name="flag">
                 <summary>
-                  Show Description
+                  Flag Description
                 </summary>
                 <p id={`${countryCode}-flag-description`}>
                   {label ?? "The flag of this country. No additional description available."}

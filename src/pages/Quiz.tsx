@@ -6,7 +6,7 @@ import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
 import {
-  NO_COUNTRIES_LOADED_MESSAGE, QUIZ_COUNTRY_COUNT_INCREASE,
+  QUIZ_COUNTRY_COUNT_INCREASE,
   QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT,
   QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE
 } from "../utils/consts";
@@ -79,6 +79,8 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
     description: "Match the countries to their flags.",
     structure: "matching",
     matchTypeLabel: "Flags",
+    // Not really necessary for flags after manually gathering replacements
+    // for the missing flag descriptions, but might as well just in case
     fieldToRequire: "flagDescription",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
@@ -195,6 +197,30 @@ interface QuizState {
  * all similar flags, although the flag descriptions aren't always nuanced enough,
  * as Monaco and Indonesia have identical descriptions despite having different
  * aspect ratios and shades of red.  Could just manually edit one of them...
+ *
+ * Groups of similar flags:
+ * Palestine, Jordan, Sudan, South Sudan, Kuwait, UAE, Western Sahara, (Bahamas, Martinique, Zimbabwe)
+ * Indonesia, Monaco, Poland, Singapore, Greenland, (Austria, Peru, Chile, Czechia, Latvia, Lebanon, Malta)
+ * Ireland, Ivory Coast, India, Niger
+ * Germany, Belgium, Uganda, (Zimbabwe, Zambia)
+ * Armenia, Colombia, Ecuador, Mauritius, Venezuela (similar to below group)
+ * Andorra, Moldova, Romania, Chad (similar to above group)
+ * Italy, Mexico, (Ireland, similar to below group)
+ * Bulgaria, Equatorial Guinea, Iran, Hungary, Kuwait, Tajikistan, (Madagascar, Oman, similar to above group)
+ * Australia/Heard Island and McDonald Islands, New Zealand, Cook Islands, (Tuvalu, similar to below group)
+ * Anguilla, British Virgin Islands, Cayman Islands, Falkland Islands, Montserrat, Pitcairn Islands,
+ *     "Saint Helena, Ascension, and Tristan da Cunha", South Georgia, Turks and Caicos Islands, (Fiji, similar to above group)
+ * Netherlands, Russia, Paraguay, Slovenia, Slovakia, (Croatia, Costa Rica, Luxembourg, France/Saint Martin)
+ * Sint Maarten, Philippines, (Haiti, Lichtenstein)
+ * Argentina, Nicaragua, Honduras, El Salvador, (Guatemala)
+ * Mali, Guinea, Senegal, Cameroon, (Myanmar, Ghana, Burkina Faso, Lithuania),
+ *     [French Guiana, Guinea-Bissau], [Bolivia, Ethiopia, Mauritius, Republic of the Congo, Togo]
+ * Vietnam, Morocco, Hong Kong, Isle of Man, Tunisia, Turkey, China, Kyrgyzstan, (Albania, Montenegro)
+ * Saint Kitts and Nevis, Namibia, DR Congo, Trinidad and Tobago, Tanzania, (Republic of the Congo)
+ * Iceland, Norway/Bouvet Island/Svalbard and Jan Mayen, Iceland, Finland, Denmark, Åland Islands, Sweden, Faroe Islands
+ * United States/United States Minor Outlying Islands, Liberia, Malaysia, (Puerto Rico), [Cuba]
+ * Yemen, Iraq, Syria, Egypt, (Sudan)
+ * Taiwan, Samoa, Tonga, Lichtenstein, (Haiti, Wallis and Futuna)
  *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
@@ -315,8 +341,7 @@ function Quiz() {
     <Page pageTitle={QUIZ_TITLE}>
       <RenderWithLoading
           loaded={storedCountryData.shallowDataLoaded}
-          error={error} dataExists={!!Object.keys(storedCountryData.countries).length}
-          noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
+          error={error} dataExists={!!Object.keys(storedCountryData.countries).length}>
         <div className="quiz-component component-wrapper">
           <details className="quiz-instructions">
             <summary>
@@ -329,7 +354,6 @@ function Quiz() {
               <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
               <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
               <li>There are various quiz types, with a new one being randomly selected for each round.</li>
-              <li>When a quiz involves ranking countries in order, only relative order matters for locking in.</li>
               <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
               <li>The number of countries involved increases with each round. Keep going for as long as you can!</li>
             </ol>
@@ -358,7 +382,11 @@ function Quiz() {
 
                 <div>
                   <dt>Quiz Type</dt>
-                  <dd id="quiz-type-description" tabIndex={-1}>{state.quiz?.type.description}</dd>
+                  <dd id="quiz-type-description" tabIndex={-1}>
+                    {state.quiz?.type.description}{state.quiz?.type.structure === "ranking"
+                        && <><br />Only relative order matters for locking in.</>}
+                    {/* TODO - ranking quizzes get too hard and not very fun as more countries are added... */}
+                  </dd>
                 </div>
               </dl>}
 

@@ -8,8 +8,8 @@ and a Quiz page.  Additional quiz types and other features are still in the work
 
 Supports light and dark color schemes, applying the preference detected by the browser.
 Works across different browsers and viewport sizes, and adheres to accessible practices, such as:
-* Providing alt text for images, including flag descriptions when supplied by the API
-    (and avoiding use of flags without proper descriptions in quizzes)
+* Providing alt text or captions for images, including flag and location map descriptions
+* Graceful handling for when images fail to load or are disabled by the browser
 * Keyboard and screen reader support, including alternatives to drag-and-drop
 * Semantic HTML and appropriate aria attributes
 * Supporting high zoom or text magnification without content getting cut off
@@ -19,7 +19,7 @@ Works across different browsers and viewport sizes, and adheres to accessible pr
 
 Includes automated unit tests and a few integration tests using vitest and testing-library.
 Tests favor detecting elements by role and accessible name where possible.
-This testing continues to be worked on in aims to reach more comprehensive coverage.
+This testing continues to be worked on in aims to reach a more comprehensive coverage.
 
 To run this project locally, clone the repository, run `npm install`,
 then use the configured script commands in package.json to build or test the code.
@@ -32,3 +32,8 @@ REST Countries API: https://restcountries.com/
 
 Uses the related `@yusifaliyevpro/countries` package purely for typing the data:
 https://github.com/yusifaliyevpro/countries
+
+Location descriptions, maps, and some flag descriptions are derived from the CIA World Factbook:
+https://www.cia.gov/the-world-factbook/countries/
+
+Any remaining flag descriptions or other missing info is derived from Wikipedia.

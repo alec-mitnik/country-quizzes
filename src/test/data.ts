@@ -4,6 +4,8 @@ import type { Capital, Cca3Code } from "@yusifaliyevpro/countries/types";
 export const testCountry = {
   cca3: "TTO" as Cca3Code,
   name: "Trinidad and Tobago",
+  worldFactbookCountryKey: "TD",
+  location: "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, northeast of Venezuela, south of Grenada",
   independent: true,
   flag: "https://flagcdn.com/tt.svg",
   flagDescription: `The flag of this country has a red field with \
@@ -84,6 +86,8 @@ export const testShallowStoredCountryData = {
       data: {
         cca3: "TCA",
         name: "Test Country A",
+        worldFactbookCountryKey: "TEST_A",
+        location: "Test location A",
         independent: false,
         flag: "Flag_URL_A",
         flagDescription: "Flag description A",
@@ -105,6 +109,8 @@ export const testShallowStoredCountryData = {
       data: {
         cca3: "TCB",
         name: "Test Country B",
+        worldFactbookCountryKey: "TEST_B",
+        location: "Test location B",
         independent: true,
         flag: "Flag_URL_B",
         flagDescription: "Flag description B",

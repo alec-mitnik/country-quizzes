@@ -41,3 +41,36 @@ export function convertToOrdinal(n: number) {
 
   return `${n}${suffixMap[singlesDigit] || "th"}`;
 }
+
+/**
+ * Gets the locator map source for the given World Factbook country key.
+ * Note that the World Factbook doesn't have entries for the following,
+ * so I use fake keys for missing or unusable locator maps that I replaced
+ * with ones I cobbled together:
+ * Caribbean Netherlands (separated, so I combined them)
+ * French Guiana (this and the others are treated as part of France)
+ * Martinique
+ * Mayotte
+ * Guadeloupe
+ * Réunion
+ * Palestine (separated as Gaza Strip and West Bank, so I combined them)
+ * Western Sahara (needed to separate from Morocco)
+ * Åland Islands (needed to separate from Finland)
+ * United States Minor Outlying Islands (needed to combine Navassa Island,
+ *     Wake Island, and United States Pacific Island Wildlife Refuges)
+ * Svalbard and Jan Mayen (separated, so I combined them)
+ * Their locator map for Sint Maarten is also erroneously a copy of Curacao's,
+ * so a slightly tweaked version of the Saint Martin map is used as a replacement for that.
+ * Also edited the map for Israel to give it a callout box for clarity.
+ *
+ * For reference, the full URL for the locator map on the World Factbook website
+ * would be the same filename prefixed with:
+ * https://www.cia.gov/the-world-factbook/static/locator-maps/
+ *
+ * @param worldFactbookCountryKey The country code used by the World Factbook website
+ * (not any standardized country code)
+ * @returns The src path for the corresponding country's locator map (stored locally)
+ */
+export function getLocatorMapSrc(worldFactbookCountryKey: string) {
+  return `/images/locatorMaps/${worldFactbookCountryKey}-locator-map.jpg`;
+}

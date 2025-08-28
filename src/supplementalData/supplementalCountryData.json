@@ -1,0 +1,2112 @@
+{
+  "AFG": {
+    "data": {
+      "cca3": "AFG",
+      "name": "Afghanistan",
+      "worldFactbookCountryKey": "AF",
+      "location": "Southern Asia, north and west of Pakistan, east of Iran"
+    }
+  },
+  "ALA": {
+    "data": {
+      "cca3": "ALA",
+      "name": "Åland Islands",
+      "worldFactbookCountryKey": "ALA",
+      "location": "Northern Europe, islands bordering the Baltic Sea and Gulf of Bothnia, east of Sweden",
+      "parentCountryCca3": "FIN",
+      "flagDescription": "The flag of this country has a blue field with a large golden-yellow-edged red cross that extends to the edges of the field. The vertical part of this cross is offset towards the hoist side."
+    }
+  },
+  "ALB": {
+    "data": {
+      "cca3": "ALB",
+      "name": "Albania",
+      "worldFactbookCountryKey": "AL",
+      "location": "Southeastern Europe, bordering the Adriatic Sea and Ionian Sea, between Greece to the south and Montenegro and Kosovo to the north"
+    }
+  },
+  "DZA": {
+    "data": {
+      "cca3": "DZA",
+      "name": "Algeria",
+      "worldFactbookCountryKey": "AG",
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Morocco and Tunisia"
+    }
+  },
+  "ASM": {
+    "data": {
+      "cca3": "ASM",
+      "name": "American Samoa",
+      "worldFactbookCountryKey": "AQ",
+      "location": "Oceania, group of islands in the South Pacific Ocean, about halfway between Hawaii and New Zealand, northeast of Tonga",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country features a large white triangle edged in red that is based on the fly side and extends to the hoist side and is charged with an eagle, all on a blue field."
+    }
+  },
+  "AND": {
+    "data": {
+      "cca3": "AND",
+      "name": "Andorra",
+      "worldFactbookCountryKey": "AN",
+      "location": "Southwestern Europe, Pyrenees mountains, on the border between France and Spain"
+    }
+  },
+  "AGO": {
+    "data": {
+      "cca3": "AGO",
+      "name": "Angola",
+      "worldFactbookCountryKey": "AO",
+      "location": "Southern Africa, bordering the South Atlantic Ocean, between Namibia and Democratic Republic of the Congo"
+    }
+  },
+  "AIA": {
+    "data": {
+      "cca3": "AIA",
+      "name": "Anguilla",
+      "worldFactbookCountryKey": "AV",
+      "location": "Caribbean, islands between the Caribbean Sea and North Atlantic Ocean, east of Puerto Rico",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue, with the flag of the UK in the canton and the national coat of arms centered in the fly half. The coat of arms depicts three orange dolphins in an interlocking circular design on a white background with a turquoise-blue field below."
+    }
+  },
+  "ATA": {
+    "data": {
+      "cca3": "ATA",
+      "name": "Antarctica",
+      "worldFactbookCountryKey": "AY",
+      "location": "Continent mostly south of the Antarctic Circle",
+      "flagDescription": "The flag of this country features a plain white map of the country on a blue background."
+    }
+  },
+  "ATG": {
+    "data": {
+      "cca3": "ATG",
+      "name": "Antigua and Barbuda",
+      "worldFactbookCountryKey": "AC",
+      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, east-southeast of Puerto Rico"
+    }
+  },
+  "ARG": {
+    "data": {
+      "cca3": "ARG",
+      "name": "Argentina",
+      "worldFactbookCountryKey": "AR",
+      "location": "Southern South America, bordering the South Atlantic Ocean, between Chile and Uruguay"
+    }
+  },
+  "ARM": {
+    "data": {
+      "cca3": "ARM",
+      "name": "Armenia",
+      "worldFactbookCountryKey": "AM",
+      "location": "Southwestern Asia, between Turkey (to the west) and Azerbaijan"
+    }
+  },
+  "ABW": {
+    "data": {
+      "cca3": "ABW",
+      "name": "Aruba",
+      "worldFactbookCountryKey": "AA",
+      "location": "Caribbean, island in the Caribbean Sea, north of Venezuela",
+      "parentCountryCca3": "NLD",
+      "flagDescription": "The flag of this country is blue, with two narrow, horizontal yellow stripes across the lower portion and a red four-pointed star outlined in white in the canton."
+    }
+  },
+  "AUS": {
+    "data": {
+      "cca3": "AUS",
+      "name": "Australia",
+      "worldFactbookCountryKey": "AS",
+      "location": "Oceania, continent between the Indian Ocean and the South Pacific Ocean"
+    }
+  },
+  "AUT": {
+    "data": {
+      "cca3": "AUT",
+      "name": "Austria",
+      "worldFactbookCountryKey": "AU",
+      "location": "Central Europe, north of Italy and Slovenia"
+    }
+  },
+  "AZE": {
+    "data": {
+      "cca3": "AZE",
+      "name": "Azerbaijan",
+      "worldFactbookCountryKey": "AJ",
+      "location": "Southwestern Asia, bordering the Caspian Sea, between Iran and Russia, with a small European portion north of the Caucasus range"
+    }
+  },
+  "BHS": {
+    "data": {
+      "cca3": "BHS",
+      "name": "Bahamas",
+      "worldFactbookCountryKey": "BF",
+      "location": "Chain of islands in the North Atlantic Ocean, southeast of Florida, northeast of Cuba"
+    }
+  },
+  "BHR": {
+    "data": {
+      "cca3": "BHR",
+      "name": "Bahrain",
+      "worldFactbookCountryKey": "BA",
+      "location": "Middle East, archipelago in the Persian Gulf, east of Saudi Arabia"
+    }
+  },
+  "BGD": {
+    "data": {
+      "cca3": "BGD",
+      "name": "Bangladesh",
+      "worldFactbookCountryKey": "BG",
+      "location": "Southern Asia, bordering the Bay of Bengal, between Burma and India"
+    }
+  },
+  "BRB": {
+    "data": {
+      "cca3": "BRB",
+      "name": "Barbados",
+      "worldFactbookCountryKey": "BB",
+      "location": "Caribbean, island in the North Atlantic Ocean, northeast of Venezuela"
+    }
+  },
+  "BLR": {
+    "data": {
+      "cca3": "BLR",
+      "name": "Belarus",
+      "worldFactbookCountryKey": "BO",
+      "location": "Eastern Europe, east of Poland"
+    }
+  },
+  "BEL": {
+    "data": {
+      "cca3": "BEL",
+      "name": "Belgium",
+      "worldFactbookCountryKey": "BE",
+      "location": "Western Europe, bordering the North Sea, between France and the Netherlands"
+    }
+  },
+  "BLZ": {
+    "data": {
+      "cca3": "BLZ",
+      "name": "Belize",
+      "worldFactbookCountryKey": "BH",
+      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Mexico"
+    }
+  },
+  "BEN": {
+    "data": {
+      "cca3": "BEN",
+      "name": "Benin",
+      "worldFactbookCountryKey": "BN",
+      "location": "Western Africa, between Nigeria and Togo"
+    }
+  },
+  "BMU": {
+    "data": {
+      "cca3": "BMU",
+      "name": "Bermuda",
+      "worldFactbookCountryKey": "BD",
+      "location": "North America, group of islands in the North Atlantic Ocean, east of the US state of South Carolina",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is red, with the UK flag in the canton and the national coat of arms centered in the fly half. The coat of arms is a white shield with a red lion on a green field, holding a scrolled shield showing the sinking of a ship."
+    }
+  },
+  "BTN": {
+    "data": {
+      "cca3": "BTN",
+      "name": "Bhutan",
+      "worldFactbookCountryKey": "BT",
+      "location": "Southern Asia, between China and India, north of Bangladesh"
+    }
+  },
+  "BOL": {
+    "data": {
+      "cca3": "BOL",
+      "name": "Bolivia",
+      "worldFactbookCountryKey": "BL",
+      "location": "Central South America, northwest of Paraguay, southwest of Brazil"
+    }
+  },
+  "BIH": {
+    "data": {
+      "cca3": "BIH",
+      "name": "Bosnia and Herzegovina",
+      "worldFactbookCountryKey": "BK",
+      "location": "Southeastern Europe, bordering the Adriatic Sea and Croatia"
+    }
+  },
+  "BWA": {
+    "data": {
+      "cca3": "BWA",
+      "name": "Botswana",
+      "worldFactbookCountryKey": "BC",
+      "location": "Southern Africa, north of South Africa"
+    }
+  },
+  "BVT": {
+    "data": {
+      "cca3": "BVT",
+      "name": "Bouvet Island",
+      "worldFactbookCountryKey": "BV",
+      "location": "Island in the South Atlantic Ocean, southwest of South Africa",
+      "parentCountryCca3": "NOR",
+      "flagDescription": "The flag of this country has a red field with a large white-edged navy blue cross that extends to the edges of the field. The vertical part of this cross is offset towards the hoist side."
+    }
+  },
+  "BRA": {
+    "data": {
+      "cca3": "BRA",
+      "name": "Brazil",
+      "worldFactbookCountryKey": "BR",
+      "location": "Eastern South America, bordering the Atlantic Ocean"
+    }
+  },
+  "IOT": {
+    "data": {
+      "cca3": "IOT",
+      "name": "British Indian Ocean Territory",
+      "worldFactbookCountryKey": "IO",
+      "location": "Archipelago in the Indian Ocean, south of India, about halfway between Africa and Indonesia",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is white with six blue, wavy, horizontal stripes. The UK flag is in the canton. The striped section has a palm tree and yellow crown centered in the fly half."
+    }
+  },
+  "VGB": {
+    "data": {
+      "cca3": "VGB",
+      "name": "British Virgin Islands",
+      "worldFactbookCountryKey": "VI",
+      "location": "Caribbean, between the Caribbean Sea and the North Atlantic Ocean, east of Puerto Rico, northeast of the United States Virgin Islands",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the national coat of arms centered in the fly half. The coat of arms depicts a woman flanked by vertical columns of six oil lamps above a scroll bearing the Latin word VIGILATE (Be Watchful)."
+    }
+  },
+  "BRN": {
+    "data": {
+      "cca3": "BRN",
+      "name": "Brunei",
+      "worldFactbookCountryKey": "BX",
+      "location": "Southeastern Asia, along the northern coast of the island of Borneo, bordering the South China Sea and Malaysia"
+    }
+  },
+  "BGR": {
+    "data": {
+      "cca3": "BGR",
+      "name": "Bulgaria",
+      "worldFactbookCountryKey": "BU",
+      "location": "Southeastern Europe, bordering the Black Sea, between Romania and Turkey"
+    }
+  },
+  "BFA": {
+    "data": {
+      "cca3": "BFA",
+      "name": "Burkina Faso",
+      "worldFactbookCountryKey": "UV",
+      "location": "Western Africa, north of Ghana"
+    }
+  },
+  "BDI": {
+    "data": {
+      "cca3": "BDI",
+      "name": "Burundi",
+      "worldFactbookCountryKey": "BY",
+      "location": "Central Africa, east of the Democratic Republic of the Congo, west of Tanzania"
+    }
+  },
+  "KHM": {
+    "data": {
+      "cca3": "KHM",
+      "name": "Cambodia",
+      "worldFactbookCountryKey": "CB",
+      "location": "Southeastern Asia, bordering the Gulf of Thailand, between Thailand, Vietnam, and Laos"
+    }
+  },
+  "CMR": {
+    "data": {
+      "cca3": "CMR",
+      "name": "Cameroon",
+      "worldFactbookCountryKey": "CM",
+      "location": "Central Africa, bordering the Bight of Biafra, between Equatorial Guinea and Nigeria"
+    }
+  },
+  "CAN": {
+    "data": {
+      "cca3": "CAN",
+      "name": "Canada",
+      "worldFactbookCountryKey": "CA",
+      "location": "Northern North America, bordering the North Atlantic Ocean on the east, North Pacific Ocean on the west, and the Arctic Ocean to the north"
+    }
+  },
+  "CPV": {
+    "data": {
+      "cca3": "CPV",
+      "name": "Cape Verde",
+      "worldFactbookCountryKey": "CV",
+      "location": "Western Africa, group of islands in the North Atlantic Ocean, west of Senegal"
+    }
+  },
+  "BES": {
+    "data": {
+      "cca3": "BES",
+      "name": "Caribbean Netherlands",
+      "worldFactbookCountryKey": "BES",
+      "location": "Caribbean, islands in the Caribbean Sea, east of Curacao and northwest of Saint Kitts and Nevis",
+      "parentCountryCca3": "NLD",
+      "flagDescription": "The flag of this country features a large blue triangle at the lower fly-side corner, spanning half the flag, and a smaller yellow triangle at the opposite corner, separated by a white strip containing a black compass surrounding a red six-pointed star."
+    }
+  },
+  "CYM": {
+    "data": {
+      "cca3": "CYM",
+      "name": "Cayman Islands",
+      "worldFactbookCountryKey": "CJ",
+      "location": "Caribbean, three-island group in the Caribbean Sea, south of Cuba and northwest of Jamaica",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is composed of a blue field with the UK flag in the canton and the national coat of arms centered on the fly. The coat of arms includes a crest with a pineapple and a turtle above a shield bearing a golden lion. Below are three green stars over white and blue wavy lines. A scroll below the shield bears the motto HE HATH FOUNDED IT UPON THE SEAS."
+    }
+  },
+  "CAF": {
+    "data": {
+      "cca3": "CAF",
+      "name": "Central African Republic",
+      "worldFactbookCountryKey": "CT",
+      "location": "Central Africa, north of the Democratic Republic of the Congo"
+    }
+  },
+  "TCD": {
+    "data": {
+      "cca3": "TCD",
+      "name": "Chad",
+      "worldFactbookCountryKey": "CD",
+      "location": "Central Africa, south of Libya"
+    }
+  },
+  "CHL": {
+    "data": {
+      "cca3": "CHL",
+      "name": "Chile",
+      "worldFactbookCountryKey": "CI",
+      "location": "Southern South America, bordering the South Pacific Ocean, between Argentina and Peru"
+    }
+  },
+  "CHN": {
+    "data": {
+      "cca3": "CHN",
+      "name": "China",
+      "worldFactbookCountryKey": "CH",
+      "location": "Eastern Asia, bordering the sea, between North Korea and Vietnam"
+    }
+  },
+  "CXR": {
+    "data": {
+      "cca3": "CXR",
+      "name": "Christmas Island",
+      "worldFactbookCountryKey": "KT",
+      "location": "Southeastern Asia, island in the Indian Ocean, south of Indonesia",
+      "parentCountryCca3": "AUS",
+      "flagDescription": "The flag of this country is divided diagonally from upper hoist side to lower fly side. The upper triangle is green with a yellow image of a Golden Bosun Bird. The lower triangle is blue with the Southern Cross constellation. A centered yellow disk displays a green map of the country."
+    }
+  },
+  "CCK": {
+    "data": {
+      "cca3": "CCK",
+      "name": "Cocos (Keeling) Islands",
+      "worldFactbookCountryKey": "CK",
+      "location": "Southeastern Asia, group of islands in the Indian Ocean, southwest of Indonesia, about halfway between Australia and Sri Lanka",
+      "parentCountryCca3": "AUS",
+      "flagDescription": "The flag of this country consists of a green field with a palm tree on a gold disc in the canton, a gold crescent moon in the center of the flag, and a gold southern cross in the fly side."
+    }
+  },
+  "COL": {
+    "data": {
+      "cca3": "COL",
+      "name": "Colombia",
+      "worldFactbookCountryKey": "CO",
+      "location": "Northern South America, bordering the Caribbean Sea, between Panama and Venezuela, and bordering the North Pacific Ocean, between Ecuador and Panama"
+    }
+  },
+  "COM": {
+    "data": {
+      "cca3": "COM",
+      "name": "Comoros",
+      "worldFactbookCountryKey": "CN",
+      "location": "Southern Africa, group of islands at the northern mouth of the Mozambique Channel, about two-thirds of the way between northern Madagascar and northern Mozambique"
+    }
+  },
+  "COK": {
+    "data": {
+      "cca3": "COK",
+      "name": "Cook Islands",
+      "worldFactbookCountryKey": "CW",
+      "location": "Oceania, group of islands in the South Pacific Ocean, about halfway between Hawaii and New Zealand, east of Tonga",
+      "parentCountryCca3": "NZL",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and a large circle of 15 white five-pointed stars centered in the fly"
+    }
+  },
+  "CRI": {
+    "data": {
+      "cca3": "CRI",
+      "name": "Costa Rica",
+      "worldFactbookCountryKey": "CS",
+      "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Nicaragua and Panama"
+    }
+  },
+  "HRV": {
+    "data": {
+      "cca3": "HRV",
+      "name": "Croatia",
+      "worldFactbookCountryKey": "HR",
+      "location": "Southeastern Europe, bordering the Adriatic Sea, between Bosnia and Herzegovina and Slovenia"
+    }
+  },
+  "CUB": {
+    "data": {
+      "cca3": "CUB",
+      "name": "Cuba",
+      "worldFactbookCountryKey": "CU",
+      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, south of the US state of Florida"
+    }
+  },
+  "CUW": {
+    "data": {
+      "cca3": "CUW",
+      "name": "Curaçao",
+      "worldFactbookCountryKey": "UC",
+      "location": "Caribbean, an island in the Caribbean Sea, off the coast of Venezuela, east of Aruba",
+      "parentCountryCca3": "NLD",
+      "flagDescription": "The flag of this country shows a blue field, on which a horizontal yellow band below the center divides the flag. Two five-pointed white stars, the smaller above and to the left of the larger, appear in the canton."
+    }
+  },
+  "CYP": {
+    "data": {
+      "cca3": "CYP",
+      "name": "Cyprus",
+      "worldFactbookCountryKey": "CY",
+      "location": "Middle East, island in the Mediterranean Sea, south of Turkey"
+    }
+  },
+  "CZE": {
+    "data": {
+      "cca3": "CZE",
+      "name": "Czechia",
+      "worldFactbookCountryKey": "EZ",
+      "location": "Central Europe, between Germany, Poland, Slovakia, and Austria"
+    }
+  },
+  "DNK": {
+    "data": {
+      "cca3": "DNK",
+      "name": "Denmark",
+      "worldFactbookCountryKey": "DA",
+      "location": "Northern Europe, bordering the Baltic Sea and the North Sea, on a peninsula north of Germany (Jutland), also includeing several major islands"
+    }
+  },
+  "DJI": {
+    "data": {
+      "cca3": "DJI",
+      "name": "Djibouti",
+      "worldFactbookCountryKey": "DJ",
+      "location": "Eastern Africa, bordering the Gulf of Aden and the Red Sea, between Eritrea and Somalia"
+    }
+  },
+  "DMA": {
+    "data": {
+      "cca3": "DMA",
+      "name": "Dominica",
+      "worldFactbookCountryKey": "DO",
+      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, about halfway between Puerto Rico and Trinidad and Tobago"
+    }
+  },
+  "DOM": {
+    "data": {
+      "cca3": "DOM",
+      "name": "Dominican Republic",
+      "worldFactbookCountryKey": "DR",
+      "location": "Caribbean, eastern two-thirds of the island of Hispaniola, between the Caribbean Sea and the North Atlantic Ocean"
+    }
+  },
+  "COD": {
+    "data": {
+      "cca3": "COD",
+      "name": "DR Congo",
+      "worldFactbookCountryKey": "CG",
+      "location": "Central Africa, northeast of Angola"
+    }
+  },
+  "ECU": {
+    "data": {
+      "cca3": "ECU",
+      "name": "Ecuador",
+      "worldFactbookCountryKey": "EC",
+      "location": "Western South America, bordering the Pacific Ocean, between Colombia and Peru"
+    }
+  },
+  "EGY": {
+    "data": {
+      "cca3": "EGY",
+      "name": "Egypt",
+      "worldFactbookCountryKey": "EG",
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Libya and the Gaza Strip, and the Red Sea north of Sudan, and includes the Asian Sinai Peninsula"
+    }
+  },
+  "SLV": {
+    "data": {
+      "cca3": "SLV",
+      "name": "El Salvador",
+      "worldFactbookCountryKey": "ES",
+      "location": "Central America, bordering the North Pacific Ocean, between Guatemala and Honduras"
+    }
+  },
+  "GNQ": {
+    "data": {
+      "cca3": "GNQ",
+      "name": "Equatorial Guinea",
+      "worldFactbookCountryKey": "EK",
+      "location": "Central Africa, bordering the Bight of Biafra, between Cameroon and Gabon"
+    }
+  },
+  "ERI": {
+    "data": {
+      "cca3": "ERI",
+      "name": "Eritrea",
+      "worldFactbookCountryKey": "ER",
+      "location": "Eastern Africa, bordering the Red Sea, between Djibouti and Sudan"
+    }
+  },
+  "EST": {
+    "data": {
+      "cca3": "EST",
+      "name": "Estonia",
+      "worldFactbookCountryKey": "EN",
+      "location": "Eastern Europe, bordering the Baltic Sea and Gulf of Finland, between Latvia and Russia"
+    }
+  },
+  "SWZ": {
+    "data": {
+      "cca3": "SWZ",
+      "name": "Eswatini",
+      "worldFactbookCountryKey": "WZ",
+      "location": "Southern Africa, between Mozambique and South Africa"
+    }
+  },
+  "ETH": {
+    "data": {
+      "cca3": "ETH",
+      "name": "Ethiopia",
+      "worldFactbookCountryKey": "ET",
+      "location": "Eastern Africa, west of Somalia"
+    }
+  },
+  "FLK": {
+    "data": {
+      "cca3": "FLK",
+      "name": "Falkland Islands",
+      "worldFactbookCountryKey": "FK",
+      "location": "Southern South America, islands in the South Atlantic Ocean, east of southern Argentina",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the national coat of arms centered in the fly half. The coat of arms has a white ram above a ship, with a scroll at the bottom bearing the motto DESIRE THE RIGHT."
+    }
+  },
+  "FRO": {
+    "data": {
+      "cca3": "FRO",
+      "name": "Faroe Islands",
+      "worldFactbookCountryKey": "FO",
+      "location": "Northern Europe, island group between the Norwegian Sea and the North Atlantic Ocean, about halfway between Iceland and Norway",
+      "parentCountryCca3": "DNK",
+      "flagDescription": "The flag of this country is white with a red cross outlined in blue extending to the edges of the flag. The vertical part of the cross is shifted toward the hoist side."
+    }
+  },
+  "FJI": {
+    "data": {
+      "cca3": "FJI",
+      "name": "Fiji",
+      "worldFactbookCountryKey": "FJ",
+      "location": "Oceania, island group in the South Pacific Ocean, about two-thirds of the way from Hawaii to New Zealand, northwest of Tonga"
+    }
+  },
+  "FIN": {
+    "data": {
+      "cca3": "FIN",
+      "name": "Finland",
+      "worldFactbookCountryKey": "FIN",
+      "location": "Northern Europe, bordering the Baltic Sea and Gulf of Bothnia, between Sweden and Russia"
+    }
+  },
+  "FRA": {
+    "data": {
+      "cca3": "FRA",
+      "name": "France",
+      "worldFactbookCountryKey": "FR",
+      "location": "Western Europe, bordering the Bay of Biscay and English Channel, between Belgium and Spain, southeast of the UK, and bordering the Mediterranean Sea, between Italy and Spain"
+    }
+  },
+  "GUF": {
+    "data": {
+      "cca3": "GUF",
+      "name": "French Guiana",
+      "worldFactbookCountryKey": "GUF",
+      "location": "Northern South America, bordering the North Atlantic Ocean, between Brazil and Suriname",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country divides diagonally with green in the upper fly and yellow in the lower hoist and bears a red five-pointed star in the center."
+    }
+  },
+  "PYF": {
+    "data": {
+      "cca3": "PYF",
+      "name": "French Polynesia",
+      "worldFactbookCountryKey": "FP",
+      "location": "Oceania, five archipelagoes in the South Pacific Ocean about halfway between South America and Australia",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country has two red horizontal bands flanking a wide white band in a 1:2:1 ratio. Centered on the white band is a disk with a blue-and-white wave pattern depicting the sea on the lower half and a gold-and-white ray pattern depicting the sun on the upper half. A Polynesian canoe on the disk has a crew of five."
+    }
+  },
+  "ATF": {
+    "data": {
+      "cca3": "ATF",
+      "name": "French Southern and Antarctic Lands",
+      "worldFactbookCountryKey": "FS",
+      "location": "Southeast and east of Africa, islands in the southern Indian Ocean, some near Madagascar and others about equidistant between Africa, Antarctica, and Australia",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country is blue and features the French tricolor in the canton, often displayed with a white border. In the lower fly, the letters T.A.A.F. form a monogram in white, which is stylized to resemble an anchor. The monogram is surrounded by five white stars."
+    }
+  },
+  "GAB": {
+    "data": {
+      "cca3": "GAB",
+      "name": "Gabon",
+      "worldFactbookCountryKey": "GB",
+      "location": "Central Africa, bordering the Atlantic Ocean at the Equator, between Republic of the Congo and Equatorial Guinea"
+    }
+  },
+  "GMB": {
+    "data": {
+      "cca3": "GMB",
+      "name": "Gambia",
+      "worldFactbookCountryKey": "GA",
+      "location": "Western Africa, bordering the North Atlantic Ocean and Senegal"
+    }
+  },
+  "GEO": {
+    "data": {
+      "cca3": "GEO",
+      "name": "Georgia",
+      "worldFactbookCountryKey": "GG",
+      "location": "Southwestern Asia, bordering the Black Sea, between Turkey and Russia, with a sliver of land north of the Caucasus extending into Europe"
+    }
+  },
+  "DEU": {
+    "data": {
+      "cca3": "DEU",
+      "name": "Germany",
+      "worldFactbookCountryKey": "GM",
+      "location": "Central Europe, bordering the Baltic Sea and the North Sea, between the Netherlands and Poland, south of Denmark"
+    }
+  },
+  "GHA": {
+    "data": {
+      "cca3": "GHA",
+      "name": "Ghana",
+      "worldFactbookCountryKey": "GH",
+      "location": "Western Africa, bordering the Gulf of Guinea, between Ivory Coast and Togo"
+    }
+  },
+  "GIB": {
+    "data": {
+      "cca3": "GIB",
+      "name": "Gibraltar",
+      "worldFactbookCountryKey": "GI",
+      "location": "Southwestern Europe, bordering the Mediterranean Sea and the North Atlantic Ocean, on the southern coast of Spain",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country has two horizontal bands of white (double-width) and red, with a three-towered red castle in the center of the white band. A gold key hangs from the castle gate and is centered in the red band."
+    }
+  },
+  "GRC": {
+    "data": {
+      "cca3": "GRC",
+      "name": "Greece",
+      "worldFactbookCountryKey": "GR",
+      "location": "Southern Europe, bordering the Aegean Sea, Ionian Sea, and the Mediterranean Sea, between Albania and Turkey"
+    }
+  },
+  "GRL": {
+    "data": {
+      "cca3": "GRL",
+      "name": "Greenland",
+      "worldFactbookCountryKey": "GL",
+      "location": "Northern North America, island between the Arctic Ocean and the North Atlantic Ocean, northeast of Canada",
+      "parentCountryCca3": "DNK",
+      "flagDescription": "The flag of this country has two equal horizontal bands of white and red, with a large disk slightly to the hoist side of center. The top half of the disk is red, and the bottom half is white."
+    }
+  },
+  "GRD": {
+    "data": {
+      "cca3": "GRD",
+      "name": "Grenada",
+      "worldFactbookCountryKey": "GJ",
+      "location": "Caribbean, island between the Caribbean Sea and Atlantic Ocean, north of Trinidad and Tobago and south of Saint Vincent and the Grenadines"
+    }
+  },
+  "GLP": {
+    "data": {
+      "cca3": "GLP",
+      "name": "Guadeloupe",
+      "worldFactbookCountryKey": "GLP",
+      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, southeast of Puerto Rico, north of Dominica and south of Antigua and Barbuda",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country has a black field with a 30-rayed yellow sun in front of a green sugarcane, as well as a blue stripe with three yellow fleurs-de-lis on the top."
+    }
+  },
+  "GUM": {
+    "data": {
+      "cca3": "GUM",
+      "name": "Guam",
+      "worldFactbookCountryKey": "GQ",
+      "location": "Oceania, island in the North Pacific Ocean, about three-quarters of the way from Hawaii to the Philippines",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country is dark blue with a narrow red border on all four sides. Centered is a red-bordered, pointed, vertical ellipse containing a beach scene, a proa (outrigger canoe with sail), and a palm tree. The country's name in red is centered in the ellipse."
+    }
+  },
+  "GTM": {
+    "data": {
+      "cca3": "GTM",
+      "name": "Guatemala",
+      "worldFactbookCountryKey": "GT",
+      "location": "Central America, bordering the North Pacific Ocean, between El Salvador and Mexico"
+    }
+  },
+  "GGY": {
+    "data": {
+      "cca3": "GGY",
+      "name": "Guernsey",
+      "worldFactbookCountryKey": "GK",
+      "location": "Western Europe, islands in the English Channel, northwest of France",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is white with a red cross extending to the edges.  Superimposed on it is a gold equal-armed cross capped with serifs."
+    }
+  },
+  "GIN": {
+    "data": {
+      "cca3": "GIN",
+      "name": "Guinea",
+      "worldFactbookCountryKey": "GV",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Guinea-Bissau and Sierra Leone"
+    }
+  },
+  "GNB": {
+    "data": {
+      "cca3": "GNB",
+      "name": "Guinea-Bissau",
+      "worldFactbookCountryKey": "PU",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Guinea and Senegal"
+    }
+  },
+  "GUY": {
+    "data": {
+      "cca3": "GUY",
+      "name": "Guyana",
+      "worldFactbookCountryKey": "GY",
+      "location": "Northern South America, bordering the North Atlantic Ocean, between Suriname and Venezuela"
+    }
+  },
+  "HTI": {
+    "data": {
+      "cca3": "HTI",
+      "name": "Haiti",
+      "worldFactbookCountryKey": "HA",
+      "location": "Caribbean, western one-third of the island of Hispaniola, between the Caribbean Sea and the North Atlantic Ocean"
+    }
+  },
+  "HMD": {
+    "data": {
+      "cca3": "HMD",
+      "name": "Heard Island and McDonald Islands",
+      "worldFactbookCountryKey": "HM",
+      "location": "Islands in the Indian Ocean, about two-thirds of the way from Madagascar to Antarctica",
+      "parentCountryCca3": "AUS",
+      "flagDescription": "The flag of this country has a dark blue field. It features the flag of the United Kingdom — the Union Jack — in the canton, beneath which is a large white seven-pointed star. A representation of the Southern Cross constellation, made up of one small five-pointed and four larger seven-pointed white stars, is situated on the fly side of the field."
+    }
+  },
+  "HND": {
+    "data": {
+      "cca3": "HND",
+      "name": "Honduras",
+      "worldFactbookCountryKey": "HO",
+      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Nicaragua"
+    }
+  },
+  "HKG": {
+    "data": {
+      "cca3": "HKG",
+      "name": "Hong Kong",
+      "worldFactbookCountryKey": "HK",
+      "location": "Eastern Asia, bordering the South China Sea and China, east of Macau",
+      "parentCountryCca3": "CHN",
+      "flagDescription": "The flag of this country is red with a stylized, five-petal, white Bauhinia flower in the center. Each petal has a small, five-pointed red star."
+    }
+  },
+  "HUN": {
+    "data": {
+      "cca3": "HUN",
+      "name": "Hungary",
+      "worldFactbookCountryKey": "HU",
+      "location": "Central Europe, northwest of Romania"
+    }
+  },
+  "ISL": {
+    "data": {
+      "cca3": "ISL",
+      "name": "Iceland",
+      "worldFactbookCountryKey": "IC",
+      "location": "Northern Europe, island between the Greenland Sea and the North Atlantic Ocean, northwest of the United Kingdom"
+    }
+  },
+  "IND": {
+    "data": {
+      "cca3": "IND",
+      "name": "India",
+      "worldFactbookCountryKey": "IN",
+      "location": "Southern Asia, bordering the Arabian Sea and the Bay of Bengal, between Myanmar and Pakistan"
+    }
+  },
+  "IDN": {
+    "data": {
+      "cca3": "IDN",
+      "name": "Indonesia",
+      "worldFactbookCountryKey": "ID",
+      "location": "Southeastern Asia, archipelago between the Indian Ocean and the Pacific Ocean"
+    }
+  },
+  "IRN": {
+    "data": {
+      "cca3": "IRN",
+      "name": "Iran",
+      "worldFactbookCountryKey": "IR",
+      "location": "Middle East, bordering the Gulf of Oman, the Persian Gulf, and the Caspian Sea, between Iraq and Pakistan"
+    }
+  },
+  "IRQ": {
+    "data": {
+      "cca3": "IRQ",
+      "name": "Iraq",
+      "worldFactbookCountryKey": "IZ",
+      "location": "Middle East, bordering the Persian Gulf, between Iran and Kuwait"
+    }
+  },
+  "IRL": {
+    "data": {
+      "cca3": "IRL",
+      "name": "Ireland",
+      "worldFactbookCountryKey": "EI",
+      "location": "Western Europe, occupying five-sixths of its island in the North Atlantic Ocean, west of the United Kingdom"
+    }
+  },
+  "IMN": {
+    "data": {
+      "cca3": "IMN",
+      "name": "Isle of Man",
+      "worldFactbookCountryKey": "IM",
+      "location": "Western Europe, island in the Irish Sea, between Great Britain and Ireland",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is red with an emblem comprising three legs (triskelion) in the center. The three legs are joined at the thigh and bent at the knee."
+    }
+  },
+  "ISR": {
+    "data": {
+      "cca3": "ISR",
+      "name": "Israel",
+      "worldFactbookCountryKey": "ISR",
+      "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Lebanon"
+    }
+  },
+  "ITA": {
+    "data": {
+      "cca3": "ITA",
+      "name": "Italy",
+      "worldFactbookCountryKey": "IT",
+      "location": "Southern Europe, a peninsula extending into the central Mediterranean Sea, northeast of Tunisia"
+    }
+  },
+  "CIV": {
+    "data": {
+      "cca3": "CIV",
+      "name": "Ivory Coast",
+      "worldFactbookCountryKey": "IV",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Ghana and Liberia"
+    }
+  },
+  "JAM": {
+    "data": {
+      "cca3": "JAM",
+      "name": "Jamaica",
+      "worldFactbookCountryKey": "JM",
+      "location": "Caribbean, island in the Caribbean Sea, south of Cuba"
+    }
+  },
+  "JPN": {
+    "data": {
+      "cca3": "JPN",
+      "name": "Japan",
+      "worldFactbookCountryKey": "JA",
+      "location": "Eastern Asia, island chain in the North Pacific Ocean, east of the Korean Peninsula"
+    }
+  },
+  "JEY": {
+    "data": {
+      "cca3": "JEY",
+      "name": "Jersey",
+      "worldFactbookCountryKey": "JE",
+      "location": "Western Europe, island in the English Channel, northwest of France",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is white with a diagonal red cross extending to the corners of the flag. A red shield with three lions in yellow is in the upper quadrant, with a yellow crown above."
+    }
+  },
+  "JOR": {
+    "data": {
+      "cca3": "JOR",
+      "name": "Jordan",
+      "worldFactbookCountryKey": "JO",
+      "location": "Middle East, northwest of Saudi Arabia, between Israel (to the west) and Iraq"
+    }
+  },
+  "KAZ": {
+    "data": {
+      "cca3": "KAZ",
+      "name": "Kazakhstan",
+      "worldFactbookCountryKey": "KZ",
+      "location": "Central Asia, northwest of China, south of Russia"
+    }
+  },
+  "KEN": {
+    "data": {
+      "cca3": "KEN",
+      "name": "Kenya",
+      "worldFactbookCountryKey": "KE",
+      "location": "Eastern Africa, bordering the Indian Ocean, between Somalia and Tanzania"
+    }
+  },
+  "KIR": {
+    "data": {
+      "cca3": "KIR",
+      "name": "Kiribati",
+      "worldFactbookCountryKey": "KR",
+      "location": "Oceania, group of 32 coral atolls and one raised coral island in the Pacific Ocean, straddling the Equator, with the capital about halfway between Hawaii and Australia"
+    }
+  },
+  "UNK": {
+    "data": {
+      "cca3": "UNK",
+      "name": "Kosovo",
+      "worldFactbookCountryKey": "KV",
+      "location": "Southeastern Europe, between Serbia and Macedonia",
+      "flagDescription": "The flag of this country has a dark blue field with a gold-colored silhouette of the country in the center, with six five-pointed white stars in a slight arc over it."
+    }
+  },
+  "KWT": {
+    "data": {
+      "cca3": "KWT",
+      "name": "Kuwait",
+      "worldFactbookCountryKey": "KU",
+      "location": "Middle East, bordering the Persian Gulf, between Iraq and Saudi Arabia"
+    }
+  },
+  "KGZ": {
+    "data": {
+      "cca3": "KGZ",
+      "name": "Kyrgyzstan",
+      "worldFactbookCountryKey": "KG",
+      "location": "Central Asia, west of China, south of Kazakhstan"
+    }
+  },
+  "LAO": {
+    "data": {
+      "cca3": "LAO",
+      "name": "Laos",
+      "worldFactbookCountryKey": "LA",
+      "location": "Southeastern Asia, northeast of Thailand, west of Vietnam"
+    }
+  },
+  "LVA": {
+    "data": {
+      "cca3": "LVA",
+      "name": "Latvia",
+      "worldFactbookCountryKey": "LG",
+      "location": "Eastern Europe, bordering the Baltic Sea, between Estonia and Lithuania"
+    }
+  },
+  "LBN": {
+    "data": {
+      "cca3": "LBN",
+      "name": "Lebanon",
+      "worldFactbookCountryKey": "LE",
+      "location": "Middle East, bordering the Mediterranean Sea, between Israel and Syria"
+    }
+  },
+  "LSO": {
+    "data": {
+      "cca3": "LSO",
+      "name": "Lesotho",
+      "worldFactbookCountryKey": "LT",
+      "location": "Southern Africa, an enclave of South Africa"
+    }
+  },
+  "LBR": {
+    "data": {
+      "cca3": "LBR",
+      "name": "Liberia",
+      "worldFactbookCountryKey": "LI",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Ivory Coast and Sierra Leone"
+    }
+  },
+  "LBY": {
+    "data": {
+      "cca3": "LBY",
+      "name": "Libya",
+      "worldFactbookCountryKey": "LY",
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Egypt, Tunisia, and Algeria"
+    }
+  },
+  "LIE": {
+    "data": {
+      "cca3": "LIE",
+      "name": "Liechtenstein",
+      "worldFactbookCountryKey": "LS",
+      "location": "Central Europe, between Austria and Switzerland"
+    }
+  },
+  "LTU": {
+    "data": {
+      "cca3": "LTU",
+      "name": "Lithuania",
+      "worldFactbookCountryKey": "LH",
+      "location": "Eastern Europe, bordering the Baltic Sea, between Latvia and Russia, west of Belarus"
+    }
+  },
+  "LUX": {
+    "data": {
+      "cca3": "LUX",
+      "name": "Luxembourg",
+      "worldFactbookCountryKey": "LU",
+      "location": "Western Europe, between France and Germany, southeast of Belgium"
+    }
+  },
+  "MAC": {
+    "data": {
+      "cca3": "MAC",
+      "name": "Macau",
+      "worldFactbookCountryKey": "MC",
+      "location": "Eastern Asia, bordering the South China Sea and China, west of Hong Kong",
+      "parentCountryCca3": "CHN",
+      "flagDescription": "The flag of this country is green with a lotus flower above a stylized bridge and water in white, under an arc of five five-pointed gold stars."
+    }
+  },
+  "MDG": {
+    "data": {
+      "cca3": "MDG",
+      "name": "Madagascar",
+      "worldFactbookCountryKey": "MA",
+      "location": "Southern Africa, island in the Indian Ocean, east of Mozambique"
+    }
+  },
+  "MWI": {
+    "data": {
+      "cca3": "MWI",
+      "name": "Malawi",
+      "worldFactbookCountryKey": "MI",
+      "location": "Southern Africa, east of Zambia, west and north of Mozambique"
+    }
+  },
+  "MYS": {
+    "data": {
+      "cca3": "MYS",
+      "name": "Malaysia",
+      "worldFactbookCountryKey": "MY",
+      "location": "Southeastern Asia, peninsula bordering Thailand and northern one-third of the island of Borneo, bordering Indonesia, Brunei, and the South China Sea"
+    }
+  },
+  "MDV": {
+    "data": {
+      "cca3": "MDV",
+      "name": "Maldives",
+      "worldFactbookCountryKey": "MV",
+      "location": "Southern Asia, group of atolls in the Indian Ocean, south-southwest of India"
+    }
+  },
+  "MLI": {
+    "data": {
+      "cca3": "MLI",
+      "name": "Mali",
+      "worldFactbookCountryKey": "ML",
+      "location": "Interior Western Africa, southwest of Algeria, north of Guinea, Ivory Coast, and Burkina Faso, west of Niger"
+    }
+  },
+  "MLT": {
+    "data": {
+      "cca3": "MLT",
+      "name": "Malta",
+      "worldFactbookCountryKey": "MT",
+      "location": "Southern Europe, islands in the Mediterranean Sea, south of Sicily (Italy)"
+    }
+  },
+  "MHL": {
+    "data": {
+      "cca3": "MHL",
+      "name": "Marshall Islands",
+      "worldFactbookCountryKey": "RM",
+      "location": "Oceania, consists of 29 atolls and five isolated islands in the North Pacific Ocean, about halfway between Hawaii and Australia"
+    }
+  },
+  "MTQ": {
+    "data": {
+      "cca3": "MTQ",
+      "name": "Martinique",
+      "worldFactbookCountryKey": "MTQ",
+      "location": "Caribbean, island between the Caribbean Sea and North Atlantic Ocean, north of Trinidad and Tobago, between Dominica and Saint Lucia",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country consists of a red triangle at the hoist, with two horizontal bands, the upper green and the lower black."
+    }
+  },
+  "MRT": {
+    "data": {
+      "cca3": "MRT",
+      "name": "Mauritania",
+      "worldFactbookCountryKey": "MR",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Senegal and Western Sahara"
+    }
+  },
+  "MUS": {
+    "data": {
+      "cca3": "MUS",
+      "name": "Mauritius",
+      "worldFactbookCountryKey": "MP",
+      "location": "Southern Africa, island in the Indian Ocean, east of Madagascar and Réunion"
+    }
+  },
+  "MYT": {
+    "data": {
+      "cca3": "MYT",
+      "name": "Mayotte",
+      "worldFactbookCountryKey": "MYT",
+      "location": "Southern Indian Ocean, island in the Mozambique Channel, about halfway between northern Madagascar and northern Mozambique",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country bears a white field with the national coat of arms in the center and the country's name in red above it.  The coat of arms consists of a shield supported by two seahorses and the national motto in a banner below it.  The shield has a white fringe and bears a blue field with an upwards-facing white crescent on the top half and a red field with two yellow ylang-ylang flowers on the bottom half."
+    }
+  },
+  "MEX": {
+    "data": {
+      "cca3": "MEX",
+      "name": "Mexico",
+      "worldFactbookCountryKey": "MX",
+      "location": "North America, bordering the North Pacific Ocean, between Guatemala and the United States, and bordering the Caribbean Sea"
+    }
+  },
+  "FSM": {
+    "data": {
+      "cca3": "FSM",
+      "name": "Micronesia",
+      "worldFactbookCountryKey": "FM",
+      "location": "Oceania, island group in the North Pacific Ocean, about three-quarters of the way from Hawaii to Indonesia"
+    }
+  },
+  "MDA": {
+    "data": {
+      "cca3": "MDA",
+      "name": "Moldova",
+      "worldFactbookCountryKey": "MD",
+      "location": "Eastern Europe, northeast of Romania"
+    }
+  },
+  "MCO": {
+    "data": {
+      "cca3": "MCO",
+      "name": "Monaco",
+      "worldFactbookCountryKey": "MN",
+      "location": "Western Europe, bordering the Mediterranean Sea on the southern coast of France, near the border with Italy",
+      "flagDescription": "The flag of this country is composed of two equal horizontal bands of dark red and white at a 4:5 aspect ratio."
+    }
+  },
+  "MNG": {
+    "data": {
+      "cca3": "MNG",
+      "name": "Mongolia",
+      "worldFactbookCountryKey": "MG",
+      "location": "Northern Asia, between China and Russia"
+    }
+  },
+  "MNE": {
+    "data": {
+      "cca3": "MNE",
+      "name": "Montenegro",
+      "worldFactbookCountryKey": "MJ",
+      "location": "Southeastern Europe, between the Adriatic Sea and Serbia"
+    }
+  },
+  "MSR": {
+    "data": {
+      "cca3": "MSR",
+      "name": "Montserrat",
+      "worldFactbookCountryKey": "MH",
+      "location": "Caribbean, island in the Caribbean Sea, southeast of Saint Kitts and Nevis, southwest of Antigua and Barbuda",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the national coat of arms centered in the fly half. The coat of arms shows a woman in a green dress standing beside a yellow harp and embracing a large dark cross with her right arm."
+    }
+  },
+  "MAR": {
+    "data": {
+      "cca3": "MAR",
+      "name": "Morocco",
+      "worldFactbookCountryKey": "MAR",
+      "location": "Northern Africa, bordering the North Atlantic Ocean and the Mediterranean Sea, west of Algeria"
+    }
+  },
+  "MOZ": {
+    "data": {
+      "cca3": "MOZ",
+      "name": "Mozambique",
+      "worldFactbookCountryKey": "MZ",
+      "location": "Southeastern Africa, bordering the sea, between South Africa and Tanzania"
+    }
+  },
+  "MMR": {
+    "data": {
+      "cca3": "MMR",
+      "name": "Myanmar",
+      "worldFactbookCountryKey": "BM",
+      "location": "Southeastern Asia, bordering the Andaman Sea and the Bay of Bengal, between Bangladesh and Thailand"
+    }
+  },
+  "NAM": {
+    "data": {
+      "cca3": "NAM",
+      "name": "Namibia",
+      "worldFactbookCountryKey": "WA",
+      "location": "Southern Africa, bordering the South Atlantic Ocean, between Angola and South Africa"
+    }
+  },
+  "NRU": {
+    "data": {
+      "cca3": "NRU",
+      "name": "Nauru",
+      "worldFactbookCountryKey": "NR",
+      "location": "Oceania, island in the South Pacific Ocean, south of the Marshall Islands"
+    }
+  },
+  "NPL": {
+    "data": {
+      "cca3": "NPL",
+      "name": "Nepal",
+      "worldFactbookCountryKey": "NP",
+      "location": "Southern Asia, between China and India, west of Bhutan"
+    }
+  },
+  "NLD": {
+    "data": {
+      "cca3": "NLD",
+      "name": "Netherlands",
+      "worldFactbookCountryKey": "NL",
+      "location": "Western Europe, bordering the North Sea, between Belgium and Germany"
+    }
+  },
+  "NCL": {
+    "data": {
+      "cca3": "NCL",
+      "name": "New Caledonia",
+      "worldFactbookCountryKey": "NC",
+      "location": "Oceania, islands in the South Pacific Ocean, east of Australia, south of Vanuatu",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country has three equal horizontal bands of blue, red, and green. A large yellow disk shifted slightly to the hoist side is edged in black and displays a black symbol of a native rooftop adornment."
+    }
+  },
+  "NZL": {
+    "data": {
+      "cca3": "NZL",
+      "name": "New Zealand",
+      "worldFactbookCountryKey": "NZ",
+      "location": "Oceania, islands in the South Pacific Ocean, southeast of Australia"
+    }
+  },
+  "NIC": {
+    "data": {
+      "cca3": "NIC",
+      "name": "Nicaragua",
+      "worldFactbookCountryKey": "NU",
+      "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Costa Rica and Honduras"
+    }
+  },
+  "NER": {
+    "data": {
+      "cca3": "NER",
+      "name": "Niger",
+      "worldFactbookCountryKey": "NG",
+      "location": "Western Africa, southeast of Algeria"
+    }
+  },
+  "NGA": {
+    "data": {
+      "cca3": "NGA",
+      "name": "Nigeria",
+      "worldFactbookCountryKey": "NI",
+      "location": "Western Africa, bordering the Gulf of Guinea, between Benin and Cameroon"
+    }
+  },
+  "NIU": {
+    "data": {
+      "cca3": "NIU",
+      "name": "Niue",
+      "worldFactbookCountryKey": "NE",
+      "location": "Oceania, island in the South Pacific Ocean, east of Tonga",
+      "flagDescription": "The flag of this country is yellow with the UK flag in the canton. The UK flag has five yellow five-pointed stars, with a large star on a blue disk in the center and smaller stars on each arm of the red cross"
+    }
+  },
+  "NFK": {
+    "data": {
+      "cca3": "NFK",
+      "name": "Norfolk Island",
+      "worldFactbookCountryKey": "NF",
+      "location": "Oceania, island in the South Pacific Ocean, east of Australia, south of New Caledonia",
+      "parentCountryCca3": "AUS",
+      "flagDescription": "The flag of this country has three vertical bands of green, white, and green, with a large green native pine tree centered in the white band."
+    }
+  },
+  "PRK": {
+    "data": {
+      "cca3": "PRK",
+      "name": "North Korea",
+      "worldFactbookCountryKey": "KN",
+      "location": "Eastern Asia, northern half of the peninsula bordering China and the Sea of Japan"
+    }
+  },
+  "MKD": {
+    "data": {
+      "cca3": "MKD",
+      "name": "North Macedonia",
+      "worldFactbookCountryKey": "MK",
+      "location": "Southeastern Europe, north of Greece, southwest of Bulgaria"
+    }
+  },
+  "MNP": {
+    "data": {
+      "cca3": "MNP",
+      "name": "Northern Mariana Islands",
+      "worldFactbookCountryKey": "CQ",
+      "location": "Oceania, islands in the North Pacific Ocean, about three-quarters of the way from Hawaii to the Philippines",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country is blue with a five-pointed white star on a gray latte stone (a traditional foundation stone) in the center, surrounded by a head lei (wreath)."
+    }
+  },
+  "NOR": {
+    "data": {
+      "cca3": "NOR",
+      "name": "Norway",
+      "worldFactbookCountryKey": "NO",
+      "location": "Northern Europe, bordering the North Sea and the North Atlantic Ocean, west of Sweden"
+    }
+  },
+  "OMN": {
+    "data": {
+      "cca3": "OMN",
+      "name": "Oman",
+      "worldFactbookCountryKey": "MU",
+      "location": "Middle East, bordering the Arabian Sea and Persian Gulf, between Yemen and the United Arab Emirates"
+    }
+  },
+  "PAK": {
+    "data": {
+      "cca3": "PAK",
+      "name": "Pakistan",
+      "worldFactbookCountryKey": "PK",
+      "location": "Southern Asia, bordering the Arabian Sea, between India on the east and Iran and Afghanistan on the west"
+    }
+  },
+  "PLW": {
+    "data": {
+      "cca3": "PLW",
+      "name": "Palau",
+      "worldFactbookCountryKey": "PS",
+      "location": "Oceania, group of islands in the North Pacific Ocean, southeast of the Philippines, north of the island of New Guinea"
+    }
+  },
+  "PSE": {
+    "data": {
+      "cca3": "PSE",
+      "name": "Palestine",
+      "worldFactbookCountryKey": "PSE",
+      "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Israel, and west of Jordan, east of Israel",
+      "flagDescription": "The flag of this country has three equal horizontal stripes of black, white, and green overlaid by a red triangle issuing from the hoist."
+    }
+  },
+  "PAN": {
+    "data": {
+      "cca3": "PAN",
+      "name": "Panama",
+      "worldFactbookCountryKey": "PM",
+      "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Colombia and Costa Rica"
+    }
+  },
+  "PNG": {
+    "data": {
+      "cca3": "PNG",
+      "name": "Papua New Guinea",
+      "worldFactbookCountryKey": "PP",
+      "location": "Oceania, group of islands including the eastern half of the island of New Guinea between the Coral Sea and the South Pacific Ocean, east of Indonesia"
+    }
+  },
+  "PRY": {
+    "data": {
+      "cca3": "PRY",
+      "name": "Paraguay",
+      "worldFactbookCountryKey": "PA",
+      "location": "Central South America, northeast of Argentina, southwest of Brazil"
+    }
+  },
+  "PER": {
+    "data": {
+      "cca3": "PER",
+      "name": "Peru",
+      "worldFactbookCountryKey": "PE",
+      "location": "Western South America, bordering the South Pacific Ocean, between Chile and Ecuador"
+    }
+  },
+  "PHL": {
+    "data": {
+      "cca3": "PHL",
+      "name": "Philippines",
+      "worldFactbookCountryKey": "RP",
+      "location": "Southeastern Asia, archipelago bordering the South China Sea, east of Vietnam"
+    }
+  },
+  "PCN": {
+    "data": {
+      "cca3": "PCN",
+      "name": "Pitcairn Islands",
+      "worldFactbookCountryKey": "PC",
+      "location": "Oceania, islands in the South Pacific Ocean, about midway between Peru and New Zealand",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the national coat of arms centered on the fly half. The coat of arms has a light-blue shield with a green field which features a yellow anchor with a Bible over it. A wheelbarrow is on the crest, with a flowering twig of miro, a local plant."
+    }
+  },
+  "POL": {
+    "data": {
+      "cca3": "POL",
+      "name": "Poland",
+      "worldFactbookCountryKey": "PL",
+      "location": "Central Europe, east of Germany"
+    }
+  },
+  "PRT": {
+    "data": {
+      "cca3": "PRT",
+      "name": "Portugal",
+      "worldFactbookCountryKey": "PO",
+      "location": "Southwestern Europe, bordering the North Atlantic Ocean, west of Spain"
+    }
+  },
+  "PRI": {
+    "data": {
+      "cca3": "PRI",
+      "name": "Puerto Rico",
+      "worldFactbookCountryKey": "RQ",
+      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, east of the Dominican Republic",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country has five equal horizontal bands of red alternating with white. A blue isosceles triangle based on the hoist side has a large five-pointed white star in the center."
+    }
+  },
+  "QAT": {
+    "data": {
+      "cca3": "QAT",
+      "name": "Qatar",
+      "worldFactbookCountryKey": "QA",
+      "location": "Middle East, peninsula bordering the Persian Gulf and Saudi Arabia"
+    }
+  },
+  "COG": {
+    "data": {
+      "cca3": "COG",
+      "name": "Republic of the Congo",
+      "worldFactbookCountryKey": "CF",
+      "location": "Central Africa, bordering the South Atlantic Ocean, between Angola and Gabon"
+    }
+  },
+  "REU": {
+    "data": {
+      "cca3": "REU",
+      "name": "Réunion",
+      "worldFactbookCountryKey": "REU",
+      "location": "Southern Africa, island in the Indian Ocean, east of Madagascar, west of Mauritius",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country has a blue field, with a red triangle spanning the bottom and extending to the center, as well as five yellow beams emanating from the center, spread equally apart."
+    }
+  },
+  "ROU": {
+    "data": {
+      "cca3": "ROU",
+      "name": "Romania",
+      "worldFactbookCountryKey": "RO",
+      "location": "Southeastern Europe, bordering the Black Sea, between Bulgaria and Ukraine"
+    }
+  },
+  "RUS": {
+    "data": {
+      "cca3": "RUS",
+      "name": "Russia",
+      "worldFactbookCountryKey": "RS",
+      "location": "North Asia bordering the Arctic Ocean, extending from Eastern Europe to the North Pacific Ocean"
+    }
+  },
+  "RWA": {
+    "data": {
+      "cca3": "RWA",
+      "name": "Rwanda",
+      "worldFactbookCountryKey": "RW",
+      "location": "Central Africa, east of the Democratic Republic of the Congo, north of Burundi"
+    }
+  },
+  "BLM": {
+    "data": {
+      "cca3": "BLM",
+      "name": "Saint Barthélemy",
+      "worldFactbookCountryKey": "TB",
+      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, located in the Leeward Islands (northern) group, east of the United States Virgin Islands, southeast of Sint Maarten",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country features the national coat of arms centered on a white field.  The coat of arms is a shield divided into three horizontal stripes, three gold fleurs-de-lis on blue, above a white Maltese cross on red, over three gold crowns on blue.  Below the shield is a banner with OUANALAO, which is what the indigenous people called the island. On top of the shield is a mural crown."
+    }
+  },
+  "SHN": {
+    "data": {
+      "cca3": "SHN",
+      "name": "Saint Helena, Ascension and Tristan da Cunha",
+      "worldFactbookCountryKey": "SH",
+      "location": "Islands in the South Atlantic Ocean, about midway between South America and Africa",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the national coat of arms shield centered on the fly half. The upper third of the shield depicts a white plover, a native bird, on a yellow field. The rest of the shield depicts a rocky coastline and a three-masted sailing ship with sails furled and flying an English flag."
+    }
+  },
+  "KNA": {
+    "data": {
+      "cca3": "KNA",
+      "name": "Saint Kitts and Nevis",
+      "worldFactbookCountryKey": "SC",
+      "location": "Caribbean, islands in the Caribbean Sea, southeast of Anguilla, northwest of Montserrat"
+    }
+  },
+  "LCA": {
+    "data": {
+      "cca3": "LCA",
+      "name": "Saint Lucia",
+      "worldFactbookCountryKey": "ST",
+      "location": "Caribbean, island between the Caribbean Sea and North Atlantic Ocean, south of Martinique, northwest of Barbados"
+    }
+  },
+  "MAF": {
+    "data": {
+      "cca3": "MAF",
+      "name": "Saint Martin",
+      "worldFactbookCountryKey": "RN",
+      "location": "Caribbean, the northern portion of its island, located in the Leeward Islands (northern) group, east of the United States Virgin Islands, south of Anguilla",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country is composed of three equal vertical bands of blue, white and red."
+    }
+  },
+  "SPM": {
+    "data": {
+      "cca3": "SPM",
+      "name": "Saint Pierre and Miquelon",
+      "worldFactbookCountryKey": "SB",
+      "location": "Northern North America, islands in the North Atlantic Ocean, south of the Canadian province of Newfoundland",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country features a yellow three-masted sailing ship facing the hoist side riding on a blue background with wavy white lines. A black-over-white wavy line divides the ship from the white wavy lines. On the hoist side, a vertical band is divided into three heraldic arms: the top is red with a green diagonal cross extending to the corners and overlaid with a white cross, the middle is white with an ermine pattern, and the bottom is red with two yellow lions outlined in black."
+    }
+  },
+  "VCT": {
+    "data": {
+      "cca3": "VCT",
+      "name": "Saint Vincent and the Grenadines",
+      "worldFactbookCountryKey": "VC",
+      "location": "Caribbean, islands between the Caribbean Sea and North Atlantic Ocean, west of Barbados, southwest of Saint Lucia"
+    }
+  },
+  "WSM": {
+    "data": {
+      "cca3": "WSM",
+      "name": "Samoa",
+      "worldFactbookCountryKey": "WS",
+      "location": "Oceania, group of islands in the South Pacific Ocean, about halfway between Hawaii and New Zealand, north of Tonga"
+    }
+  },
+  "SMR": {
+    "data": {
+      "cca3": "SMR",
+      "name": "San Marino",
+      "worldFactbookCountryKey": "SM",
+      "location": "Southern Europe, an enclave in central Italy"
+    }
+  },
+  "STP": {
+    "data": {
+      "cca3": "STP",
+      "name": "São Tomé and Príncipe",
+      "worldFactbookCountryKey": "TP",
+      "location": "Central Africa, islands in the Gulf of Guinea, just north of the Equator, west of Gabon",
+      "flagDescription": "The flag of this country has three horizontal bands of green, yellow (double-width), and green, with two black five-pointed stars in the center of the yellow band and a red isosceles triangle based on the hoist side."
+    }
+  },
+  "SAU": {
+    "data": {
+      "cca3": "SAU",
+      "name": "Saudi Arabia",
+      "worldFactbookCountryKey": "SA",
+      "location": "Middle East, bordering the Persian Gulf and the Red Sea, north of Yemen"
+    }
+  },
+  "SEN": {
+    "data": {
+      "cca3": "SEN",
+      "name": "Senegal",
+      "worldFactbookCountryKey": "SG",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Guinea-Bissau and Mauritania"
+    }
+  },
+  "SRB": {
+    "data": {
+      "cca3": "SRB",
+      "name": "Serbia",
+      "worldFactbookCountryKey": "RI",
+      "location": "Southeastern Europe, between Macedonia and Hungary"
+    }
+  },
+  "SYC": {
+    "data": {
+      "cca3": "SYC",
+      "name": "Seychelles",
+      "worldFactbookCountryKey": "SE",
+      "location": "Archipelago in the Indian Ocean, northeast of Madagascar"
+    }
+  },
+  "SLE": {
+    "data": {
+      "cca3": "SLE",
+      "name": "Sierra Leone",
+      "worldFactbookCountryKey": "SL",
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Guinea and Liberia"
+    }
+  },
+  "SGP": {
+    "data": {
+      "cca3": "SGP",
+      "name": "Singapore",
+      "worldFactbookCountryKey": "SN",
+      "location": "Southeastern Asia, islands between Malaysia and Indonesia"
+    }
+  },
+  "SXM": {
+    "data": {
+      "cca3": "SXM",
+      "name": "Sint Maarten",
+      "worldFactbookCountryKey": "NN",
+      "location": "Caribbean, the southern portion of its island, located in the Leeward Islands (northern) group, east of the United States Virgin Islands, south of Anguilla",
+      "parentCountryCca3": "NLD",
+      "flagDescription": "The flag of this country features two equal horizontal bands of red and blue, with a white isosceles triangle based on the hoist side. The center of the triangle displays the national coat of arms with an orange-bordered blue shield that prominently displays a white courthouse, as well as yellow sage in the upper left and the silhouette of a monument in the upper right. Over the shield is a yellow rising sun and a brown pelican in flight. A yellow scroll below the shield has the motto SEMPER PROGREDIENS (Always Progressing)."
+    }
+  },
+  "SVK": {
+    "data": {
+      "cca3": "SVK",
+      "name": "Slovakia",
+      "worldFactbookCountryKey": "LO",
+      "location": "Central Europe, south of Poland, north of Hungary"
+    }
+  },
+  "SVN": {
+    "data": {
+      "cca3": "SVN",
+      "name": "Slovenia",
+      "worldFactbookCountryKey": "SI",
+      "location": "South Central Europe, between Austria to the north and Croatia to the south"
+    }
+  },
+  "SLB": {
+    "data": {
+      "cca3": "SLB",
+      "name": "Solomon Islands",
+      "worldFactbookCountryKey": "BP",
+      "location": "Oceania, group of islands in the South Pacific Ocean, east of Papua New Guinea"
+    }
+  },
+  "SOM": {
+    "data": {
+      "cca3": "SOM",
+      "name": "Somalia",
+      "worldFactbookCountryKey": "SO",
+      "location": "Eastern Africa, bordering the Gulf of Aden and the Indian Ocean, east of Ethiopia"
+    }
+  },
+  "ZAF": {
+    "data": {
+      "cca3": "ZAF",
+      "name": "South Africa",
+      "worldFactbookCountryKey": "SF",
+      "location": "Southern Africa, at the southern tip of the continent of Africa"
+    }
+  },
+  "SGS": {
+    "data": {
+      "cca3": "SGS",
+      "name": "South Georgia",
+      "worldFactbookCountryKey": "SX",
+      "location": "Southern South America, islands in the South Atlantic Ocean, east of the tip of South America and the Falkland Islands",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton. The national coat of arms is centered on the fly half and has a green shield with a golden lion holding a torch. A fur seal is to the left of the shield and a Macaroni penguin to the right. A reindeer appears above the crest, and below the shield on a scroll is the motto LEO TERRAM PROPRIAM PROTEGAT (Let the Lion Protect its Own Land)."
+    }
+  },
+  "KOR": {
+    "data": {
+      "cca3": "KOR",
+      "name": "South Korea",
+      "worldFactbookCountryKey": "KS",
+      "location": "Eastern Asia, southern half of the peninsula bordering the Sea of Japan and the Yellow Sea"
+    }
+  },
+  "SSD": {
+    "data": {
+      "cca3": "SSD",
+      "name": "South Sudan",
+      "worldFactbookCountryKey": "OD",
+      "location": "East-Central Africa, east of the Central African Republic, north of Uganda, west of Ethiopia"
+    }
+  },
+  "ESP": {
+    "data": {
+      "cca3": "ESP",
+      "name": "Spain",
+      "worldFactbookCountryKey": "SP",
+      "location": "Southwestern Europe, southwest of France, bordering the Mediterranean Sea, North Atlantic Ocean, and Bay of Biscay"
+    }
+  },
+  "LKA": {
+    "data": {
+      "cca3": "LKA",
+      "name": "Sri Lanka",
+      "worldFactbookCountryKey": "CE",
+      "location": "Southern Asia, island in the Indian Ocean, south of India"
+    }
+  },
+  "SDN": {
+    "data": {
+      "cca3": "SDN",
+      "name": "Sudan",
+      "worldFactbookCountryKey": "SU",
+      "location": "Northeastern Africa, bordering the Red Sea, between Egypt and Eritrea"
+    }
+  },
+  "SUR": {
+    "data": {
+      "cca3": "SUR",
+      "name": "Suriname",
+      "worldFactbookCountryKey": "NS",
+      "location": "Northern South America, bordering the North Atlantic Ocean, between French Guiana and Guyana"
+    }
+  },
+  "SJM": {
+    "data": {
+      "cca3": "SJM",
+      "name": "Svalbard and Jan Mayen",
+      "worldFactbookCountryKey": "SJM",
+      "location": "Northern Europe, islands between the Greenland Sea and Norwegian Sea, north of Norway, northeast of Iceland",
+      "parentCountryCca3": "NOR",
+      "flagDescription": "The flag of this country has a red field with a large white-edged navy blue cross that extends to the edges of the field. The vertical part of this cross is offset towards the hoist side."
+    }
+  },
+  "SWE": {
+    "data": {
+      "cca3": "SWE",
+      "name": "Sweden",
+      "worldFactbookCountryKey": "SWE",
+      "location": "Northern Europe, bordering the Baltic Sea and Gulf of Bothnia, between Finland and Norway"
+    }
+  },
+  "CHE": {
+    "data": {
+      "cca3": "CHE",
+      "name": "Switzerland",
+      "worldFactbookCountryKey": "SZ",
+      "location": "Central Europe, east of France, north of Italy",
+      "flagDescription": "The flag of this country is square shaped. It features a white cross centered on a red field."
+    }
+  },
+  "SYR": {
+    "data": {
+      "cca3": "SYR",
+      "name": "Syria",
+      "worldFactbookCountryKey": "SY",
+      "location": "Middle East, bordering the Mediterranean Sea, between Lebanon and Turkey"
+    }
+  },
+  "TWN": {
+    "data": {
+      "cca3": "TWN",
+      "name": "Taiwan",
+      "worldFactbookCountryKey": "TW",
+      "location": "Eastern Asia, islands bordering the East China Sea, Philippine Sea, and South China Sea, north of the Philippines, off the southeastern coast of China",
+      "flagDescription": "The flag of this country has a red field with a dark blue rectangle in the canton, bearing a white sun with 12 triangular rays."
+    }
+  },
+  "TJK": {
+    "data": {
+      "cca3": "TJK",
+      "name": "Tajikistan",
+      "worldFactbookCountryKey": "TI",
+      "location": "Central Asia, west of China, south of Kyrgyzstan"
+    }
+  },
+  "TZA": {
+    "data": {
+      "cca3": "TZA",
+      "name": "Tanzania",
+      "worldFactbookCountryKey": "TZ",
+      "location": "Eastern Africa, bordering the Indian Ocean, between Kenya and Mozambique"
+    }
+  },
+  "THA": {
+    "data": {
+      "cca3": "THA",
+      "name": "Thailand",
+      "worldFactbookCountryKey": "TH",
+      "location": "Southeastern Asia, bordering the Andaman Sea, between Myanmar and Malaysia"
+    }
+  },
+  "TLS": {
+    "data": {
+      "cca3": "TLS",
+      "name": "Timor-Leste",
+      "worldFactbookCountryKey": "TT",
+      "location": "Southeastern Asia, northwest of Australia in the Lesser Sunda Islands at the eastern end of the Indonesian archipelago"
+    }
+  },
+  "TGO": {
+    "data": {
+      "cca3": "TGO",
+      "name": "Togo",
+      "worldFactbookCountryKey": "TO",
+      "location": "Western Africa, bordering the Bight of Benin, between Benin and Ghana"
+    }
+  },
+  "TKL": {
+    "data": {
+      "cca3": "TKL",
+      "name": "Tokelau",
+      "worldFactbookCountryKey": "TL",
+      "location": "Oceania, group of three atolls in the South Pacific Ocean, about one-half of the way from Hawaii to New Zealand",
+      "parentCountryCca3": "NZL",
+      "flagDescription": "The flag of this country features a yellow stylized canoe on a dark blue field sailing toward the Southern Cross constellation with four white five-pointed stars at the hoist side."
+    }
+  },
+  "TON": {
+    "data": {
+      "cca3": "TON",
+      "name": "Tonga",
+      "worldFactbookCountryKey": "TN",
+      "location": "Oceania, archipelago in the South Pacific Ocean, about two-thirds of the way from Hawaii to New Zealand, southwest of Fiji"
+    }
+  },
+  "TTO": {
+    "data": {
+      "cca3": "TTO",
+      "name": "Trinidad and Tobago",
+      "worldFactbookCountryKey": "TD",
+      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, northeast of Venezuela, south of Grenada"
+    }
+  },
+  "TUN": {
+    "data": {
+      "cca3": "TUN",
+      "name": "Tunisia",
+      "worldFactbookCountryKey": "TS",
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Algeria and Libya"
+    }
+  },
+  "TUR": {
+    "data": {
+      "cca3": "TUR",
+      "name": "Turkey",
+      "worldFactbookCountryKey": "TU",
+      "location": "Southeastern Europe and Southwestern Asia, bordering the Black Sea, between Bulgaria and Georgia, and bordering the Aegean Sea and the Mediterranean Sea, between Greece and Syria"
+    }
+  },
+  "TKM": {
+    "data": {
+      "cca3": "TKM",
+      "name": "Turkmenistan",
+      "worldFactbookCountryKey": "TX",
+      "location": "Central Asia, bordering the Caspian Sea, between Iran and Kazakhstan"
+    }
+  },
+  "TCA": {
+    "data": {
+      "cca3": "TCA",
+      "name": "Turks and Caicos Islands",
+      "worldFactbookCountryKey": "TK",
+      "location": "Two island groups in the North Atlantic Ocean, southeast of The Bahamas, north of Haiti",
+      "parentCountryCca3": "GBR",
+      "flagDescription": "The flag of this country is blue with the UK flag in the canton and the colonial shield centered on the fly half. The shield is yellow and displays a conch shell, a spiny lobster, and a cactus."
+    }
+  },
+  "TUV": {
+    "data": {
+      "cca3": "TUV",
+      "name": "Tuvalu",
+      "worldFactbookCountryKey": "TV",
+      "location": "Oceania, island group consisting of nine coral atolls in the South Pacific Ocean, about half way from Hawaii to Australia, northwest of Wallis and Futuna"
+    }
+  },
+  "UGA": {
+    "data": {
+      "cca3": "UGA",
+      "name": "Uganda",
+      "worldFactbookCountryKey": "UG",
+      "location": "East-Central Africa, west of Kenya, east of the Democratic Republic of the Congo"
+    }
+  },
+  "UKR": {
+    "data": {
+      "cca3": "UKR",
+      "name": "Ukraine",
+      "worldFactbookCountryKey": "UP",
+      "location": "Eastern Europe, bordering the Black Sea, between Romania in the southwest and Russia in the east"
+    }
+  },
+  "ARE": {
+    "data": {
+      "cca3": "ARE",
+      "name": "United Arab Emirates",
+      "worldFactbookCountryKey": "AE",
+      "location": "Middle East, bordering the Gulf of Oman and the Persian Gulf, between Oman and Saudi Arabia"
+    }
+  },
+  "GBR": {
+    "data": {
+      "cca3": "GBR",
+      "name": "United Kingdom",
+      "worldFactbookCountryKey": "UK",
+      "location": "Western Europe, islands between the North Atlantic Ocean and the North Sea, north of France"
+    }
+  },
+  "USA": {
+    "data": {
+      "cca3": "USA",
+      "name": "United States",
+      "worldFactbookCountryKey": "US",
+      "location": "North America, bordering both the North Atlantic Ocean and the North Pacific Ocean, between Canada and Mexico"
+    }
+  },
+  "UMI": {
+    "data": {
+      "cca3": "UMI",
+      "name": "United States Minor Outlying Islands",
+      "worldFactbookCountryKey": "UMI",
+      "location": "Oceania, group comprising eight islands in the Pacific Ocean, west and southwest of Hawaii, plus one island in the Caribbean Sea, east of Jamaica",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country is composed of thirteen equal horizontal bands of red alternating with white. A blue rectangle, bearing fifty small five-pointed white stars arranged in nine rows where rows of six stars alternate with rows of five stars, is superimposed in the canton."
+    }
+  },
+  "VIR": {
+    "data": {
+      "cca3": "VIR",
+      "name": "United States Virgin Islands",
+      "worldFactbookCountryKey": "VQ",
+      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, east of Puerto Rico",
+      "parentCountryCca3": "USA",
+      "flagDescription": "The flag of this country is composed of a white field with the national coat of arms in the center between the large blue initials V and I. The coat of arms shows a yellow eagle holding an olive branch in its right talon and three arrows in the left, with a shield of seven red and six white vertical stripes below a blue panel."
+    }
+  },
+  "URY": {
+    "data": {
+      "cca3": "URY",
+      "name": "Uruguay",
+      "worldFactbookCountryKey": "UY",
+      "location": "Southern South America, bordering the South Atlantic Ocean, between Argentina and Brazil"
+    }
+  },
+  "UZB": {
+    "data": {
+      "cca3": "UZB",
+      "name": "Uzbekistan",
+      "worldFactbookCountryKey": "UZ",
+      "location": "Central Asia, north of Turkmenistan, south of Kazakhstan"
+    }
+  },
+  "VUT": {
+    "data": {
+      "cca3": "VUT",
+      "name": "Vanuatu",
+      "worldFactbookCountryKey": "NH",
+      "location": "Oceania, group of islands in the South Pacific Ocean, about three-quarters of the way from Hawaii to Australia, west of Fiji"
+    }
+  },
+  "VAT": {
+    "data": {
+      "cca3": "VAT",
+      "name": "Vatican City",
+      "worldFactbookCountryKey": "VT",
+      "location": "Southern Europe, an enclave of the city of Rome, Italy"
+    }
+  },
+  "VEN": {
+    "data": {
+      "cca3": "VEN",
+      "name": "Venezuela",
+      "worldFactbookCountryKey": "VE",
+      "location": "Northern South America, bordering the Caribbean Sea and the North Atlantic Ocean, between Colombia and Guyana"
+    }
+  },
+  "VNM": {
+    "data": {
+      "cca3": "VNM",
+      "name": "Vietnam",
+      "worldFactbookCountryKey": "VM",
+      "location": "Southeastern Asia, bordering the Gulf of Thailand, Gulf of Tonkin, and South China Sea, as well as China, Laos, and Cambodia"
+    }
+  },
+  "WLF": {
+    "data": {
+      "cca3": "WLF",
+      "name": "Wallis and Futuna",
+      "worldFactbookCountryKey": "WF",
+      "location": "Oceania, islands in the South Pacific Ocean, about two-thirds of the way from Hawaii to New Zealand, west of Samoa, northeast of Fiji",
+      "parentCountryCca3": "FRA",
+      "flagDescription": "The flag of this country has a red field with four white isosceles triangles in the middle. The apexes of the triangles are oriented inward and at right angles to each other. The flag of France, outlined in white on two sides, is in the canton."
+    }
+  },
+  "ESH": {
+    "data": {
+      "cca3": "ESH",
+      "name": "Western Sahara",
+      "worldFactbookCountryKey": "ESH",
+      "location": "Northern Africa, bordering the North Atlantic Ocean, north of Mauritania",
+      "flagDescription": "The flag of this country has three equal horizontal stripes of black, white, and green overlaid by a red triangle issuing from the hoist. Centered in the white band is a red fly-facing crescent surrounding a red five-pointed star."
+    }
+  },
+  "YEM": {
+    "data": {
+      "cca3": "YEM",
+      "name": "Yemen",
+      "worldFactbookCountryKey": "YM",
+      "location": "Middle East, bordering the Arabian Sea, Gulf of Aden, and Red Sea, between Oman and Saudi Arabia"
+    }
+  },
+  "ZMB": {
+    "data": {
+      "cca3": "ZMB",
+      "name": "Zambia",
+      "worldFactbookCountryKey": "ZA",
+      "location": "Southern Africa, east of Angola, south of the Democratic Republic of the Congo"
+    }
+  },
+  "ZWE": {
+    "data": {
+      "cca3": "ZWE",
+      "name": "Zimbabwe",
+      "worldFactbookCountryKey": "ZI",
+      "location": "Southern Africa, between South Africa and Zambia, west of Mozambique",
+      "flagDescription": "The flag of this country is composed of seven equal horizontal bands of green, yellow, red, black, red, yellow and green, with a white isosceles triangle superimposed on the hoist side of the field. This triangle is edged in black, spans about one-fourth the width of the field and has its base on the hoist end. A yellow bird superimposed on a five-pointed red star is centered in the triangle."
+    }
+  }
+}
