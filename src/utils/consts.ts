@@ -18,6 +18,7 @@ export const CIA_WORLD_FACTBOOK_LINK_URL = "https://www.cia.gov/the-world-factbo
 export const PORTFOLIO_LINK_ACCESSIBLE_NAME = "Check out my other projects";
 export const PORTFOLIO_URL = "https://alec-mitnik.github.io/";
 
+export const COUNTRIES_SORT_BY_ACCESSIBLE_NAME = "Sort countries by";
 export const COUNTRIES_SEARCH_ACCESSIBLE_NAME = "Filter countries by name";
 
 export const LOADING_MESSAGE = "Loading...";

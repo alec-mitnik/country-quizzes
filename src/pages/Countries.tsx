@@ -5,17 +5,20 @@ import CountryDirectoryLink from "../CountryDirectoryLink";
 import useCountries from "../hooks/useCountries";
 import RenderWithLoading from "../RenderWithLoading";
 import {
-  COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
+  COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
   NO_COUNTRIES_MATCHED_MESSAGE
 } from "../utils/consts";
 import "./Countries.css";
 import Page from "./Page";
+
+type SortBy = "name" | "population" | "size";
 
 /**
  * Displays all the independent countries supplied by the REST Countries API
  * as links to their own respective pages, along with a search input for filtering
  */
 function Countries() {
+  const [sortBy, setSortBy] = useState<SortBy>("name");
   const [searchTerm, setSearchTerm] = useState("");
   const { independentOnly, storedCountryData, error,
       fetchShallowDataForAllCountries } = useCountries();
@@ -26,28 +29,32 @@ function Countries() {
     }
   }, [error, storedCountryData.shallowDataRequested, fetchShallowDataForAllCountries]);
 
-  // TODO - support sorting by size, population, etc.
-  const countryCodes: Cca3Code[] = useMemo(() => {
+  const countryCodesFilteredByIndependence: Cca3Code[] = useMemo(() => {
     if (!error && storedCountryData.shallowDataLoaded
         && Object.keys(storedCountryData.countries).length) {
-      return Object.values(storedCountryData.countries).sort((a, b) => {
-        // Sort alphabetically by name
-        return a?.data?.name.localeCompare(b?.data?.name ?? "") ?? 0;
-      }).map((country) => country?.data?.cca3).filter(Boolean) as Cca3Code[];
+      switch (sortBy) {
+        case "size":
+          return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byArea;
+        case "population":
+          return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byPopulation;
+        default:
+          let countriesByName = Object.values(storedCountryData.countries).sort((a, b) => {
+            // Sort alphabetically by name
+            return a?.data?.name.localeCompare(b?.data?.name ?? "") ?? 0;
+          }).map((country) => country?.data?.cca3).filter(Boolean) as Cca3Code[];
+
+          // Filter by independence
+          if (independentOnly) {
+            countriesByName = countriesByName.filter(countryCode =>
+                storedCountryData.countries[countryCode]?.data?.independent);
+          }
+
+          return countriesByName;
+      }
     } else {
       return [];
     }
-  }, [storedCountryData, error]);
-
-  // Filter by independence
-  const countryCodesFilteredByIndependence = useMemo(() => {
-    if (independentOnly) {
-      return countryCodes.filter(countryCode =>
-          storedCountryData.countries[countryCode]?.data?.independent);
-    } else {
-      return countryCodes;
-    }
-  }, [countryCodes, independentOnly, storedCountryData]);
+  }, [storedCountryData, error, sortBy, independentOnly]);
 
   // Filter by search
   const countryCodesFilteredBySearch = useMemo(() => {
@@ -67,6 +74,28 @@ function Countries() {
           dataExists={countryCodesFilteredByIndependence.length > 0}
           noDataMessage={NO_COUNTRIES_LOADED_MESSAGE}>
         <div className="countries-component component-wrapper">
+          <fieldset>
+            <legend>{COUNTRIES_SORT_BY_ACCESSIBLE_NAME}</legend>
+
+            <label>
+              <input type="radio" name="sort" value="name" checked={sortBy === "name"}
+                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              Name
+            </label>
+
+            <label>
+              <input type="radio" name="sort" value="size" checked={sortBy === "size"}
+                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              Size
+            </label>
+
+            <label>
+              <input type="radio" name="sort" value="population" checked={sortBy === "population"}
+                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              Population
+            </label>
+          </fieldset>
+
           <label>
             {COUNTRIES_SEARCH_ACCESSIBLE_NAME}
             <input type="search" id="countries-filter" placeholder="🔍︎ Start typing to filter..."

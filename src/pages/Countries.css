@@ -1,10 +1,29 @@
 .countries-component {
   label {
-    margin-block: 16px;
-    display: flex;
+    margin: 16px;
+    display: inline flex;
     flex-direction: column;
     font-weight: bold;
     max-width: 100%;
+  }
+
+  fieldset {
+    border-radius: 8px;
+    padding: 0;
+
+    legend {
+      /* Needed to center on Firefox */
+      margin: auto;
+      font-weight: bold;
+      padding-inline: 8px;
+    }
+
+    label {
+      font-weight: 500;
+      margin: 0;
+      padding: 16px;
+      flex-direction: row;
+    }
   }
 
   input[type=search] {

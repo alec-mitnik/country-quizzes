@@ -3,7 +3,7 @@ import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import useCountries from '../hooks/useCountries';
 import { testCountry, testShallowStoredCountryData } from '../test/data';
-import { COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_TITLE, DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../utils/consts';
+import { COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../utils/consts';
 import Countries from './Countries';
 
 // Mock the hooks
@@ -63,6 +63,26 @@ describe('Countries', () => {
     // Check for the search input being absent
     expect(screen.queryByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME }))
         .not.toBeInTheDocument();
+  });
+
+  it('renders the sort by inputs', () => {
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Countries />
+      </MemoryRouter>
+    );
+
+    // Check for the fieldset
+    const fieldset = screen.getByRole('group', { name: COUNTRIES_SORT_BY_ACCESSIBLE_NAME });
+    expect(fieldset).toBeInTheDocument();
+
+    // Check for the radio buttons
+    expect(within(fieldset).getAllByRole('radio')).toHaveLength(3);
+
+    expect(within(fieldset).getByRole('radio', { name: "Name", checked: true })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: "Size", checked: false })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: "Population", checked: false })).toBeInTheDocument();
   });
 
   it('renders the search input', () => {
