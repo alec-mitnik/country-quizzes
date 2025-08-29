@@ -1,6 +1,6 @@
 .countries-component {
   label {
-    margin: 16px;
+    margin-block: 16px;
     display: inline flex;
     flex-direction: column;
     font-weight: bold;
@@ -9,6 +9,7 @@
 
   fieldset {
     border-radius: 8px;
+    margin: 0;
     padding: 0;
 
     legend {
