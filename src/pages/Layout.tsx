@@ -1,4 +1,5 @@
-import { NavLink, Outlet } from "react-router-dom";
+import { useEffect, useRef } from "react";
+import { NavLink, Outlet, useLocation } from "react-router-dom";
 import useCountries from "../hooks/useCountries";
 import { COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT } from "../utils/consts";
 import "./Layout.css";
@@ -8,7 +9,15 @@ import "./Layout.css";
  * with top-level navigation and a main tag
  */
 function Layout() {
+  const { pathname } = useLocation();
+  const mainElementRef = useRef<HTMLDivElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
+
+  useEffect(() => {
+    // Scroll to the start of the page on navigation,
+    // and ensure a full repaint on iOS
+    mainElementRef.current?.scrollTo(0, 0);
+  }, [pathname]);
 
   return (
     <div className="layout-component component-wrapper">
@@ -34,7 +43,7 @@ function Layout() {
         </ul>
       </nav>
 
-      <main>
+      <main ref={mainElementRef}>
         <Outlet />
       </main>
     </div>

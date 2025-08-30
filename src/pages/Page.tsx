@@ -9,7 +9,8 @@ interface PageProps {
 /**
  * Wrapper for the content of each page in the application,
  * handling the main header and updating the document title
- * @param param0
+ * @param {string} [props.pageTitle] The title of the page to display in the header
+ * @param {React.ReactNode} [props.children] The content of the page
  */
 function Page({pageTitle, children}: PageProps) {
   const headerTitle = pageTitle ?? APP_TITLE;
