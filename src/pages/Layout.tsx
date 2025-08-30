@@ -15,11 +15,19 @@ function Layout() {
 
   // On page navigation
   useEffect(() => {
-    // Scroll to the start of the page
-    mainElementRef.current?.scrollTo(0, 0);
+    const mainElement = mainElementRef.current;
 
-    // Ensure a full repaint on iOS
-    mainElementRef.current?.offsetHeight;
+    if (mainElement) {
+      // Scroll to the start of the page
+      mainElement.scrollTo(0, 0);
+
+      // Ensure a full repaint on iOS
+      mainElement.style.opacity = "0";
+
+      requestAnimationFrame(() => {
+        mainElement.style.opacity = null;
+      });
+    }
   }, [pathname]);
 
   return (
