@@ -13,10 +13,13 @@ function Layout() {
   const mainElementRef = useRef<HTMLDivElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
 
+  // On page navigation
   useEffect(() => {
-    // Scroll to the start of the page on navigation,
-    // and ensure a full repaint on iOS
+    // Scroll to the start of the page
     mainElementRef.current?.scrollTo(0, 0);
+
+    // Ensure a full repaint on iOS
+    mainElementRef.current?.offsetHeight;
   }, [pathname]);
 
   return (
