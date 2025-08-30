@@ -68,6 +68,9 @@ html, body {
   display: flex;
   flex-direction: column;
   text-align: center;
+
+  /* Ensure page navigation fully repaints on iOS */
+  transform: translateZ(0);
 }
 
 .symbol-font {
