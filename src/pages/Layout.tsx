@@ -25,7 +25,7 @@ function Layout() {
       mainElement.style.opacity = "0";
 
       requestAnimationFrame(() => {
-        mainElement.style.opacity = null;
+        mainElement.style.opacity = null as unknown as string;
       });
     }
   }, [pathname]);
