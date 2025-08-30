@@ -350,10 +350,10 @@ function Quiz() {
 
             <ol aria-labelledby="how-to-play">
               <li>You can submit the full answer in one go or piece by piece through multiple submissions.</li>
-              <li>When you make a submission, it will lock in if and only if no part of it is incorrect.</li>
+              <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
               <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
               <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
-              <li>There are various quiz types, with a new one being randomly selected for each round.</li>
+              <li>The topic and structure of the quiz is randomly selected for each round.</li>
               <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
               <li>The number of countries involved increases with each round. Keep going for as long as you can!</li>
             </ol>

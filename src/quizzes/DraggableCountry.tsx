@@ -15,6 +15,7 @@ interface DraggableCountryProps {
   countryCodeBeingDraggedOver?: Cca3Code | null;
   onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code) => void;
   onDragEnd: () => void;
+  onDrag?: (event: DragEvent<HTMLDivElement>) => void;
   onDragEnter?: (event: DragEvent) => void;
   onDragOver?: (event: DragEvent) => void;
   onDragLeave?: (event: DragEvent) => void;
@@ -25,10 +26,32 @@ interface DraggableCountryProps {
   onMoveDown?: () => void;
 }
 
-// Render a country's capital(s) for matching in a quiz
+/**
+ * Draggable element with alternative controls representing a country to be matched or ranked
+ * @param {Cca3Code} [props.cca3] The country code of the country being represented
+ * @param {number} [props.rankIndex] The current rank of the country if in a ranked list
+ * @param {React.ReactNode} [props.revealedValueLabel] What to display when the correct value is to be revealed
+ * @param {boolean} [props.isSelected] Whether the country is currently selected
+ * @param {boolean} [props.isDragged] Whether the country is currently being dragged
+ * @param {boolean} [props.isLockedIn] Whether the country is locked in as correct and cannot be moved
+ * @param {boolean} [props.roundActive] Whether the quiz round is currently active
+ * @param {boolean} [props.quizActive] Whether the quiz is currently active
+ * @param {Cca3Code} [props.countryCodeBeingDraggedOver] The country code of the country being dragged over, if any
+ * @param {function} [props.onDragStart] Function to call when the country is dragged
+ * @param {function} [props.onDragEnd] Function to call when the country is dropped
+ * @param {function} [props.onDrag] Function to call when the country is dragged
+ * @param {function} [props.onDragEnter] Function to call when the country is dragged into
+ * @param {function} [props.onDragOver] Function to call when the country is dragged over
+ * @param {function} [props.onDragLeave] Function to call when the country is dragged out of
+ * @param {function} [props.onDrop] Function to call when the country is dropped onto
+ * @param {function} [props.onRemove] Function to call when the remove control is activated
+ * @param {function} [props.onAdd] Function to call when the add control is activated
+ * @param {function} [props.onMoveUp] Function to call when the move up control is activated
+ * @param {function} [props.onMoveDown] Function to call when the move down control is activated
+ */
 function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
     isDragged, isLockedIn = false, roundActive, quizActive, countryCodeBeingDraggedOver,
-    onDragStart, onDragEnd, onDragEnter, onDragOver, onDragLeave,
+    onDragStart, onDragEnd, onDrag, onDragEnter, onDragOver, onDragLeave,
     onDrop, onRemove, onAdd, onMoveUp, onMoveDown}: DraggableCountryProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const { storedCountryData } = useCountries();
@@ -39,6 +62,12 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
 
   const showRank = rankIndex != null && !isNaN(rankIndex);
   const countryName = storedCountryData.countries[cca3]?.data?.name ?? cca3;
+
+  function handleDrag(event: DragEvent<HTMLDivElement>) {
+    if (onDrag) {
+      onDrag(event);
+    }
+  }
 
   function handleDragEnter(event: DragEvent) {
     if (onDragEnter) {
@@ -64,6 +93,7 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         countryCodeBeingDraggedOver === cca3 && !isDragged ? " being-dragged-over" : ""}`}
         draggable={roundActive && !isLockedIn} onDragEnd={onDragEnd}
         onDragStart={(event) => onDragStart(event, cca3)}
+        onDrag={handleDrag}
         onDragEnter={onDrop ? handleDragEnter : undefined}
         onDragLeave={onDrop ? handleDragLeave : undefined}
         onDragOver={onDrop ? handleDragOver : undefined}

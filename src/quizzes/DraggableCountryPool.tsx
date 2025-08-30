@@ -1,3 +1,4 @@
+import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 
@@ -10,6 +11,7 @@ interface DraggableCountryPoolProps {
   isTargetContainer?: boolean;
   emptyMessage: string;
   children: React.ReactNode;
+  selectedCountryCode?: Cca3Code | null;
   onDrop?: (event: DragEvent) => void;
 }
 
@@ -26,11 +28,12 @@ interface DraggableCountryPoolProps {
  * and plays a shaking animation on incorrect submission
  * @param {string} [props.emptyMessage] Message to display when the pool is empty
  * @param {React.ReactNode} props.children Draggable country components held by the pool
+ * @param {Cca3Code | null} [props.selectedCountryCode] The code of the currently selected/dragged country
  * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the pool
  */
 function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
     singleCapacity = false, canBeDroppedIntoDirectly = true, isTargetContainer = false,
-    emptyMessage, children, onDrop }: DraggableCountryPoolProps) {
+    emptyMessage, children, selectedCountryCode, onDrop }: DraggableCountryPoolProps) {
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
@@ -38,11 +41,15 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
         && canBeDroppedIntoDirectly) {
       event.preventDefault();
     }
+
+    if (isBeingDraggedOver && !selectedCountryCode) {
+      setIsBeingDraggedOver(false);
+    }
   }
 
   function handleDragEnter(event: DragEvent) {
     if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
-        && canBeDroppedIntoDirectly) {
+        && canBeDroppedIntoDirectly && selectedCountryCode) {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
 

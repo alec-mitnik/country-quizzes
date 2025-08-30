@@ -1,5 +1,5 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useMemo, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import type Quiz from "../pages/Quiz";
 import type { MatchingQuizType } from "../pages/Quiz";
@@ -22,10 +22,18 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
   const [selectedCountryCode, setSelectedCountryCode] =
       useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
+  const dragTestTimeoutIdRef = useRef(0);
 
   // Announcement for screen readers
   const [srAnnouncement, setSrAnnouncement] = useState<React.ReactNode>('');
-  const [srAnnouncementTimeoutId, setSrAnnouncementTimeoutId] = useState(0);
+  const srAnnouncementTimeoutIdRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(srAnnouncementTimeoutIdRef.current);
+      clearTimeout(dragTestTimeoutIdRef.current);
+    };
+  }, []);
 
   const { storedCountryData } = useCountries();
 
@@ -86,12 +94,12 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
   }, [matchedCountryCodes, storedCountryData.countries, quiz.countryCodes]);
 
   function announceForScreenReaders(message: React.ReactNode) {
-    clearTimeout(srAnnouncementTimeoutId);
+    clearTimeout(srAnnouncementTimeoutIdRef.current);
     setSrAnnouncement(message);
 
     // Clear the message after a delay so that it doesn't remain
     // navigable by screen readers in browse mode
-    setSrAnnouncementTimeoutId(setTimeout(() => setSrAnnouncement(''), 1000));
+    srAnnouncementTimeoutIdRef.current = setTimeout(() => setSrAnnouncement(''), 1000);
   }
 
   function handleDragStart(event: DragEvent, countryCode: Cca3Code) {
@@ -110,6 +118,17 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
 
     setSelectedCountryCode(countryCode);
     setIsDraggingCountryCode(true);
+
+    clearTimeout(dragTestTimeoutIdRef.current);
+    dragTestTimeoutIdRef.current = setTimeout(() => {
+      // If timeout wasn't cleared, dragging is probably broken, so cancel it
+      // (seems to be an issue on some Android devices)
+      handleDragEnd();
+    }, 2000);
+  }
+
+  function handleDrag() {
+    clearTimeout(dragTestTimeoutIdRef.current);
   }
 
   function handleDragEnd() {
@@ -431,6 +450,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
         <DraggableCountryPool headerId="unmatched-pool-header"
             headerText="Unmatched Countries"
             emptyMessage="All countries have been matched"
+            selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForUnmatchedPool}>
           {unmatchedCountryCodes.map((countryCode) => (
             <li key={countryCode}>
@@ -444,6 +464,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
                       || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
+                  onDrag={handleDrag}
                   onAdd={() => onAdd(countryCode)} />
             </li>
           ))}
@@ -470,6 +491,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
                     canBeDroppedIntoDirectly={!countryCodeMatchValueIsMatchedTo
                         || !quiz.countryCodesLockedInAsCorrect.includes(countryCodeMatchValueIsMatchedTo)}
                     emptyMessage="Drag the matching country here"
+                    selectedCountryCode={selectedCountryCode}
                     onDrop={event => handleDropForMatchValue(event, index)}>
                   {countryCodeMatchValueIsMatchedTo ? (
                     <DraggableCountry cca3={countryCodeMatchValueIsMatchedTo}
@@ -484,6 +506,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
                           || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
                       onDragStart={(event) => handleDragStart(event, countryCodeMatchValueIsMatchedTo)}
                       onDragEnd={handleDragEnd}
+                      onDrag={handleDrag}
                       onMoveUp={() => onMoveUp(countryCodeMatchValueIsMatchedTo)}
                       onMoveDown={() => onMoveDown(countryCodeMatchValueIsMatchedTo)}
                       onRemove={() => onRemove(countryCodeMatchValueIsMatchedTo)} />

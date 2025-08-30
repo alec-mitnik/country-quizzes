@@ -1,3 +1,4 @@
+import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 
@@ -7,6 +8,7 @@ interface DraggableCountryListProps {
   headerLevel?: number;
   emptyMessage: string
   children: React.ReactNode;
+  selectedCountryCode?: Cca3Code | null;
   onDrop?: (event: DragEvent) => void;
 }
 
@@ -17,15 +19,20 @@ interface DraggableCountryListProps {
  * @param {number} [props.headerLevel=2] Level of the header element
  * @param {string} [props.emptyMessage] Message to display when the list is empty
  * @param {React.ReactNode} props.children Draggable country components held by the list
+ * @param {Cca3Code | null} [props.selectedCountryCode] The code of the currently selected/dragged country
  * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the list
  */
 function DraggableCountryList({ headerId, headerText, headerLevel = 2,
-    emptyMessage, children, onDrop }: DraggableCountryListProps) {
+    emptyMessage, children, selectedCountryCode, onDrop }: DraggableCountryListProps) {
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
     if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
       event.preventDefault();
+    }
+
+    if (isBeingDraggedOver && !selectedCountryCode) {
+      setIsBeingDraggedOver(false);
     }
   }
 
@@ -36,7 +43,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     const isRankedList = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-list');
 
-    if (isRankedList
+    if (isRankedList && selectedCountryCode
         && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
       event.preventDefault();
       setIsBeingDraggedOver(true);

@@ -1,5 +1,5 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useMemo, useState, type DragEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import type Quiz from "../pages/Quiz";
 import type { RankingQuizType } from "../pages/Quiz";
@@ -19,6 +19,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   const [rankedCountryCodes, setRankedCountryCodes] = useState<Cca3Code[]>([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
+  const dragTestTimeoutIdRef = useRef(0);
 
   // TODO - change how drop works to be more intuitive so that top half of item goes above,
   // bottom half goes below, above top item is first, below last item is last,
@@ -28,7 +29,14 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
   // Announcement for screen readers
   const [srAnnouncement, setSrAnnouncement] = useState('');
-  const [srAnnouncementTimeoutId, setSrAnnouncementTimeoutId] = useState(0);
+  const srAnnouncementTimeoutIdRef = useRef(0);
+
+  useEffect(() => {
+    return () => {
+      clearTimeout(srAnnouncementTimeoutIdRef.current);
+      clearTimeout(dragTestTimeoutIdRef.current);
+    };
+  }, []);
 
   const { independentOnly, storedCountryData } = useCountries();
 
@@ -50,12 +58,12 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   }, [rankedCountryCodes, storedCountryData.countries, quiz.countryCodes]);
 
   function announceForScreenReaders(message: string) {
-    clearTimeout(srAnnouncementTimeoutId);
+    clearTimeout(srAnnouncementTimeoutIdRef.current);
     setSrAnnouncement(message);
 
     // Clear the message after a delay so that it doesn't remain
     // navigable by screen readers in browse mode
-    setSrAnnouncementTimeoutId(setTimeout(() => setSrAnnouncement(''), 1000));
+    srAnnouncementTimeoutIdRef.current = setTimeout(() => setSrAnnouncement(''), 1000);
   }
 
   function handleDragStart(event: DragEvent, countryCode: Cca3Code) {
@@ -74,6 +82,18 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
     setSelectedCountryCode(countryCode);
     setIsDraggingCountryCode(true);
+
+    clearTimeout(dragTestTimeoutIdRef.current);
+    dragTestTimeoutIdRef.current = setTimeout(() => {
+      console.log('handleDragStart timeout');
+      // If timeout wasn't cleared, dragging is probably broken, so cancel it
+      // (seems to be an issue on some Android devices)
+      handleDragEnd();
+    }, 2000);
+  }
+
+  function handleDrag() {
+    clearTimeout(dragTestTimeoutIdRef.current);
   }
 
   function handleDragEnd() {
@@ -238,6 +258,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
         <DraggableCountryPool headerId="unranked-pool-header"
             headerText="Unranked Countries"
             emptyMessage="All countries have been ranked"
+            selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForUnrankedPool}>
           {unrankedCountryCodes.map((countryCode) => (
             <li key={countryCode}>
@@ -251,6 +272,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
                       || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
+                  onDrag={handleDrag}
                   onAdd={() => onAdd(countryCode)} />
             </li>
           ))}
@@ -259,6 +281,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
         <DraggableCountryList headerId="ranked-list-header"
             headerText={`Countries Ranked by ${rankingTypeLabel}`}
             emptyMessage="Drag countries here to rank them"
+            selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForRankedList}>
           {rankedCountryCodes.map((countryCode, index) => (
             <li key={countryCode}>
@@ -274,6 +297,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
                   countryCodeBeingDraggedOver={countryCodeBeingDraggedOver}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
+                  onDrag={handleDrag}
                   onDragEnter={event => handleDragEnterForRankedListItem(event, countryCode)}
                   onDragOver={handleDragOver}
                   onDragLeave={event => handleDragLeaveForRankedListItem(event, countryCode)}
