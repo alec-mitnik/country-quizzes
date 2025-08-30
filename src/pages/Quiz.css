@@ -125,9 +125,10 @@
         outline-offset: 2px;
 
         &.remove-button {
-          border-color: var(--danger-color);
+          /* Marking this red can be mistaken as an incorrect match/rank */
+          /* border-color: var(--danger-color);
           background: var(--background-color-primary);
-          color: var(--danger-color);
+          color: var(--danger-color); */
 
           > span {
             /* Modern version of the legacy inline-block value */
