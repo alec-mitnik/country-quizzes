@@ -40,7 +40,7 @@
   }
 
   .quiz-action-button {
-    margin-block: 16px;
+    margin-block: 16px 48px;
 
     &.level-up {
       /* TODO - style this fancier with colors and animation (plus a sound effect would be nice) */
