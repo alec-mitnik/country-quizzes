@@ -1,6 +1,9 @@
 import type { CountryStorage } from "../CountriesProvider";
 import supplementalCountryData from "../supplementalData/supplementalCountryData.json";
 
+export const SETTINGS_BAR_ACCESSIBLE_NAME = "Settings Bar";
+export const INDEPENDENT_COUNTRIES_CHECKBOX_LABEL = "Independent Countries Only";
+
 export const APP_TITLE = "Country Quizzes";
 export const COUNTRIES_TITLE = "Countries";
 export const QUIZ_TITLE = "Quiz!"
@@ -31,9 +34,12 @@ export const BACK_TO_COUNTRIES_LINK_TEXT = "Back to Countries";
 
 export const QUIZ_INSTRUCTIONS_SUBHEADER = "How to Play";
 export const QUIZ_STARTING_COUNTRY_COUNT = 3;
-export const QUIZ_STARTING_SUBMISSIONS_COUNT = 6;
+export const QUIZ_STARTING_SUBMISSIONS_COUNT = 8;
 export const QUIZ_COUNTRY_COUNT_INCREASE = 1;
-export const QUIZ_SUBMISSION_COUNT_INCREASE = 6;
+export const QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND = 3;
+export const QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL = 5;
+export const QUIZ_ROUNDS_PER_LEVEL = 5;
+export const QUIZ_MAX_LEVEL = 10;
 
 export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
 export const CUSTOM_DRAG_TYPE = 'application/country-code';
@@ -44,10 +50,12 @@ export const DEFAULT_COUNTRY_STORAGE: CountryStorage = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     }
   },
   shallowDataRequested: false,

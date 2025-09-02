@@ -5,6 +5,7 @@ import type Quiz from "../pages/Quiz";
 import type { MatchingQuizType } from "../pages/Quiz";
 import SmoothLoadingImage from "../SmoothLoadingImage";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
+import { getReactNodeKey } from "../utils/utils";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
@@ -22,18 +23,23 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
   const [selectedCountryCode, setSelectedCountryCode] =
       useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
-  const dragTestTimeoutIdRef = useRef(0);
+  const dragTestTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
   // Announcement for screen readers
   const [srAnnouncement, setSrAnnouncement] = useState<React.ReactNode>('');
-  const srAnnouncementTimeoutIdRef = useRef(0);
+  const srAnnouncementTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
   useEffect(() => {
+    // Reset state when the country codes change for a new round
+    setMatchedCountryCodes({});
+    setSelectedCountryCode(null);
+    setIsDraggingCountryCode(false);
+
     return () => {
       clearTimeout(srAnnouncementTimeoutIdRef.current);
       clearTimeout(dragTestTimeoutIdRef.current);
     };
-  }, []);
+  }, [quiz.countryCodes]);
 
   const { storedCountryData } = useCountries();
 
@@ -354,9 +360,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       // Maintain focus on the button for the value element after moving
       const moveUpButton = document.querySelector(`.draggable-country-pool.target-container li:nth-child(${
         newMatchValueIndex + 1
-      }) .move-up-button`) as HTMLButtonElement | null;
+      }) .move-up-button`);
 
-      if (moveUpButton) {
+      if (moveUpButton instanceof HTMLElement) {
         moveUpButton.focus();
       }
     });
@@ -427,9 +433,9 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       // Maintain focus on the button for the value element after moving
       const moveDownButton = document.querySelector(`.draggable-country-pool.target-container li:nth-child(${
         newMatchValueIndex + 1
-      }) .move-down-button`) as HTMLButtonElement | null;
+      }) .move-down-button`);
 
-      if (moveDownButton) {
+      if (moveDownButton instanceof HTMLButtonElement) {
         moveDownButton.focus();
       }
     });
@@ -477,13 +483,14 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
             emptyMessage="Error">
           {sortedMatchValues.map((matchData, index) => {
             const countryCodeMatchValueIsMatchedTo = matchedCountryCodes[index];
+            const itemKey = `${getReactNodeKey(matchData.label)}_${index}`;
 
             // Could use the country code as the key when available, so that focus
             // automatically remains on the country component's buttons when moved up/down,
             // but the key needs to be based on the slot in order to preserve image loading
             // and details collapse states, so need to handle focus manually...
             return (
-              <li key={`${String(matchData.label)}_${index}`}>
+              <li key={itemKey}>
                 <DraggableCountryPool headerId="matched-pool-header"
                     headerText={matchData.label}
                     headerLevel={quizType.key === "MATCH_TO_FLAGS" ? 0 : 3}

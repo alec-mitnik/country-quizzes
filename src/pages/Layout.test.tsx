@@ -1,6 +1,9 @@
 import { render, screen, within } from '@testing-library/react';
 import { MemoryRouter } from 'react-router-dom';
-import { COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT } from '../utils/consts';
+import {
+  COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
+  QUIZ_NAV_TEXT, SETTINGS_BAR_ACCESSIBLE_NAME
+} from '../utils/consts';
 import Layout from './Layout';
 
 describe('Layout', () => {
@@ -10,6 +13,14 @@ describe('Layout', () => {
         <Layout />
       </MemoryRouter>
     );
+
+    // Check for the Settings Bar region
+    const settingsBar = screen.getByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME });
+    expect(settingsBar).toBeInTheDocument();
+
+    // Check for the Independent Countries Only checkbox
+    expect(within(settingsBar).getByRole('checkbox',
+        { name: INDEPENDENT_COUNTRIES_CHECKBOX_LABEL })).toBeInTheDocument();
 
     // Check for the nav element
     expect(screen.getByRole('navigation')).toBeInTheDocument();

@@ -67,10 +67,12 @@ export const testStoredCountryData = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     },
   },
 };
@@ -135,10 +137,12 @@ export const testShallowStoredCountryData = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byFamiliarity: [],
     },
   },
 };

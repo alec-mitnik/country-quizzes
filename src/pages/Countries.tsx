@@ -37,7 +37,7 @@ function Countries() {
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byArea;
         case "population":
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byPopulation;
-        default:
+        default: {
           let countriesByName = Object.values(storedCountryData.countries).sort((a, b) => {
             // Sort alphabetically by name
             return a?.data?.name.localeCompare(b?.data?.name ?? "") ?? 0;
@@ -50,6 +50,7 @@ function Countries() {
           }
 
           return countriesByName;
+        }
       }
     } else {
       return [];

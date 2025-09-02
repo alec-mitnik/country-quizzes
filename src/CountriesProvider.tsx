@@ -1,8 +1,16 @@
 import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import React, { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
+import countryPageviews from "./supplementalData/countryPageviews.json";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
 import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, setAreaLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
+
+interface CountryPageviewData {
+  cca3: Cca3Code;
+  pageviews: number;
+  name: string;
+  rank: number;
+}
 
 interface FormattedCountryField<T> {
   label: string,
@@ -51,10 +59,12 @@ export interface CountryStorage {
     independentOnly: {
       byArea: Cca3Code[],
       byPopulation: Cca3Code[],
+      byFamiliarity: Cca3Code[],
     },
     all: {
       byArea: Cca3Code[],
       byPopulation: Cca3Code[],
+      byFamiliarity: Cca3Code[],
     }
   },
   shallowDataRequested: boolean,
@@ -264,12 +274,15 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
           const countryCodesSortedByPopulation = Object.keys(newData.countries).sort((a, b) => {
             return populationValueFunction(b) - (populationValueFunction(a));
           });
+          const countryCodesSortedByFamiliarity = countryPageviews.data.map(
+              (country: CountryPageviewData) => country.cca3);
 
           newData.rankings = {
             all: {
               byArea: countryCodesSortedByArea.filter(cca3 => newData.countries?.[cca3]?.data?.area),
               byPopulation: countryCodesSortedByPopulation
                   .filter(cca3 => newData.countries?.[cca3]?.data?.population),
+              byFamiliarity: countryCodesSortedByFamiliarity,
             },
             independentOnly: {
               byArea: countryCodesSortedByArea.filter(cca3 => newData.countries?.[cca3]?.data?.area
@@ -277,6 +290,8 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               byPopulation: countryCodesSortedByPopulation
                   .filter(cca3 => newData.countries?.[cca3]?.data?.population
                   && newData.countries?.[cca3]?.data.independent),
+              byFamiliarity: countryCodesSortedByFamiliarity
+                  .filter(cca3 => newData.countries?.[cca3]?.data?.independent),
             }
           };
 

@@ -1,7 +1,7 @@
 import { useEffect, useRef } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import useCountries from "../hooks/useCountries";
-import { COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT } from "../utils/consts";
+import { COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT, SETTINGS_BAR_ACCESSIBLE_NAME } from "../utils/consts";
 import "./Layout.css";
 
 /**
@@ -10,7 +10,7 @@ import "./Layout.css";
  */
 function Layout() {
   const { pathname } = useLocation();
-  const mainElementRef = useRef<HTMLDivElement>(null);
+  const mainElementRef = useRef<HTMLElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
 
   // On page navigation
@@ -32,7 +32,7 @@ function Layout() {
 
   return (
     <div className="layout-component component-wrapper">
-      <section id="settings-bar" aria-label="Settings bar">
+      <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
         <label>
           <input type="checkbox" id="independent-only-checkbox" checked={independentOnly}
               onChange={() => setIndependentOnly(!independentOnly)} />

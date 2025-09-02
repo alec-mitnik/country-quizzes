@@ -12,6 +12,7 @@ Works across different browsers and viewport sizes, and adheres to accessible pr
 * Graceful handling for when images fail to load or are disabled by the browser
 * Keyboard and screen reader support, including alternatives to drag-and-drop
 * Semantic HTML and appropriate aria attributes
+* Announcing for screen readers the results of special actions by using aria-live regions
 * Supporting high zoom or text magnification without content getting cut off
 * Maintaining sufficient color contrast
 * Honoring a reduced motion preference
@@ -37,3 +38,5 @@ Location descriptions, maps, and some flag descriptions are derived from the CIA
 https://www.cia.gov/the-world-factbook/countries/
 
 Any remaining flag descriptions or other missing info is derived from Wikipedia.
+I also use pageview counts for the countries, available through their APIs, as a way to gauge
+general country familiarity for the purposes of controlling the difficulty of quizzes.

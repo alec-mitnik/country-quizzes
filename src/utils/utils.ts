@@ -1,3 +1,5 @@
+import React, { type PropsWithChildren } from "react";
+
 /**
  * Selects a random element from the given array without modifying the array
  * @param array The array to select from
@@ -40,6 +42,31 @@ export function convertToOrdinal(n: number) {
   }
 
   return `${n}${suffixMap[singlesDigit] || "th"}`;
+}
+
+/**
+ * Converts a ReactNode into a usable value for a rendering key
+ * @param node The ReactNode to convert to a usable key
+ * @param [fallback='unknown'] Fallback string to use if the node can't be converted
+ * @returns A string representation of the ReactNode that can be used as a key
+ */
+export function getReactNodeKey(node: React.ReactNode, fallback = 'unknown'): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node);
+  }
+
+  if (React.isValidElement(node)) {
+    const props = node.props as PropsWithChildren;
+
+    // Use props.children if it's a string, otherwise use fallback
+    if (typeof props.children === 'string') {
+      return props.children;
+    }
+
+    return `${String(node.type)}_${fallback}`;
+  }
+
+  return fallback;
 }
 
 /**

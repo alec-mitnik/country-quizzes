@@ -29,6 +29,11 @@
     }
   }
 
+  #quiz-type-description {
+    display: inline flex;
+    padding-inline: 8px;
+  }
+
   .quiz-outcome-message {
     margin-block: 8px;
     font-size: 1.25rem;
@@ -36,6 +41,13 @@
 
   .quiz-action-button {
     margin-block: 16px;
+
+    &.level-up {
+      /* TODO - style this fancier with colors and animation (plus a sound effect would be nice) */
+      font-size: 1.25rem;
+      box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
+          0 2px 4px 0 var(--shadow-color);
+    }
   }
 
   .draggable-country {

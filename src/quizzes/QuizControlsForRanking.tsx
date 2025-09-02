@@ -19,7 +19,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   const [rankedCountryCodes, setRankedCountryCodes] = useState<Cca3Code[]>([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
-  const dragTestTimeoutIdRef = useRef(0);
+  const dragTestTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
   // TODO - change how drop works to be more intuitive so that top half of item goes above,
   // bottom half goes below, above top item is first, below last item is last,
@@ -29,14 +29,19 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
   // Announcement for screen readers
   const [srAnnouncement, setSrAnnouncement] = useState('');
-  const srAnnouncementTimeoutIdRef = useRef(0);
+  const srAnnouncementTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
   useEffect(() => {
+    // Reset state when the country codes change for a new round
+    setRankedCountryCodes([]);
+    setSelectedCountryCode(null);
+    setIsDraggingCountryCode(false);
+
     return () => {
       clearTimeout(srAnnouncementTimeoutIdRef.current);
       clearTimeout(dragTestTimeoutIdRef.current);
     };
-  }, []);
+  }, [quiz.countryCodes]);
 
   const { independentOnly, storedCountryData } = useCountries();
 

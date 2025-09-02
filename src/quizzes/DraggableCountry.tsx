@@ -87,6 +87,8 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
     }
   }
 
+  // TODO - show location/map in popup window for each revealed country
+  // (Maybe make the formatted continent value a button link)
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
         isDragged ? " dragged" : ""}${isLockedIn ? " locked-in" : ""}${

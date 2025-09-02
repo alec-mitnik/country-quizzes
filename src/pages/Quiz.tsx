@@ -1,14 +1,15 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
-import type { CountryStorage, StoredCountry, StoredCountryWrapper } from "../CountriesProvider";
+import type { CountryStorage, StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
 import {
+  INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
   QUIZ_COUNTRY_COUNT_INCREASE,
-  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_STARTING_COUNTRY_COUNT,
-  QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE, QUIZ_TITLE
+  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL, QUIZ_STARTING_COUNTRY_COUNT,
+  QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL, QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND, QUIZ_TITLE
 } from "../utils/consts";
 import { extractRandomArrayElement, getRandomArrayElement } from "../utils/utils";
 import Page from "./Page";
@@ -126,22 +127,38 @@ function getRandomNewQuizTypeKey(currentTypeKey?: QuizTypeKey) {
 }
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
-function getRandomCountryCodes(independentOnly: boolean, storedCountries: Partial<Record<Cca3Code,
-  StoredCountryWrapper>>, count: number, fieldToRequire?: keyof StoredCountry) {
-  let countryCodes = Object.keys(storedCountries);
+function getRandomCountryCodes(independentOnly: boolean, storedCountryData: CountryStorage,
+    count: number, level: number, fieldToRequire?: keyof StoredCountry) {
+  const countriesData = storedCountryData.countries;
+  const familiarityRankings = independentOnly ? storedCountryData.rankings.independentOnly.byFamiliarity
+      : storedCountryData.rankings.all.byFamiliarity;
 
-  if (independentOnly) {
-    countryCodes = countryCodes.filter(cca3 => storedCountries[cca3]?.data?.independent);
+  let countryCodes;
+
+  const halfMaxLevel = Math.round(QUIZ_MAX_LEVEL * 0.5);
+
+  // Restrict to country familiarity proportional to the quiz level
+  if (level <= halfMaxLevel) {
+    // Level 1 involves only the top 5th most familiar countries,
+    // up to level 5 involving all countries
+    const familiarityLimit = Math.ceil(familiarityRankings.length * level / halfMaxLevel);
+    countryCodes = familiarityRankings.slice(0, familiarityLimit);
+  } else {
+    // Level 6 involves all countries, up to level 10 involving
+    // only the bottom 5th least familiar countries
+    const familiarityThreshold = Math.floor(
+        familiarityRankings.length * (level - halfMaxLevel - 1) / halfMaxLevel);
+    countryCodes = familiarityRankings.slice(familiarityThreshold);
   }
 
   if (fieldToRequire) {
-    countryCodes = countryCodes.filter(cca3 => storedCountries[cca3]?.data?.[fieldToRequire]);
+    countryCodes = countryCodes.filter(cca3 => countriesData[cca3]?.data?.[fieldToRequire]);
   }
 
   const selectedCountryCodes: string[] = [];
 
   while (countryCodes.length && count > 0) {
-    selectedCountryCodes.push(extractRandomArrayElement<string>(countryCodes));
+    selectedCountryCodes.push(extractRandomArrayElement<Cca3Code>(countryCodes));
     count--;
   }
 
@@ -149,14 +166,18 @@ function getRandomCountryCodes(independentOnly: boolean, storedCountries: Partia
 }
 
 function renderQuizOutcomeMessage(quiz: Quiz) {
-  if (quiz.round >= 11) {
-    // Cleared 10 rounds
-    return "Amazing! You really know your stuff!";
-  } else if (quiz.round >= 8) {
-    // Cleared 7 rounds
+  if (quiz.level >= QUIZ_MAX_LEVEL && quiz.round >= QUIZ_ROUNDS_PER_LEVEL
+      && quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length) {
+    // Cleared all 10 levels
+    return "You beat the quiz! You're a country whiz.";
+  } else if (quiz.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
+    // Cleared 8 levels
+    return "Amazing! You really know your stuff.";
+  }else if (quiz.level > Math.floor(QUIZ_MAX_LEVEL * 0.6)) {
+    // Cleared 6 levels
     return "Well done! You lasted a while.";
-  } else if (quiz.round >= 5) {
-    // Cleared 4 rounds
+  } else if (quiz.level > Math.floor(QUIZ_MAX_LEVEL * 0.4)) {
+    // Cleared 4 levels
     return "Not bad. Go again?";
   } else {
     return "Better luck next time.";
@@ -170,6 +191,7 @@ interface Quiz {
   countryCodesLockedInAsCorrect: Cca3Code[];
   countryCount: number;
   round: number;
+  level: number;
 };
 
 interface QuizState {
@@ -232,7 +254,7 @@ interface QuizState {
  * You can choose how much to submit, and it will either lock in
  * for all correct, or fail for any incorrect.  Only relative order
  * matters for valid submission in ranking quizzes, not absolute order.
- * Quizzes gradually get harder by involving more countries.
+ * Quizzes gradually get harder as you progress.
  */
 function Quiz() {
   const [state, setState] = useState<QuizState>({
@@ -246,10 +268,11 @@ function Quiz() {
   const nextRoundReadyToStart = !!state.quiz
       && state.quiz.countryCodesLockedInAsCorrect.length === state.quiz.countryCodes.length;
 
-  const quizzingActive = state.quiz && (nextRoundReadyToStart || state.quiz.submissionsRemaining > 0);
-
-  // When there are no more submissions remaining, the quiz is over
-  // const quizzingEnded = !newRoundReadyToStart && state.quiz?.submissionsRemaining === 0;
+  const quizzingActive = state.quiz
+      && (state.quiz.level < QUIZ_MAX_LEVEL
+          || state.quiz.round < QUIZ_ROUNDS_PER_LEVEL
+          || state.quiz.countryCodesLockedInAsCorrect.length < state.quiz.countryCodes.length)
+      && (nextRoundReadyToStart || state.quiz.submissionsRemaining > 0);
 
   const countriesForQuizRoundLoaded = useMemo(() => {
     if (!state.quiz) {
@@ -288,7 +311,7 @@ function Quiz() {
 
     const randomQuizTypeKey = getRandomNewQuizTypeKey();
     const countryCodes = getRandomCountryCodes(independentOnly,
-        storedCountryData.countries, QUIZ_STARTING_COUNTRY_COUNT,
+        storedCountryData, QUIZ_STARTING_COUNTRY_COUNT, 1,
         QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
     loadCountriesForNewQuizRound(countryCodes);
@@ -302,6 +325,7 @@ function Quiz() {
         countryCodesLockedInAsCorrect: [],
         countryCount: QUIZ_STARTING_COUNTRY_COUNT,
         round: 1,
+        level: 1,
       },
     });
   }, [state.countriesForQuizRoundRequested, independentOnly, storedCountryData,
@@ -312,10 +336,21 @@ function Quiz() {
       return;
     };
 
+    let newRound = state.quiz.round + 1;
+    let newLevel = state.quiz.level;
+    let newCountryCount = state.quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
+    let submissionCountIncrease = QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND;
+
+    if (newRound > QUIZ_ROUNDS_PER_LEVEL) {
+      newLevel = state.quiz.level + 1;
+      newRound = 1;
+      newCountryCount = QUIZ_STARTING_COUNTRY_COUNT;
+      submissionCountIncrease = QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL;
+    }
+
     const randomQuizTypeKey = getRandomNewQuizTypeKey(state.quiz.type.key);
-    const newCountryCount = state.quiz.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
     const countryCodes = getRandomCountryCodes(independentOnly,
-        storedCountryData.countries, newCountryCount,
+        storedCountryData, newCountryCount, newLevel,
         QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
     loadCountriesForNewQuizRound(countryCodes);
@@ -326,11 +361,12 @@ function Quiz() {
         ...state.quiz,
         type: QUIZ_TYPES[randomQuizTypeKey],
         submissionsRemaining: state.quiz.submissionsRemaining
-            + QUIZ_SUBMISSION_COUNT_INCREASE,
+            + submissionCountIncrease,
         countryCodes,
         countryCodesLockedInAsCorrect: [],
         countryCount: newCountryCount,
-        round: state.quiz.round + 1,
+        round: newRound,
+        level: newLevel,
       },
     });
   }, [state, storedCountryData, independentOnly, loadCountriesForNewQuizRound]);
@@ -349,13 +385,16 @@ function Quiz() {
             </summary>
 
             <ol aria-labelledby="how-to-play">
-              <li>You can submit the full answer in one go or piece by piece through multiple submissions.</li>
-              <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
-              <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
-              <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
               <li>The topic and structure of the quiz is randomly selected for each round.</li>
+              <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
+              <li>You can submit the full answer for the round in one go or piece by piece through multiple submissions.</li>
+              <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
+              <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
               <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
-              <li>The number of countries involved increases with each round. Keep going for as long as you can!</li>
+              <li>There are {QUIZ_ROUNDS_PER_LEVEL} rounds per level. The number of countries involved increases with each round.</li>
+              <li>When you level up, the obscurity of the countries involved increases, and the rounds restart.</li>
+              <li>Leave the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top unchecked if you want a greater challenge.</li>
+              <li>There are {QUIZ_MAX_LEVEL} levels to beat in total. Keep going for as long as you can!</li>
             </ol>
           </details>
 
@@ -368,8 +407,13 @@ function Quiz() {
               {!!state.quiz && <dl className="quiz-data-list">
                 <div className="quiz-data-wrapper">
                   <div>
+                    <dt>Level</dt>
+                    <dd className="large-number">{state.quiz?.level}</dd>
+                  </div>
+
+                  <div>
                     <dt>Round</dt>
-                    <dd className="large-number">#{state.quiz?.round}</dd>
+                    <dd className="large-number">{state.quiz?.round}/{QUIZ_ROUNDS_PER_LEVEL}</dd>
                   </div>
 
                   <div className={state.quiz?.submissionsRemaining === 1
@@ -401,7 +445,6 @@ function Quiz() {
                   }
                 })} />
               }
-
               {state.quiz && countriesForQuizRoundLoaded
                   && state.quiz.type.structure === "matching"
                   && <QuizControlsForMatching quiz={state.quiz}
@@ -434,9 +477,10 @@ function Quiz() {
           {/* Start Next Round Button */}
           {quizzingActive && nextRoundReadyToStart && <button type="button"
               disabled={state.countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
-              className="quiz-action-button" onClick={() => startNextRound()}>
+              className={`quiz-action-button${(state.quiz?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
+                  "" : " level-up"}`} onClick={() => startNextRound()}>
             <span aria-hidden="true">✓&nbsp; </span>
-            Start Next Round
+            {(state.quiz?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
           </button>}
         </div>
       </RenderWithLoading>
