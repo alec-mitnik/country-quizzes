@@ -99,7 +99,7 @@
       }
     }
 
-    @media (hover: hover) {
+    @media (hover: hover) and (pointer: fine) {
       &[draggable="true"]:hover:not(.locked-in):not(.dragged) {
         filter: brightness(0.9);
         cursor: move;

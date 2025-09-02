@@ -16,7 +16,7 @@
     border-radius: 99999px;
     box-shadow: 0 0 4px 0 #f9b70f;
 
-    @media (hover: hover) {
+    @media (hover: hover) and (pointer: fine) {
       &:hover {
         box-shadow: 0 0 6px 1px #f9b70f;
       }

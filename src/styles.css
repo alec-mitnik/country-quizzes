@@ -108,7 +108,7 @@ nav {
         }
       }
 
-      @media (hover: hover) {
+      @media (hover: hover) and (pointer: fine) {
         &:hover {
           color: inherit;
           filter: brightness(0.85);
@@ -142,7 +142,7 @@ label {
     cursor: inherit;
   }
 
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover input {
       filter: drop-shadow(0 0 4px var(--hover-glow-color));
     }
@@ -174,7 +174,7 @@ a {
   text-decoration-thickness: 0.05em;
   text-decoration-style: dotted;
 
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover {
       text-decoration-style: solid;
       text-decoration-thickness: 0.15em;
@@ -198,7 +198,7 @@ button {
   border: 1px solid var(--shadow-color);
   box-shadow: 0 2px 4px 0 var(--shadow-color);
 
-  @media (hover: hover) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled) {
       cursor: pointer;
       filter: brightness(0.85);
