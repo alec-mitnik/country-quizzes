@@ -2,6 +2,7 @@ import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
+import { useLocalStorageStateBoolean } from "../hooks/useLocalStorageState";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
@@ -50,7 +51,7 @@ export interface RankingQuizType {
       cca3: Cca3Code) => React.ReactNode;
 };
 
-// TODO - could rank by population density, number of bordering countries,
+// TODO - could match on bordering countries, or rank by number of bordering countries,
 // latitude (actually quite ambiguous in its calculation and maybe not good to quiz on)...
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
@@ -230,23 +231,13 @@ interface QuizState {
 /*
  * TODO - ideas:
  *
- * Could perhaps make difficulty adjust by using less well-known countries
- * (referring to a ranking by tourism or Google Trends).  For ranking quizzes,
- * could adjust difficulty based on how close in ranking the selected countries are.
- * This seems important for better scaling, and increasing the number of countries
- * indefinitely becomes unwieldy.  Could structure it as 5 rounds per level,
- * going from 4 - 8 countries each round, then resetting, with country selection being
- * what increases difficulty between levels.
- *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),
- * or submit a country correctly for you, or reveal all info for locked-in countries.
- * Bonuses could be earned for feats like beating a round in one attempt.
+ * or submit a country correctly for you, or reveal all info for locked-in ranked countries.
+ * Bonuses could be earned for feats like beating a round in one attempt or
+ * getting countries with consecutive ranks correct in one try.
  *
- * Might be fun to have special challenge rounds for all consecutive ranks or
- * all similar flags, although the flag descriptions aren't always nuanced enough,
- * as Monaco and Indonesia have identical descriptions despite having different
- * aspect ratios and shades of red.  Could just manually edit one of them...
+ * Might be fun to have special challenge rounds for all consecutive ranks or all similar flags.
  *
  * Groups of similar flags:
  * Palestine, Jordan, Sudan, South Sudan, Kuwait, UAE, Western Sahara, (Bahamas, Martinique, Zimbabwe)
@@ -285,6 +276,8 @@ interface QuizState {
  * Quizzes gradually get harder as you progress.
  */
 function Quiz() {
+  const [instructionsCollapsed, setInstructionsCollapsed] =
+      useLocalStorageStateBoolean("instructionsCollapsed");
   const [state, setState] = useState<QuizState>({
     countriesForQuizRoundRequested: false,
   });
@@ -407,7 +400,8 @@ function Quiz() {
           loaded={storedCountryData.shallowDataLoaded}
           error={error} dataExists={!!Object.keys(storedCountryData.countries).length}>
         <div className="quiz-component component-wrapper">
-          <details className="quiz-instructions">
+          <details className="quiz-instructions" open={!instructionsCollapsed}
+              onToggle={event => setInstructionsCollapsed(!event.currentTarget.open)}>
             <summary>
               <h2 id="how-to-play">{QUIZ_INSTRUCTIONS_SUBHEADER}</h2>
             </summary>

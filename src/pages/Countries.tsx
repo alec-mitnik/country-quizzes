@@ -3,6 +3,7 @@ import { localeIncludes } from "locale-includes";
 import { useEffect, useMemo, useState } from "react";
 import CountryDirectoryLink from "../CountryDirectoryLink";
 import useCountries from "../hooks/useCountries";
+import { useLocalStorageStateString } from "../hooks/useLocalStorageState";
 import RenderWithLoading from "../RenderWithLoading";
 import {
   COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
@@ -18,10 +19,12 @@ type SortBy = "name" | "size" | "population" | "populationDensity";
  * as links to their own respective pages, along with a search input for filtering
  */
 function Countries() {
-  const [sortBy, setSortBy] = useState<SortBy>("name");
   const [searchTerm, setSearchTerm] = useState("");
   const { independentOnly, storedCountryData, error,
       fetchShallowDataForAllCountries } = useCountries();
+
+  const [sortCountriesBy, setSortCountriesBy] =
+      useLocalStorageStateString("sortCountriesBy", "name");
 
   useEffect(() => {
     if (!error && !storedCountryData.shallowDataRequested) {
@@ -32,7 +35,7 @@ function Countries() {
   const countryCodesFilteredByIndependence: Cca3Code[] = useMemo(() => {
     if (!error && storedCountryData.shallowDataLoaded
         && Object.keys(storedCountryData.countries).length) {
-      switch (sortBy) {
+      switch (sortCountriesBy) {
         case "size":
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byArea;
         case "population":
@@ -57,7 +60,7 @@ function Countries() {
     } else {
       return [];
     }
-  }, [storedCountryData, error, sortBy, independentOnly]);
+  }, [storedCountryData, error, sortCountriesBy, independentOnly]);
 
   // Filter by search
   const countryCodesFilteredBySearch = useMemo(() => {
@@ -81,27 +84,27 @@ function Countries() {
             <legend>{COUNTRIES_SORT_BY_ACCESSIBLE_NAME}</legend>
 
             <label>
-              <input type="radio" name="sort" value="name" checked={sortBy === "name"}
-                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              <input type="radio" name="sort" value="name" checked={sortCountriesBy === "name"}
+                  onChange={(e) => setSortCountriesBy(e.currentTarget.value as SortBy)} />
               Name
             </label>
 
             <label>
-              <input type="radio" name="sort" value="size" checked={sortBy === "size"}
-                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              <input type="radio" name="sort" value="size" checked={sortCountriesBy === "size"}
+                  onChange={(e) => setSortCountriesBy(e.currentTarget.value as SortBy)} />
               Size
             </label>
 
             <label>
-              <input type="radio" name="sort" value="population" checked={sortBy === "population"}
-                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              <input type="radio" name="sort" value="population" checked={sortCountriesBy === "population"}
+                  onChange={(e) => setSortCountriesBy(e.currentTarget.value as SortBy)} />
               Total Population
             </label>
 
             <label>
               <input type="radio" name="sort" value="populationDensity"
-                  checked={sortBy === "populationDensity"}
-                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+                  checked={sortCountriesBy === "populationDensity"}
+                  onChange={(e) => setSortCountriesBy(e.currentTarget.value as SortBy)} />
               Population Density
             </label>
           </fieldset>

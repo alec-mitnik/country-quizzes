@@ -1,6 +1,7 @@
 import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import React, { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
+import { useLocalStorageStateBoolean } from "./hooks/useLocalStorageState";
 import countryPageviews from "./supplementalData/countryPageviews.json";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
 import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels, setPopulationDensityLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
@@ -102,13 +103,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
       useState<CountryStorage>(DEFAULT_COUNTRY_STORAGE);
 
   // Load from and save to local storage
-  const [independentOnly, setIndependentOnlyInternal] = useState(
-      localStorage.getItem("independentOnly") === "true");
-
-  const setIndependentOnly = useCallback((independentOnly: boolean) => {
-    setIndependentOnlyInternal(independentOnly);
-    localStorage.setItem("independentOnly", independentOnly.toString());
-  }, [setIndependentOnlyInternal]);
+  const [independentOnly, setIndependentOnly] = useLocalStorageStateBoolean("independentOnly");
 
   const markShallowDataAsRequested = useCallback(() => {
     setStoredCountryData(prev => {

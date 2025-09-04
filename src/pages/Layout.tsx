@@ -35,7 +35,7 @@ function Layout() {
       <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
         <label>
           <input type="checkbox" id="independent-only-checkbox" checked={independentOnly}
-              onChange={() => setIndependentOnly(!independentOnly)} />
+              onChange={event => setIndependentOnly(event.target.checked)} />
           <span>Independent Countries Only</span>
         </label>
       </section>

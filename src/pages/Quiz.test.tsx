@@ -33,7 +33,7 @@ afterAll(() => {
 });
 
 describe('Quiz', () => {
-  it('renders the play instructions, collapsed by default', async () => {
+  it('renders the play instructions, expanded by default', async () => {
     const user = userEvent.setup();
 
     render(
@@ -44,16 +44,16 @@ describe('Quiz', () => {
     const subheader = screen.getByRole('heading', { name: QUIZ_INSTRUCTIONS_SUBHEADER });
     expect(subheader).toBeInTheDocument();
 
-    // Check that the instructions list is collapsed by default
+    // Check that the instructions list is expanded by default
     const instructionsList = screen.getByRole('list', { name: QUIZ_INSTRUCTIONS_SUBHEADER });
-    expect(instructionsList).not.toBeVisible();
+    expect(instructionsList).toBeVisible();
 
     // Click the subheader (which should be in a details summary element)
     // to expand the instructions
     await user.click(subheader);
 
-    // Check that the instructions list is now expanded
-    expect(instructionsList).toBeVisible();
+    // Check that the instructions list is now collapsed
+    expect(instructionsList).not.toBeVisible();
   });
 
   // TODO - More to come...
