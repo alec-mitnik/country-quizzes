@@ -1,6 +1,7 @@
 import { useRef } from "react"
 import "./CaptionedImageDialogButton.css"
 import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef"
+import { LOADING_IMAGE_MESSAGE } from "./utils/consts"
 
 interface CaptionedImageDialogButtonProps {
   imageDescription: string
@@ -31,6 +32,7 @@ function CaptionedImageDialogButton({ imageDescription, src,
         {imageDescription}
       </h1>
 
+      {!doneLoadingClassName && <span className="loading-image">{LOADING_IMAGE_MESSAGE}</span>}
       <figure>
         <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
           <img ref={imgCallbackRef} src={src} className="flag" alt="" loading="lazy" />
