@@ -87,8 +87,6 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
     }
   }
 
-  // TODO - show location/map in popup window for each revealed country
-  // (Maybe make the formatted continent value a button link)
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
         isDragged ? " dragged" : ""}${isLockedIn ? " locked-in" : ""}${
@@ -100,7 +98,7 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         onDragLeave={onDrop ? handleDragLeave : undefined}
         onDragOver={onDrop ? handleDragOver : undefined}
         onDrop={onDrop ? event => onDrop(event, cca3) : undefined}>
-      <p aria-description={isLockedIn ? "Locked in." : ""}>
+      <div aria-description={isLockedIn ? "Locked in." : ""}>
         {/* Cannot go after the text content or wrapped text will push it down */}
         <span className="button-controls">
           {/* Putting the symbol font on a span rather than the button directly
@@ -138,7 +136,7 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         }{roundActive ? "" : <> ({
           storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
         }){revealedValueLabel && <>: {revealedValueLabel}</>}</>}
-      </p>
+      </div>
     </div>
   );
 }

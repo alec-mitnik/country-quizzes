@@ -281,22 +281,84 @@
       }
     }
 
-    figure {
+    figure:not(dialog figure) {
       padding: 8px;
       max-width: var(--drag-width);
 
-      img.flag {
-        margin: 0 16px 8px 0;
-        max-width: 100px;
-        width: auto;
+      button.image-dialog-button {
         float: left;
+        margin: 0 16px 8px 0;
+        padding: 0;
+        outline-offset: 0;
+        background: transparent;
+        border: none;
+        border-radius: 0;
+        display: inline flex;
+        box-shadow: none;
+
+        img.flag {
+          max-width: 100px;
+          width: auto;
+        }
+
+        details {
+          margin: 0;
+
+          summary {
+            padding: 0 0 8px;
+          }
+        }
+      }
+    }
+
+    dialog.captioned-image-dialog {
+      background-color: var(--background-color-primary);
+      border-color: var(--background-color-primary-foreground-primary);
+      border-radius: 16px;
+      text-align: center;
+      position: relative;
+      padding: 1rem;
+
+      &::backdrop {
+        background-color: rgba(0, 0, 0, 0.4);
       }
 
-      details {
-        margin: 0;
+      button.dialog-close-button {
+        margin-bottom: 8px;
+        padding: 4px 8px;
+        outline-offset: -3px;
+        align-self: flex-end;
+        position: absolute;
+        right: 1rem;
+        z-index: 1;
+      }
 
-        summary {
-          padding: 0 0 8px;
+      h1 {
+        /* Keep below the close button */
+        padding-top: 1rem;
+        font-size: 1.5rem;
+      }
+
+      figure {
+        max-width: 100%;
+
+        > div {
+          width: 100%;
+          max-width: 800px;
+          margin: auto;
+
+          img.flag {
+            max-width: 100%;
+            display: block;
+            margin: auto;
+          }
+        }
+
+        figcaption {
+          margin: auto;
+          max-width: 800px;
+          padding-top: 8px;
+          font-weight: 500;
         }
       }
     }

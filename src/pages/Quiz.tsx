@@ -25,7 +25,7 @@ import "./Quiz.css";
  *
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
-type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS"
+type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
     | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
 // TODO - grouping quiz types, etc.
@@ -87,6 +87,16 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
         storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
+  },
+  MATCH_TO_LOCATIONS: {
+    key: "MATCH_TO_LOCATIONS",
+    description: "Match the countries to their locations.",
+    structure: "matching",
+    matchTypeLabel: "Locations",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
   },
   ORDER_BY_SIZE: {
     key: "ORDER_BY_SIZE",

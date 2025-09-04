@@ -3,9 +3,9 @@ import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import type Quiz from "../pages/Quiz";
 import type { MatchingQuizType } from "../pages/Quiz";
-import SmoothLoadingImage from "../SmoothLoadingImage";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
-import { getReactNodeKey } from "../utils/utils";
+import { getLocatorMapSrc, getReactNodeString } from "../utils/utils";
+import CaptionedImageForMatching from "./CaptionedImageForMatching";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
@@ -52,23 +52,19 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       let label = quizType.labelFunction(storedCountryData, countryCode);
 
       if (quizType.key === "MATCH_TO_FLAGS") {
-        label = <>
-          <figure aria-describedby={`${countryCode}-flag-description`}>
-            <SmoothLoadingImage src={storedCountryData.countries[countryCode]?.data?.flag}
-                alt="Country Flag" className="flag" />
+        label = <CaptionedImageForMatching
+            src={storedCountryData.countries[countryCode]?.data?.flag}
+            imageDescription="Country Flag"
+            caption={getReactNodeString(label,
+                "The flag of this country. No additional description available.")} />
+      } else if (quizType.key === "MATCH_TO_LOCATIONS") {
+        const key = storedCountryData.countries[countryCode]?.data?.worldFactbookCountryKey;
 
-            <figcaption>
-              <details name="flag">
-                <summary>
-                  Flag Description
-                </summary>
-                <p id={`${countryCode}-flag-description`}>
-                  {label ?? "The flag of this country. No additional description available."}
-                </p>
-              </details>
-            </figcaption>
-          </figure>
-        </>;
+        label = <CaptionedImageForMatching
+            src={key ? getLocatorMapSrc(key) : undefined}
+            imageDescription="Country Location"
+            caption={getReactNodeString(label,
+                "The location of this country. No additional description available.")} />
       }
 
       return {
@@ -483,7 +479,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
             emptyMessage="Error">
           {sortedMatchValues.map((matchData, index) => {
             const countryCodeMatchValueIsMatchedTo = matchedCountryCodes[index];
-            const itemKey = `${getReactNodeKey(matchData.label)}_${index}`;
+            const itemKey = `${getReactNodeString(matchData.label)}_${index}`;
 
             // Could use the country code as the key when available, so that focus
             // automatically remains on the country component's buttons when moved up/down,
@@ -493,7 +489,8 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
               <li key={itemKey}>
                 <DraggableCountryPool headerId="matched-pool-header"
                     headerText={matchData.label}
-                    headerLevel={quizType.key === "MATCH_TO_FLAGS" ? 0 : 3}
+                    headerLevel={quizType.key === "MATCH_TO_FLAGS"
+                        || quizType.key === "MATCH_TO_LOCATIONS" ? 0 : 3}
                     singleCapacity
                     canBeDroppedIntoDirectly={!countryCodeMatchValueIsMatchedTo
                         || !quiz.countryCodesLockedInAsCorrect.includes(countryCodeMatchValueIsMatchedTo)}

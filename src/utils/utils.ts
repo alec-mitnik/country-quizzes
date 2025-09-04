@@ -45,12 +45,12 @@ export function convertToOrdinal(n: number) {
 }
 
 /**
- * Converts a ReactNode into a usable value for a rendering key
- * @param node The ReactNode to convert to a usable key
+ * Converts a ReactNode into a string value
+ * @param node The ReactNode to convert
  * @param [fallback='unknown'] Fallback string to use if the node can't be converted
- * @returns A string representation of the ReactNode that can be used as a key
+ * @returns A string representation of the ReactNode that can be used as a rendering key
  */
-export function getReactNodeKey(node: React.ReactNode, fallback = 'unknown'): string {
+export function getReactNodeString(node: React.ReactNode, fallback = 'unknown'): string {
   if (typeof node === 'string' || typeof node === 'number') {
     return String(node);
   }
