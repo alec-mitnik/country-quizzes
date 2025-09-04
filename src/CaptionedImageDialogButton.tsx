@@ -5,6 +5,7 @@ import { LOADING_IMAGE_MESSAGE } from "./utils/consts"
 
 interface CaptionedImageDialogButtonProps {
   imageDescription: string
+  buttonLabelOverride?: string
   src: string | undefined
   caption: string
   children: React.ReactNode
@@ -14,18 +15,20 @@ interface CaptionedImageDialogButtonProps {
  * A button that shows a captioned image in a dialog when clicked
  * @param {string} [props.imageDescription] The image description, used as the dialog title
  * and for the button aria-label
+ * @param {string} [props.buttonLabelOverride] An override for the button aria-label
  * @param {string} [props.src] The src of the image to load
  * @param {string} [props.caption] The caption for the image
  * @param {React.ReactNode} [props.children] The children content of the button
  */
-function CaptionedImageDialogButton({ imageDescription, src,
+function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src,
     caption, children }: CaptionedImageDialogButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog">
-      <button type="button" aria-label={`Close ${imageDescription} Dialog`} autoFocus className="dialog-close-button"
+      <button type="button" aria-label={`Close ${imageDescription} Dialog`}
+          autoFocus className="dialog-close-button"
           onClick={() => dialogRef.current?.close()}>Close [X]</button>
 
       <h1>
@@ -45,7 +48,7 @@ function CaptionedImageDialogButton({ imageDescription, src,
     </dialog>
 
     <button type="button" className="image-dialog-button"
-        aria-label={`${imageDescription}, click to show larger`}
+        aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
         onClick={() => dialogRef.current?.showModal()}>
       {children}
     </button>

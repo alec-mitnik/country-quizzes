@@ -145,10 +145,11 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         }){revealedValueLabel && <>: {revealedValueLabel}</>}
           {quizTypeKey !== "MATCH_TO_LOCATIONS" && <div><CaptionedImageDialogButton
               imageDescription="Country Location"
+              buttonLabelOverride="View Country Location"
               src={key ? getLocatorMapSrc(key) : undefined}
               caption={storedCountryData.countries[cca3]?.data?.location ??
                   "The location of this country. No additional description available."}>
-            View Location
+            View Country Location
           </CaptionedImageDialogButton></div>}
         </>}
       </div>
