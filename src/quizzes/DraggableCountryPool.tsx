@@ -77,6 +77,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
     }
   }
 
+  // Doesn't fire if the drag involves no actual movement!
   function handleDrop(event: DragEvent) {
     if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
         && canBeDroppedIntoDirectly) {
@@ -88,6 +89,10 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
         onDrop(event);
       }
     }
+  }
+
+  function handleDragEnd() {
+    setIsBeingDraggedOver(false);
   }
 
   const ComponentWrapper = singleCapacity ? 'div' : 'section';
@@ -102,7 +107,8 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      onDrop={handleDrop}>
+      onDrop={handleDrop}
+      onDragEnd={handleDragEnd}>
     {headerLevel === 0 && <div id={headerId}>{headerText}</div>}
     {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
     {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}

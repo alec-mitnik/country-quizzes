@@ -1,0 +1,60 @@
+.captioned-image-dialog-wrapper {
+  display: contents;
+
+  dialog.captioned-image-dialog {
+    background-color: var(--background-color-primary);
+    border-color: var(--background-color-primary-foreground-primary);
+    border-radius: 16px;
+    text-align: center;
+    position: relative;
+    padding: 1rem;
+
+    &::backdrop {
+      background-color: rgba(0, 0, 0, 0.4);
+    }
+
+    button.dialog-close-button {
+      margin-bottom: 8px;
+      padding: 4px 8px;
+      outline-offset: -3px;
+      align-self: flex-end;
+      position: absolute;
+      right: 1rem;
+      z-index: 1;
+    }
+
+    h1 {
+      /* Keep below the close button */
+      padding-top: 1rem;
+      font-size: 1.5rem;
+    }
+
+    figure {
+      max-width: 100%;
+
+      > div {
+        max-width: 800px;
+
+        &.with-max-height {
+          max-width: 816px;
+          transition: opacity 0.3s ease-in-out, max-height 1s ease-in-out,
+              overflow 0.3s allow-discrete step-end;
+        }
+
+        img.flag {
+          max-width: 100%;
+          width: auto;
+          display: block;
+          margin: auto;
+        }
+      }
+
+      figcaption {
+        margin: auto;
+        max-width: 800px;
+        padding-top: 8px;
+        font-weight: 500;
+      }
+    }
+  }
+}

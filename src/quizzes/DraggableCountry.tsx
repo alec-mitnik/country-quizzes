@@ -1,7 +1,10 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useRef, type DragEvent } from "react";
 import { Link } from "react-router-dom";
+import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
+import type { QuizTypeKey } from "../pages/Quiz";
+import { getLocatorMapSrc } from "../utils/utils";
 
 interface DraggableCountryProps {
   cca3: Cca3Code;
@@ -12,6 +15,7 @@ interface DraggableCountryProps {
   isLockedIn?: boolean;
   roundActive: boolean;
   quizActive: boolean;
+  quizTypeKey: QuizTypeKey;
   countryCodeBeingDraggedOver?: Cca3Code | null;
   onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code) => void;
   onDragEnd: () => void;
@@ -36,6 +40,7 @@ interface DraggableCountryProps {
  * @param {boolean} [props.isLockedIn] Whether the country is locked in as correct and cannot be moved
  * @param {boolean} [props.roundActive] Whether the quiz round is currently active
  * @param {boolean} [props.quizActive] Whether the quiz is currently active
+ * @param {QuizTypeKey} [props.quizTypeKey] The key of the type of the quiz
  * @param {Cca3Code} [props.countryCodeBeingDraggedOver] The country code of the country being dragged over, if any
  * @param {function} [props.onDragStart] Function to call when the country is dragged
  * @param {function} [props.onDragEnd] Function to call when the country is dropped
@@ -50,7 +55,7 @@ interface DraggableCountryProps {
  * @param {function} [props.onMoveDown] Function to call when the move down control is activated
  */
 function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
-    isDragged, isLockedIn = false, roundActive, quizActive, countryCodeBeingDraggedOver,
+    isDragged, isLockedIn = false, roundActive, quizActive, quizTypeKey, countryCodeBeingDraggedOver,
     onDragStart, onDragEnd, onDrag, onDragEnter, onDragOver, onDragLeave,
     onDrop, onRemove, onAdd, onMoveUp, onMoveDown}: DraggableCountryProps) {
   const elementRef = useRef<HTMLDivElement>(null);
@@ -86,6 +91,8 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
       onDragLeave(event);
     }
   }
+
+  const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
 
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
@@ -135,7 +142,15 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
           quizActive ? countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
         }{roundActive ? "" : <> ({
           storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
-        }){revealedValueLabel && <>: {revealedValueLabel}</>}</>}
+        }){revealedValueLabel && <>: {revealedValueLabel}</>}
+          {quizTypeKey !== "MATCH_TO_LOCATIONS" && <div><CaptionedImageDialogButton
+              imageDescription="Country Location"
+              src={key ? getLocatorMapSrc(key) : undefined}
+              caption={storedCountryData.countries[cca3]?.data?.location ??
+                  "The location of this country. No additional description available."}>
+            View Location
+          </CaptionedImageDialogButton></div>}
+        </>}
       </div>
     </div>
   );

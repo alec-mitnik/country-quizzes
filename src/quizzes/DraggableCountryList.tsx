@@ -41,7 +41,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     // and because propagation is stopped when dropping on a ranked item,
     // only treat the list as being dragged over when not dragging over any of its ranked children
     const isRankedList = event.target instanceof HTMLElement
-        && event.target.matches('.draggable-country-list');
+        && event.target.matches('.draggable-country-list, .draggable-country-list h2');
 
     if (isRankedList && selectedCountryCode
         && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
@@ -65,6 +65,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     }
   }
 
+  // Doesn't fire if the drag involves no actual movement!
   function handleDrop(event: DragEvent) {
     if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
       event.preventDefault();
@@ -77,6 +78,10 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     }
   }
 
+  function handleDragEnd() {
+    setIsBeingDraggedOver(false);
+  }
+
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
@@ -85,7 +90,8 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
-      onDrop={handleDrop}>
+      onDrop={handleDrop}
+      onDragEnd={handleDragEnd}>
     {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
     {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}
     {headerLevel === 3 && <h3 id={headerId}>{headerText}</h3>}

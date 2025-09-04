@@ -4,8 +4,6 @@
   --drag-width: 299px;
 
   details {
-    margin-bottom: 16px;
-
     summary {
       > * {
         /* Modern version of the legacy inline-block value */
@@ -164,6 +162,12 @@
         width: 0;
       }
     }
+
+    .image-dialog-button {
+      padding: 4px 8px;
+      outline-offset: -3px;
+      margin-top: 8px;
+    }
   }
 
   .quiz-controls {
@@ -295,70 +299,28 @@
         border-radius: 0;
         display: inline flex;
         box-shadow: none;
+        color: var(--background-color-primary-foreground-accent);
+        text-decoration: underline dotted;
+        text-underline-offset: 0.1em;
+        text-decoration-thickness: 0.05em;
+
+        @media (hover: hover) and (pointer: fine) {
+          &:hover {
+            text-decoration-style: solid;
+            text-decoration-thickness: 0.15em;
+          }
+        }
 
         img.flag {
-          max-width: 100px;
-          width: auto;
-        }
-
-        details {
-          margin: 0;
-
-          summary {
-            padding: 0 0 8px;
-          }
+          width: 100px;
         }
       }
-    }
 
-    dialog.captioned-image-dialog {
-      background-color: var(--background-color-primary);
-      border-color: var(--background-color-primary-foreground-primary);
-      border-radius: 16px;
-      text-align: center;
-      position: relative;
-      padding: 1rem;
+      details {
+        margin: 0;
 
-      &::backdrop {
-        background-color: rgba(0, 0, 0, 0.4);
-      }
-
-      button.dialog-close-button {
-        margin-bottom: 8px;
-        padding: 4px 8px;
-        outline-offset: -3px;
-        align-self: flex-end;
-        position: absolute;
-        right: 1rem;
-        z-index: 1;
-      }
-
-      h1 {
-        /* Keep below the close button */
-        padding-top: 1rem;
-        font-size: 1.5rem;
-      }
-
-      figure {
-        max-width: 100%;
-
-        > div {
-          width: 100%;
-          max-width: 800px;
-          margin: auto;
-
-          img.flag {
-            max-width: 100%;
-            display: block;
-            margin: auto;
-          }
-        }
-
-        figcaption {
-          margin: auto;
-          max-width: 800px;
-          padding-top: 8px;
-          font-weight: 500;
+        summary {
+          padding: 0 0 8px;
         }
       }
     }

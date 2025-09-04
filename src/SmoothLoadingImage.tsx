@@ -4,6 +4,7 @@ interface SmoothLoadingImageProps {
   src: string | undefined;
   alt: string | undefined;
   className?: string;
+  lazy?: boolean;
 }
 
 /**
@@ -13,14 +14,16 @@ interface SmoothLoadingImageProps {
  * @param {string} [props.src] The src of the image to load
  * @param {string} [props.alt] The alt text for the image
  * @param {string} [props.className=""] The class name for the image
+ * @param {boolean} [props.lazy] Whether to lazy load the image
  */
-function SmoothLoadingImage({src, alt, className = ""}: SmoothLoadingImageProps) {
+function SmoothLoadingImage({src, alt, className = "", lazy}: SmoothLoadingImageProps) {
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return src ? <img ref={imgCallbackRef}
       className={`${className} smooth-loading${doneLoadingClassName}${loadFailedClassName}`}
       src={src}
-      alt={alt ?? ""} /> : null;
+      alt={alt ?? ""}
+      loading={lazy ? "lazy" : undefined} /> : null;
 }
 
 export default SmoothLoadingImage;

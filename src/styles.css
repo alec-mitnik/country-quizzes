@@ -330,8 +330,13 @@ dl {
   transition: opacity 0.3s ease-in-out;
 
   &.with-max-height {
-    max-height: 0;
+    /* Keep some padding on the edges for the drop-shadow
+    to not become hidden overflow for the max-height transition */
+    padding: 8px;
+    margin: -8px;
+    width: calc(100% + 16px);
     overflow: hidden;
+    max-height: 0;
     transition: opacity 0.3s ease-in-out, max-height 3s ease-in-out,
         overflow 0.3s allow-discrete step-end;
 

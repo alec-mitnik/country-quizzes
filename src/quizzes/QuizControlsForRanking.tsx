@@ -275,6 +275,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
                       && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
                   quizActive={quiz.submissionsRemaining > 0
                       || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
+                  quizTypeKey={quiz.type.key}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
                   onDrag={handleDrag}
@@ -299,6 +300,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
                       && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
                   quizActive={quiz.submissionsRemaining > 0
                       || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
+                  quizTypeKey={quiz.type.key}
                   countryCodeBeingDraggedOver={countryCodeBeingDraggedOver}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}

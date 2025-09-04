@@ -1,8 +1,8 @@
+import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import SmoothLoadingImage from "../SmoothLoadingImage";
-import CaptionedImageDialogButton from "./CaptionedImageDialogButton";
 
 interface CaptionedImageForMatchingProps {
-  imageDescription: string;
+  imageTerm: string;
   src: string | undefined;
   caption: string;
 }
@@ -10,22 +10,22 @@ interface CaptionedImageForMatchingProps {
 /**
  * For matching quizzes like flag or location, displays a collapsible caption
  * and a miniature image that can be viewed in full in a dialog by clicking the image
- * @param [props.imageDescription] The image description
- * @param [props.src] The src of the image to load
- * @param [props.caption] The caption for the image
+ * @param {string} [props.imageTerm] The country property represented by the image
+ * @param {string} [props.src] The src of the image to load
+ * @param {string} [props.caption] The caption for the image
  */
-function CaptionedImageForMatching({ imageDescription, src,
+function CaptionedImageForMatching({ imageTerm, src,
     caption }: CaptionedImageForMatchingProps) {
   return <>
     <figure>
-      <CaptionedImageDialogButton imageDescription={imageDescription} src={src} caption={caption}>
-        <SmoothLoadingImage src={src} alt={imageDescription} className="flag" />
+      <CaptionedImageDialogButton imageDescription={`Country ${imageTerm}`} src={src} caption={caption}>
+        <SmoothLoadingImage src={src} alt={`Country ${imageTerm}`} className="flag" />
       </CaptionedImageDialogButton>
 
       <figcaption>
         <details name="caption">
           <summary>
-            Location Description
+            {imageTerm} Description
           </summary>
           <p>
             {caption}

@@ -1,5 +1,6 @@
 import { useRef } from "react"
-import SmoothLoadingImage from "../SmoothLoadingImage"
+import "./CaptionedImageDialogButton.css"
+import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef"
 
 interface CaptionedImageDialogButtonProps {
   imageDescription: string
@@ -10,17 +11,18 @@ interface CaptionedImageDialogButtonProps {
 
 /**
  * A button that shows a captioned image in a dialog when clicked
- * @param [props.imageDescription] The image description, used as the dialog title
+ * @param {string} [props.imageDescription] The image description, used as the dialog title
  * and for the button aria-label
- * @param [props.src] The src of the image to load
- * @param [props.caption] The caption for the image
- * @param [props.children] The children content of the button
+ * @param {string} [props.src] The src of the image to load
+ * @param {string} [props.caption] The caption for the image
+ * @param {React.ReactNode} [props.children] The children content of the button
  */
 function CaptionedImageDialogButton({ imageDescription, src,
     caption, children }: CaptionedImageDialogButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
-  return <>
+  return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog">
       <button aria-label={`Close ${imageDescription} Dialog`} autoFocus className="dialog-close-button"
           onClick={() => dialogRef.current?.close()}>Close [X]</button>
@@ -30,8 +32,8 @@ function CaptionedImageDialogButton({ imageDescription, src,
       </h1>
 
       <figure>
-        <div>
-          <SmoothLoadingImage src={src} className="flag" alt="" />
+        <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
+          <img ref={imgCallbackRef} src={src} className="flag" alt="" loading="lazy" />
         </div>
 
         <figcaption>
@@ -45,7 +47,7 @@ function CaptionedImageDialogButton({ imageDescription, src,
         onClick={() => dialogRef.current?.showModal()}>
       {children}
     </button>
-  </>;
+  </div>;
 }
 
 export default CaptionedImageDialogButton;

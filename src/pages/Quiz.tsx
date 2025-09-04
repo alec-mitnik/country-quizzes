@@ -25,7 +25,7 @@ import "./Quiz.css";
  *
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
-type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
+export type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
     | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
 
 // TODO - grouping quiz types, etc.

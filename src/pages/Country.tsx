@@ -1,6 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
+import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
 import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
 import RenderWithLoading from "../RenderWithLoading";
@@ -40,6 +41,8 @@ function Country() {
   const { name, worldFactbookCountryKey, location, independent, parentCountryCca3,
       borders, flag, flagDescription, currencies, capitals, languages,
       area, population, continents } = country ?? {};
+
+  const locatorMapSrc = worldFactbookCountryKey ? getLocatorMapSrc(worldFactbookCountryKey) : undefined;
 
   const { imgCallbackRef: flagImgCallbackRef,
       imgHasAttached: flagImgHasAttached,
@@ -102,9 +105,15 @@ function Country() {
                   {worldFactbookCountryKey || location ?
                     <>
                       {!!worldFactbookCountryKey && !combinedLoadingClassName && LOADING_IMAGE_MESSAGE}
-                      <figure aria-describedby={`${countryCode}-location-description`}>
-                        {!!worldFactbookCountryKey && <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadMapFailedClassName}`}>
-                          <img ref={mapImgCallbackRef} className="flag" src={getLocatorMapSrc(worldFactbookCountryKey)} alt="" />
+
+                      <figure>
+                        {!!worldFactbookCountryKey &&
+                            <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadMapFailedClassName}`}>
+                          <CaptionedImageDialogButton imageDescription="Country Location"
+                            src={locatorMapSrc} caption={location ??
+                                "The location of this country. No additional description available."}>
+                            <img ref={mapImgCallbackRef} className="flag" src={locatorMapSrc} alt="Country Location" />
+                          </CaptionedImageDialogButton>
                         </div>}
 
                         <figcaption>
@@ -112,7 +121,7 @@ function Country() {
                             <summary>
                               Location Description
                             </summary>
-                            <p id={`${countryCode}-location-description`}>
+                            <p>
                               {location ?? "The location of this country. No additional description available."}
                             </p>
                           </details>
@@ -137,10 +146,14 @@ function Country() {
                   {flag || flagDescription ?
                     <>
                       {!combinedLoadingClassName && LOADING_IMAGE_MESSAGE}
-                      {/* TODO - mark up foreign language phrases in flag banners appropriately */}
-                      <figure aria-describedby={`${countryCode}-flag-description`}>
+                      {/* TODO - mark up foreign language phrases in flag banners appropriately? */}
+                      <figure>
                         <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadFlagFailedClassName}`}>
-                          <img ref={flagImgCallbackRef} className="flag" src={flag} alt="" />
+                          <CaptionedImageDialogButton imageDescription="Country Flag"
+                            src={flag} caption={flagDescription ??
+                                "The flag of this country. No additional description available."}>
+                            <img ref={flagImgCallbackRef} className="flag" src={flag} alt="Country Flag" />
+                          </CaptionedImageDialogButton>
                         </div>
 
                         <figcaption>
@@ -148,7 +161,7 @@ function Country() {
                             <summary>
                               Flag Description
                             </summary>
-                            <p id={`${countryCode}-flag-description`}>
+                            <p>
                               {flagDescription ??
                                   "The flag of this country. No additional description available."}
                             </p>

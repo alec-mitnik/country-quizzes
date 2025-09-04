@@ -54,7 +54,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
       if (quizType.key === "MATCH_TO_FLAGS") {
         label = <CaptionedImageForMatching
             src={storedCountryData.countries[countryCode]?.data?.flag}
-            imageDescription="Country Flag"
+            imageTerm="Flag"
             caption={getReactNodeString(label,
                 "The flag of this country. No additional description available.")} />
       } else if (quizType.key === "MATCH_TO_LOCATIONS") {
@@ -62,7 +62,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
 
         label = <CaptionedImageForMatching
             src={key ? getLocatorMapSrc(key) : undefined}
-            imageDescription="Country Location"
+            imageTerm="Location"
             caption={getReactNodeString(label,
                 "The location of this country. No additional description available.")} />
       }
@@ -464,9 +464,11 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
                       && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
                   quizActive={quiz.submissionsRemaining > 0
                       || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
+                  quizTypeKey={quiz.type.key}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
                   onDrag={handleDrag}
+                  onDrop={handleDropForUnmatchedPool}
                   onAdd={() => onAdd(countryCode)} />
             </li>
           ))}
@@ -508,6 +510,7 @@ function QuizControlsForMatching({quiz, setQuiz}: QuizControlsForMatchingProps) 
                           && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
                       quizActive={quiz.submissionsRemaining > 0
                           || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
+                      quizTypeKey={quiz.type.key}
                       onDragStart={(event) => handleDragStart(event, countryCodeMatchValueIsMatchedTo)}
                       onDragEnd={handleDragEnd}
                       onDrag={handleDrag}
