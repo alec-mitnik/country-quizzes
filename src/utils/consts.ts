@@ -50,11 +50,13 @@ export const DEFAULT_COUNTRY_STORAGE: CountryStorage = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     }
   },

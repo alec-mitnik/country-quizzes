@@ -45,6 +45,63 @@ export function convertToOrdinal(n: number) {
 }
 
 /**
+ * Rounds a number to a given precision, in this case meaning the sum
+ * of the allowed decimal places plus significant digits
+ * @param num The number to round
+ * @param precision The sum of the allowed decimal places + significant digits
+ * @returns The rounded number
+ */
+export function roundToPrecision(num: number, precision: number) {
+  if (isNaN(num)) {
+    return NaN;
+  } else if (num === Infinity || num === -Infinity) {
+    return num;
+  } else if (num === 0) {
+    return 0;
+  }
+
+  const absNum = Math.abs(num);
+
+  // Count significant digits
+  const firstSignificantDigitPos = Math.floor(Math.log10(absNum));
+  const significantDigits = firstSignificantDigitPos >= 0 ? firstSignificantDigitPos + 1 : 1;
+
+  // Calculate decimal places needed
+  const decimalPlaces = Math.max(0, precision - significantDigits);
+
+  return parseFloat(num.toFixed(decimalPlaces));
+}
+
+/**
+ * Gets the number of decimal places for the given number
+ * @param num The number to get decimal places for
+ * @returns The number of decimal places
+ */
+export function getDecimalPlaces(num: number) {
+  if (isNaN(num) || num === Infinity || num === -Infinity) {
+    return NaN;
+  }
+
+  const str = num.toString();
+  return str.includes('.') ? str.split('.')[1].length : 0;
+}
+
+/**
+ * Formats the given number as a locale string
+ * while ensuring the precision is preserved
+ * @param num The number to format
+ * @returns The formatted locale string with precision preserved
+ */
+export function toPreciseLocaleString(num: number) {
+  const decimalPlaces = getDecimalPlaces(num);
+
+  return num.toLocaleString(undefined, {
+    minimumFractionDigits: decimalPlaces,
+    maximumFractionDigits: decimalPlaces,
+  });
+}
+
+/**
  * Converts a ReactNode into a string value
  * @param node The ReactNode to convert
  * @param [fallback='unknown'] Fallback string to use if the node can't be converted

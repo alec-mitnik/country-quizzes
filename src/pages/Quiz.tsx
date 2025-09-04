@@ -26,7 +26,7 @@ import "./Quiz.css";
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
 export type QuizTypeKey = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
-    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION";
+    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY";
 
 // TODO - grouping quiz types, etc.
 export interface MatchingQuizType {
@@ -43,6 +43,7 @@ export interface RankingQuizType {
   key: QuizTypeKey;
   description: string;
   structure: "ranking";
+  rankingTypeLabel: string;
   fieldToRequire?: keyof StoredCountry;
   valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => number;
   labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean,
@@ -102,6 +103,7 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
     key: "ORDER_BY_SIZE",
     description: "Order the countries by size, largest first.",
     structure: "ranking",
+    rankingTypeLabel: "Size",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.area?.rawValue ?? 0,
     labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean, cca3: Cca3Code) => {
@@ -114,8 +116,9 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
   },
   ORDER_BY_POPULATION: {
     key: "ORDER_BY_POPULATION",
-    description: "Order the countries by population, largest first.",
+    description: "Order the countries by total population, largest first.",
     structure: "ranking",
+    rankingTypeLabel: "Total Population",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.population?.rawValue ?? 0,
     labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean, cca3: Cca3Code) => {
@@ -123,6 +126,21 @@ const QUIZ_TYPES: Record<QuizTypeKey, MatchingQuizType | RankingQuizType> = {
         return storedCountryData.countries[cca3]?.data?.population?.formattedValueForIndependentOnly ?? 0;
       } else {
         return storedCountryData.countries[cca3]?.data?.population?.formattedValueForAll ?? 0;
+      }
+    },
+  },
+  ORDER_BY_POPULATION_DENSITY: {
+    key: "ORDER_BY_POPULATION_DENSITY",
+    description: "Order the countries by population density, largest first.",
+    structure: "ranking",
+    rankingTypeLabel: "Population Density",
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.populationDensity?.rawValue ?? 0,
+    labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean, cca3: Cca3Code) => {
+      if (independentOnly) {
+        return storedCountryData.countries[cca3]?.data?.populationDensity?.formattedValueForIndependentOnly ?? 0;
+      } else {
+        return storedCountryData.countries[cca3]?.data?.populationDensity?.formattedValueForAll ?? 0;
       }
     },
   },

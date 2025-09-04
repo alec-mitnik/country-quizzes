@@ -24,7 +24,7 @@ function CaptionedImageDialogButton({ imageDescription, src,
 
   return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog">
-      <button aria-label={`Close ${imageDescription} Dialog`} autoFocus className="dialog-close-button"
+      <button type="button" aria-label={`Close ${imageDescription} Dialog`} autoFocus className="dialog-close-button"
           onClick={() => dialogRef.current?.close()}>Close [X]</button>
 
       <h1>
@@ -42,7 +42,7 @@ function CaptionedImageDialogButton({ imageDescription, src,
       </figure>
     </dialog>
 
-    <button className="image-dialog-button"
+    <button type="button" className="image-dialog-button"
         aria-label={`${imageDescription}, click to show larger`}
         onClick={() => dialogRef.current?.showModal()}>
       {children}

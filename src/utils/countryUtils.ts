@@ -1,7 +1,7 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import type { StoredCountry } from "../CountriesProvider";
 import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
-import { convertToOrdinal } from "./utils";
+import { convertToOrdinal, roundToPrecision, toPreciseLocaleString } from "./utils";
 
 /*
 For reference, partial typed data info for Country from the API:
@@ -254,4 +254,74 @@ export function setPopulationLabels(country: Partial<StoredCountry> | undefined,
     formattedValueForIndependentOnly: populationLabelWithoutRank ?
         `${populationLabelWithoutRank}${populationRankIndependentOnlyText}` : "Unknown",
   };
+}
+
+/**
+ * Sets the population density labels for stored country data, incorporating rankings
+ * @param country Stored country data to set the labels to
+ * @param populationDensityValueFunction Function to get the population density value from the country code
+ * @param rankingsByPopulationDensityAll All countries sorted by population
+ * @param rankingsByPopulationDensityIndependentOnly Independent countries sorted by population
+ */
+export function setPopulationDensityLabels(country: Partial<StoredCountry> | undefined,
+    populationDensityValueFunction: (cca3: Cca3Code) => number,
+    rankingsByPopulationDensityAll: Cca3Code[],
+    rankingsByPopulationDensityIndependentOnly: Cca3Code[]) {
+  if (!country?.population || !country.area || !country.cca3) {
+    return;
+  }
+
+  const population = country.population?.rawValue;
+  const area = country.area?.rawValue;
+
+  const populationDensity = population != null && area != null ?
+      getPopulationDensityValue(population, area) : undefined;
+  const populationDensityMiles = population != null && area != null ?
+      getPopulationDensityValue(population, area / SQUARE_KM_PER_SQUARE_MILE) : undefined;
+
+  const populationDensityLabelWithoutRank = populationDensity != null && populationDensityMiles != null ?
+      `${toPreciseLocaleString(populationDensityMiles)} people per sq mi (${
+      toPreciseLocaleString(populationDensity)} people per sq km)` : undefined;
+
+  const populationDensityRankAll =
+      getRankAccountingForTies(rankingsByPopulationDensityAll,
+      country.cca3, populationDensityValueFunction);
+  const populationDensityRankIndependentOnly =
+      getRankAccountingForTies(rankingsByPopulationDensityIndependentOnly,
+      country.cca3, populationDensityValueFunction);
+
+  let populationDensityRankAllText = "";
+  if (populationDensityRankAll > 0) {
+    const populationRankOrdinal = convertToOrdinal(populationDensityRankAll);
+    populationDensityRankAllText = ` — ${populationRankOrdinal} largest`;
+  }
+
+  let populationDensityRankIndependentOnlyText = "";
+  if (populationDensityRankIndependentOnly > 0) {
+    const populationRankOrdinal = convertToOrdinal(populationDensityRankIndependentOnly);
+    populationDensityRankIndependentOnlyText = ` — ${populationRankOrdinal} largest`;
+  }
+
+  country.populationDensity = {
+    ...country.populationDensity,
+    formattedValueForAll: populationDensityLabelWithoutRank ?
+        `${populationDensityLabelWithoutRank}${populationDensityRankAllText}` : "Unknown",
+    formattedValueForIndependentOnly: populationDensityLabelWithoutRank ?
+        `${populationDensityLabelWithoutRank}${populationDensityRankIndependentOnlyText}` : "Unknown",
+  };
+}
+
+/**
+ * Gets a country's population density value to a consistent precision
+ * @param population Country population value
+ * @param area Country size value
+ * @returns Country population density value to a consistent precision
+ */
+export function getPopulationDensityValue(population: number | undefined, area: number | undefined) {
+  if (!population || !area) {
+    return 0;
+  }
+
+  const rawValue = population / area;
+  return roundToPrecision(rawValue, rawValue < 1 ? 6 : 3);
 }

@@ -46,8 +46,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   const { independentOnly, storedCountryData } = useCountries();
 
   const quizType = quiz.type as RankingQuizType;
-
-  const rankingTypeLabel = quizType.key === "ORDER_BY_POPULATION" ? "Population" : "Size";
+  const rankingTypeLabel = quizType.rankingTypeLabel;
 
   const unrankedCountryCodes = useMemo(() => {
     const unrankedCodes = quiz.countryCodes.filter(

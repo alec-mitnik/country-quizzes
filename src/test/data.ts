@@ -43,6 +43,11 @@ hoist-side corner to the lower fly-side corner of the field.`,
     formattedValueForIndependentOnly: "1,399,491 people — 151st largest",
     formattedValueForAll: "1,399,491 people — 155th largest",
   },
+  populationDensity: {
+    rawValue: 27,
+    formattedValueForIndependentOnly: "105 people per sq mi (273 people per sq km) — 33rd largest",
+    formattedValueForAll: "105 people per sq mi (273 people per sq km) — 52nd largest",
+  },
   continents: {
     label: "Continent",
     rawValue: [
@@ -67,11 +72,13 @@ export const testStoredCountryData = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     },
   },
@@ -103,6 +110,11 @@ export const testShallowStoredCountryData = {
           formattedValueForIndependentOnly: "Test population A for independent only",
           formattedValueForAll: "Test population A for all",
         },
+        populationDensity: {
+          rawValue: 30,
+          formattedValueForIndependentOnly: "Test population density A for independent only",
+          formattedValueForAll: "Test population density A for all",
+        }
       },
       fullyLoaded: false,
       requested: false,
@@ -126,6 +138,11 @@ export const testShallowStoredCountryData = {
           formattedValueForIndependentOnly: "Test population B for independent only",
           formattedValueForAll: "Test population B for all",
         },
+        populationDensity: {
+          rawValue: 50,
+          formattedValueForIndependentOnly: "Test population density B for independent only",
+          formattedValueForAll: "Test population density B for all",
+        }
       },
       fullyLoaded: false,
       requested: false,
@@ -137,11 +154,13 @@ export const testShallowStoredCountryData = {
     independentOnly: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     },
     all: {
       byArea: [],
       byPopulation: [],
+      byPopulationDensity: [],
       byFamiliarity: [],
     },
   },

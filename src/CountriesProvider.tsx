@@ -3,7 +3,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import { CountriesContext } from "./CountriesContext";
 import countryPageviews from "./supplementalData/countryPageviews.json";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
-import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, setAreaLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
+import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels, setPopulationDensityLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
 
 interface CountryPageviewData {
   cca3: Cca3Code;
@@ -45,6 +45,7 @@ export interface StoredCountry {
   currencies?: FormattedCountryField<string[]>;
   area?: Partial<IndependenceDependentFormattedCountryField<number>>;         // Includes calculated rank
   population?: Partial<IndependenceDependentFormattedCountryField<number>>;   // Includes calculated rank
+  populationDensity?: Partial<IndependenceDependentFormattedCountryField<number>>; // Derived from above
 }
 
 export interface StoredCountryWrapper {
@@ -59,11 +60,13 @@ export interface CountryStorage {
     independentOnly: {
       byArea: Cca3Code[],
       byPopulation: Cca3Code[],
+      byPopulationDensity: Cca3Code[],
       byFamiliarity: Cca3Code[],
     },
     all: {
       byArea: Cca3Code[],
       byPopulation: Cca3Code[],
+      byPopulationDensity: Cca3Code[],
       byFamiliarity: Cca3Code[],
     }
   },
@@ -229,6 +232,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                   ...newData.countries[cca3]?.data?.population,
                   rawValue: population,
                 },
+                populationDensity: {
+                  ...newData.countries[cca3]?.data?.populationDensity,
+                  rawValue: getPopulationDensityValue(country.population, country.area),
+                },
                 flag,
                 flagDescription,
                 borders,
@@ -266,14 +273,20 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               (cca3: Cca3Code) => newData.countries[cca3]?.data?.area?.rawValue ?? 0;
           const populationValueFunction =
               (cca3: Cca3Code) => newData.countries[cca3]?.data?.population?.rawValue ?? 0;
+          const populationDensityValueFunction = (cca3: Cca3Code) => {
+            return getPopulationDensityValue(populationValueFunction(cca3), areaValueFunction(cca3));
+          }
 
           // Calculate and set the area and population ranks
           const countryCodesSortedByArea = Object.keys(newData.countries).sort((a, b) => {
-            return areaValueFunction(b) - (areaValueFunction(a));
+            return areaValueFunction(b) - areaValueFunction(a);
           });
           const countryCodesSortedByPopulation = Object.keys(newData.countries).sort((a, b) => {
-            return populationValueFunction(b) - (populationValueFunction(a));
+            return populationValueFunction(b) - populationValueFunction(a);
           });
+          const countryCodesSortedByPopulationDensity = Object.keys(newData.countries).sort((a, b) => {
+            return populationDensityValueFunction(b) - populationDensityValueFunction(a);
+          })
           const countryCodesSortedByFamiliarity = countryPageviews.data.map(
               (country: CountryPageviewData) => country.cca3);
 
@@ -282,6 +295,9 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               byArea: countryCodesSortedByArea.filter(cca3 => newData.countries?.[cca3]?.data?.area),
               byPopulation: countryCodesSortedByPopulation
                   .filter(cca3 => newData.countries?.[cca3]?.data?.population),
+              byPopulationDensity: countryCodesSortedByPopulationDensity
+                  .filter(cca3 => newData.countries?.[cca3]?.data?.area
+                      && newData.countries?.[cca3]?.data.population),
               byFamiliarity: countryCodesSortedByFamiliarity,
             },
             independentOnly: {
@@ -290,6 +306,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               byPopulation: countryCodesSortedByPopulation
                   .filter(cca3 => newData.countries?.[cca3]?.data?.population
                   && newData.countries?.[cca3]?.data.independent),
+              byPopulationDensity: countryCodesSortedByPopulationDensity
+                  .filter(cca3 => newData.countries?.[cca3]?.data?.area
+                      && newData.countries?.[cca3]?.data.population
+                      && newData.countries?.[cca3]?.data.independent),
               byFamiliarity: countryCodesSortedByFamiliarity
                   .filter(cca3 => newData.countries?.[cca3]?.data?.independent),
             }
@@ -303,6 +323,9 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                 newData.rankings.independentOnly.byArea);
             setPopulationLabels(country, populationValueFunction, newData.rankings.all.byPopulation,
                 newData.rankings.independentOnly.byPopulation);
+            setPopulationDensityLabels(country, populationDensityValueFunction,
+                newData.rankings.all.byPopulationDensity,
+                newData.rankings.independentOnly.byPopulationDensity);
           }
         }
 

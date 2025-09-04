@@ -11,7 +11,7 @@ import {
 import "./Countries.css";
 import Page from "./Page";
 
-type SortBy = "name" | "population" | "size";
+type SortBy = "name" | "size" | "population" | "populationDensity";
 
 /**
  * Displays all the independent countries supplied by the REST Countries API
@@ -37,6 +37,8 @@ function Countries() {
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byArea;
         case "population":
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byPopulation;
+        case "populationDensity":
+          return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byPopulationDensity;
         default: {
           let countriesByName = Object.values(storedCountryData.countries).sort((a, b) => {
             // Sort alphabetically by name
@@ -93,7 +95,14 @@ function Countries() {
             <label>
               <input type="radio" name="sort" value="population" checked={sortBy === "population"}
                   onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
-              Population
+              Total Population
+            </label>
+
+            <label>
+              <input type="radio" name="sort" value="populationDensity"
+                  checked={sortBy === "populationDensity"}
+                  onChange={(e) => setSortBy(e.currentTarget.value as SortBy)} />
+              Population Density
             </label>
           </fieldset>
 

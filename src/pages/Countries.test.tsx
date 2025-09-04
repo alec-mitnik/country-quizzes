@@ -78,11 +78,12 @@ describe('Countries', () => {
     expect(fieldset).toBeInTheDocument();
 
     // Check for the radio buttons
-    expect(within(fieldset).getAllByRole('radio')).toHaveLength(3);
+    expect(within(fieldset).getAllByRole('radio')).toHaveLength(4);
 
     expect(within(fieldset).getByRole('radio', { name: "Name", checked: true })).toBeInTheDocument();
     expect(within(fieldset).getByRole('radio', { name: "Size", checked: false })).toBeInTheDocument();
-    expect(within(fieldset).getByRole('radio', { name: "Population", checked: false })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: "Total Population", checked: false })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: "Population Density", checked: false })).toBeInTheDocument();
   });
 
   it('renders the search input', () => {

@@ -40,7 +40,7 @@ function Country() {
 
   const { name, worldFactbookCountryKey, location, independent, parentCountryCca3,
       borders, flag, flagDescription, currencies, capitals, languages,
-      area, population, continents } = country ?? {};
+      area, population, populationDensity, continents } = country ?? {};
 
   const locatorMapSrc = worldFactbookCountryKey ? getLocatorMapSrc(worldFactbookCountryKey) : undefined;
 
@@ -177,8 +177,11 @@ function Country() {
               {renderCountryDataValue(currencies?.label, currencies?.markupValue)}
               {renderCountryDataValue("Size", independentOnly ?
                   area?.formattedValueForIndependentOnly : area?.formattedValueForAll)}
-              {renderCountryDataValue("Population", independentOnly ?
+              {renderCountryDataValue("Total Population", independentOnly ?
                   population?.formattedValueForIndependentOnly : population?.formattedValueForAll)}
+              {renderCountryDataValue("Population Density", independentOnly ?
+                  populationDensity?.formattedValueForIndependentOnly
+                  : populationDensity?.formattedValueForAll)}
             </div>
           </dl>
         </RenderWithLoading>

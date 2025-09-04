@@ -103,9 +103,10 @@ describe('Country', () => {
     );
 
     // Location, Flag, Continent, Bordering Countries, Capital, Language,
-    // Currency, Independent, Parent Country (only when applicable), Size, Population
-    expect(screen.getAllByRole('term')).toHaveLength(10);
-    expect(screen.getAllByRole('definition')).toHaveLength(10);
+    // Currency, Independent, Parent Country (only when applicable),
+    // Size, Total Population, Population Density
+    expect(screen.getAllByRole('term')).toHaveLength(11);
+    expect(screen.getAllByRole('definition')).toHaveLength(11);
   });
 });
 
@@ -304,7 +305,8 @@ describe('Country rendered data', () => {
     const sizeDataDescription = sizeDataTerm.nextElementSibling as HTMLElement;
     expect(sizeDataDescription).toBeInTheDocument();
     expect(sizeDataDescription).toHaveRole('definition');
-    expect(sizeDataDescription).toHaveTextContent(testCountry.area.formattedValueForIndependentOnly);
+    expect(sizeDataDescription).toHaveTextContent(
+        testCountry.area.formattedValueForIndependentOnly);
   });
 
   it('includes the population', () => {
@@ -318,9 +320,9 @@ describe('Country rendered data', () => {
     // Check for the population data term
 
     // Testing library doesn't see its accessible name...
-    // const populationDataTerm = screen.getByRole('term', { name: "Population" });
+    // const populationDataTerm = screen.getByRole('term', { name: "Total Population" });
 
-    const populationDataTerm = screen.getByText("Population");
+    const populationDataTerm = screen.getByText("Total Population");
     expect(populationDataTerm).toBeInTheDocument();
     expect(populationDataTerm).toHaveRole('term');
 
@@ -328,7 +330,33 @@ describe('Country rendered data', () => {
     const populationDataDescription = populationDataTerm.nextElementSibling as HTMLElement;
     expect(populationDataDescription).toBeInTheDocument();
     expect(populationDataDescription).toHaveRole('definition');
-    expect(populationDataDescription).toHaveTextContent(testCountry.population.formattedValueForIndependentOnly);
+    expect(populationDataDescription).toHaveTextContent(
+        testCountry.population.formattedValueForIndependentOnly);
+  });
+
+  it('includes the population density', () => {
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the population density data term
+
+    // Testing library doesn't see its accessible name...
+    // const populationDensityDataTerm = screen.getByRole('term', { name: "Population Density" });
+
+    const populationDensityDataTerm = screen.getByText("Population Density");
+    expect(populationDensityDataTerm).toBeInTheDocument();
+    expect(populationDensityDataTerm).toHaveRole('term');
+
+    // Check for the population density data description
+    const populationDensityDataDescription = populationDensityDataTerm.nextElementSibling as HTMLElement;
+    expect(populationDensityDataDescription).toBeInTheDocument();
+    expect(populationDensityDataDescription).toHaveRole('definition');
+    expect(populationDensityDataDescription).toHaveTextContent(
+        testCountry.populationDensity.formattedValueForIndependentOnly);
   });
 });
 

@@ -4,6 +4,8 @@
   --drag-width: 299px;
 
   details {
+    margin-bottom: 16px;
+
     summary {
       > * {
         /* Modern version of the legacy inline-block value */
