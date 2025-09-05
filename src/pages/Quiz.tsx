@@ -231,13 +231,24 @@ interface QuizState {
 /*
  * TODO - ideas:
  *
+ * Provide a more hands-on tutorial that introduces the mechanics one by one.
+ * Add hint/reminder messaging.
+ *
+ * Maybe there's an API for country fun facts that I could use to pepper in interesting trivia.
+ *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),
  * or submit a country correctly for you, or reveal all info for locked-in ranked countries.
  * Bonuses could be earned for feats like beating a round in one attempt or
  * getting countries with consecutive ranks correct in one try.
  *
+ * Instead of random quiz types, could offer a choice of several random options.
+ *
  * Might be fun to have special challenge rounds for all consecutive ranks or all similar flags.
+ * Challenge rounds could take place at the end of each level.
+ *
+ * Offer a way to practice specific quiz types, doing a single level at a time
+ * (But how to set the difficulty level?).
  *
  * Groups of similar flags:
  * Palestine, Jordan, Sudan, South Sudan, Kuwait, UAE, Western Sahara, (Bahamas, Martinique, Zimbabwe)
@@ -408,15 +419,30 @@ function Quiz() {
 
             <ol aria-labelledby="how-to-play">
               <li>The topic and structure of the quiz is randomly selected for each round.</li>
+              <ul>
+                <li>You may be tasked with matching countries to their flags, capitals, locations, etc.</li>
+                <li>You may be tasked with ordering countries by size, population, etc.</li>
+              </ul>
+              <li>Countries can be dragged to position, or they can be added/moved/removed using the buttons.</li>
+              <ul>
+                <li>To drag on a mobile device, tap and hold on a country until it becomes draggable.</li>
+                <li>Some devices may not support drag-and-drop well, or at all, so the buttons can be used instead.</li>
+              </ul>
               <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
-              <li>You can submit the full answer for the round in one go or piece by piece through multiple submissions.</li>
-              <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
-              <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
-              <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
-              <li>There are {QUIZ_ROUNDS_PER_LEVEL} rounds per level. The number of countries involved increases with each round.</li>
-              <li>When you level up, the obscurity of the countries involved increases, and the rounds restart.</li>
-              <li>Leave the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top unchecked if you want a greater challenge.</li>
-              <li>There are {QUIZ_MAX_LEVEL} levels to beat in total. Keep going for as long as you can!</li>
+              <ul>
+                <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
+                <li><strong>You needn't submit the full answer for the round in one go! It may be better to lock it in piece by piece.</strong></li>
+                <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
+                <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
+              </ul>
+              <li>There are {QUIZ_MAX_LEVEL} levels to beat in total and {QUIZ_ROUNDS_PER_LEVEL} rounds per level.</li>
+              <ul>
+                <li>The number of countries involved starts small and increases with each round.</li>
+                <li>When you level up, a new set of rounds begins, and the obscurity of the countries involved increases.</li>
+                <li>Keep going for as long as you can! It's not about winning, but about lasting a little longer each time.</li>
+                <li>Leave the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top unchecked if you want a greater challenge.</li>
+              </ul>
+              <li>You can toggle displaying these instructions by clicking or tapping "{QUIZ_INSTRUCTIONS_SUBHEADER}."</li>
             </ol>
           </details>
 
