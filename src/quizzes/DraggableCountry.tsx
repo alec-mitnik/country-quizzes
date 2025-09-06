@@ -140,18 +140,18 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
 
         {showRank && `${rankIndex + 1}. `}{
           quizActive ? countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
-        }{roundActive ? "" : <> ({
+        }{!roundActive && <> ({
           storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
-        }){revealedValueLabel && <>: {revealedValueLabel}</>}
-          {quizTypeKey !== "MATCH_TO_LOCATIONS" && <div><CaptionedImageDialogButton
-              imageDescription="Country Location"
-              buttonLabelOverride="View Country Location"
-              src={key ? getLocatorMapSrc(key) : undefined}
-              caption={storedCountryData.countries[cca3]?.data?.location ??
-                  "The location of this country. No additional description available."}>
-            View Country Location
-          </CaptionedImageDialogButton></div>}
-        </>}
+        })</>}{(!roundActive || isLockedIn) && !!revealedValueLabel && <>: {revealedValueLabel}</>}
+
+        {!roundActive && quizTypeKey !== "MATCH_TO_LOCATIONS" && <div><CaptionedImageDialogButton
+            imageDescription="Country Location"
+            buttonLabelOverride="View Country Location"
+            src={key ? getLocatorMapSrc(key) : undefined}
+            caption={storedCountryData.countries[cca3]?.data?.location ??
+                "The location of this country. No additional description available."}>
+          View Country Location
+        </CaptionedImageDialogButton></div>}
       </div>
     </div>
   );

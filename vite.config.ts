@@ -14,8 +14,11 @@ export default defineConfig(({ command }) => {
     },
     test: {
       globals: true,
-      environment: 'jsdom',
+      // Unlike jsdom, can load stylesheets with nested selectors,
+      // but still ignores the nested selectors themselves!
+      environment: 'happy-dom',
       setupFiles: ['./src/test/setup.ts'],
+      css: true,
     },
   };
 })

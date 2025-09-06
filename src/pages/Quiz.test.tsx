@@ -50,7 +50,12 @@ describe('Quiz', () => {
 
     // Click the subheader (which should be in a details summary element)
     // to expand the instructions
-    await user.click(subheader);
+    // await user.click(subheader);
+
+    // Workaround for Happy DOM bug: https://github.com/capricorn86/happy-dom/issues/1874
+    // Click events don't properly bubble from child elements to summary
+    // elements, so we have to click the summary element directly
+    await user.click(subheader.closest('summary')!);
 
     // Check that the instructions list is now collapsed
     expect(instructionsList).not.toBeVisible();

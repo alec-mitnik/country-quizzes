@@ -193,6 +193,10 @@
         margin: auto;
         text-align: center;
         max-width: 315px;
+
+        &:not(.draggable-country-pool:has(.draggable-country-pool) > &) {
+          max-width: 299px;
+        }
       }
 
       > h2 {
