@@ -169,6 +169,11 @@ h2 {
   font-weight: 500;
   margin: 8px 0;
 }
+h3 {
+  font-size: 1.2rem;
+  font-weight: bold;
+  margin: 16px 0;
+}
 
 p {
   margin: 0;
@@ -219,6 +224,11 @@ button {
   &.danger {
     background: var(--danger-color);
     color: var(--background-color-primary)
+  }
+
+  &.small {
+    padding: 4px 8px;
+    outline-offset: -3px;
   }
 }
 

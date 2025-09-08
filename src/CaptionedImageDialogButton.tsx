@@ -47,7 +47,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
       </figure>
     </dialog>
 
-    <button type="button" className="image-dialog-button"
+    <button type="button" className="image-dialog-button small"
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
         onClick={() => dialogRef.current?.showModal()}>
       {children}

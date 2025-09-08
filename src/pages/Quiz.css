@@ -19,7 +19,17 @@
       }
 
       ol {
-        margin: 0 auto;
+        margin: 0 auto 48px;
+
+        /* Match the h3 style */
+        font-size: 1.2rem;
+        font-weight: bold;
+
+        > ul {
+          font-size: 1rem;
+          font-weight: normal;
+          padding-inline-start: 20px;
+        }
 
         li {
           text-align: left;
@@ -47,6 +57,10 @@
       font-size: 1.25rem;
       box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
           0 2px 4px 0 var(--shadow-color);
+    }
+
+    &.give-up {
+      margin-top: 250px;
     }
   }
 
@@ -166,8 +180,6 @@
     }
 
     .image-dialog-button {
-      padding: 4px 8px;
-      outline-offset: -3px;
       margin-top: 8px;
     }
   }

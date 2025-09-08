@@ -2,8 +2,8 @@ import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
-import { useLocalStorageStateBoolean } from "../hooks/useLocalStorageState";
-import { QUIZ_TYPES, type QuizState, type QuizType } from "../quizzes/quizConfig";
+import { useLocalStorageStateBoolean, useLocalStorageStateObject } from "../hooks/useLocalStorageState";
+import { QUIZ_TYPES, type MatchingQuizState, type Quiz, type QuizState, type QuizType, type RankingQuizState } from "../quizzes/quizConfig";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
@@ -95,7 +95,25 @@ function renderQuizOutcomeMessage(quiz: QuizState) {
 function Quiz() {
   const [instructionsCollapsed, setInstructionsCollapsed] =
       useLocalStorageStateBoolean("instructionsCollapsed");
-  const [quizState, setQuizState] = useState<QuizState | null>(null);
+  const [quizState, setQuizState] =
+      useLocalStorageStateObject<QuizState | null>("quizState", null,
+        (key: string, value: unknown) => {
+          if (key === "quiz") {
+            // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
+            return (value as Quiz).type as QuizType;
+          }
+
+          return value;
+        },
+        (key: string, value: unknown) => {
+          if (key === "quiz") {
+            return QUIZ_TYPES[value as QuizType];
+          }
+
+          return value;
+        }
+      );
+
   const [countriesForQuizRoundRequested, setCountriesForQuizRoundRequested] = useState(false);
 
   const { independentOnly, storedCountryData, error, fetchShallowDataForAllCountries,
@@ -135,10 +153,27 @@ function Quiz() {
   }, [countriesForQuizRoundLoaded, countriesForQuizRoundRequested,
       setCountriesForQuizRoundRequested]);
 
-  const loadCountriesForNewQuizRound = useCallback((countryCodes: Cca3Code[]) => {
+  const loadCountriesForQuizRound = useCallback((countryCodes: Cca3Code[]) => {
     fetchCountries(countryCodes);
     setCountriesForQuizRoundRequested(true);
   }, [fetchCountries, setCountriesForQuizRoundRequested]);
+
+  useEffect(() => {
+    if (quizzingActive && !countriesForQuizRoundLoaded && !countriesForQuizRoundRequested) {
+        // If an in-progress quiz is loaded, have to reload the country data
+        loadCountriesForQuizRound(quizState.countryCodes);
+    }
+  }, [quizzingActive, quizState?.countryCodes, countriesForQuizRoundLoaded,
+      countriesForQuizRoundRequested, loadCountriesForQuizRound]);
+
+  useEffect(() => {
+    if (!quizzingActive && quizState && !countriesForQuizRoundLoaded
+        && !countriesForQuizRoundRequested) {
+      // If an ended quiz is loaded, clear the quiz data
+      setQuizState(null);
+    }
+  }, [quizzingActive, countriesForQuizRoundLoaded, countriesForQuizRoundRequested,
+      quizState, setQuizState]);
 
   const startNewQuiz = useCallback(() => {
     if (countriesForQuizRoundRequested) {
@@ -150,7 +185,7 @@ function Quiz() {
         storedCountryData, QUIZ_STARTING_COUNTRY_COUNT, 1,
         QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
-    loadCountriesForNewQuizRound(countryCodes);
+    loadCountriesForQuizRound(countryCodes);
 
     setQuizState({
       quiz: QUIZ_TYPES[randomQuizTypeKey],
@@ -161,9 +196,11 @@ function Quiz() {
       round: 1,
       level: 1,
       incorrectSubmissions: [],
-    });
+      matchedCountryCodes: QUIZ_TYPES[randomQuizTypeKey].structure === "matching" ? {} : undefined,
+      rankedCountryCodes: QUIZ_TYPES[randomQuizTypeKey].structure === "ranking" ? [] : undefined,
+    } as QuizState);
   }, [countriesForQuizRoundRequested, independentOnly, storedCountryData,
-      setQuizState, loadCountriesForNewQuizRound]);
+      setQuizState, loadCountriesForQuizRound]);
 
   const startNextRound = useCallback(() => {
     if (!quizState || countriesForQuizRoundRequested) {
@@ -187,7 +224,7 @@ function Quiz() {
         storedCountryData, newCountryCount, newLevel,
         QUIZ_TYPES[randomQuizTypeKey].fieldToRequire);
 
-    loadCountriesForNewQuizRound(countryCodes);
+    loadCountriesForQuizRound(countryCodes);
 
     setQuizState({
       quiz: QUIZ_TYPES[randomQuizTypeKey],
@@ -199,9 +236,11 @@ function Quiz() {
       round: newRound,
       level: newLevel,
       incorrectSubmissions: [],
-    });
+      matchedCountryCodes: QUIZ_TYPES[randomQuizTypeKey].structure === "matching" ? {} : undefined,
+      rankedCountryCodes: QUIZ_TYPES[randomQuizTypeKey].structure === "ranking" ? [] : undefined,
+    } as QuizState);
   }, [countriesForQuizRoundRequested, storedCountryData, independentOnly,
-      quizState, setQuizState, loadCountriesForNewQuizRound]);
+      quizState, setQuizState, loadCountriesForQuizRound]);
 
   // TODO - Could maybe preserve quiz state in local storage,
   // but don't want to encourage cheating...
@@ -218,31 +257,41 @@ function Quiz() {
             </summary>
 
             <ol aria-labelledby="how-to-play">
-              <li>The topic and structure of the quiz is randomly selected for each round.</li>
+              <li><h3>How the Quiz Works</h3></li>
               <ul>
+                <li>The topic and structure of the quiz is randomly selected for each round.</li>
                 <li>You may be tasked with matching countries to their flags, capitals, locations, etc.</li>
                 <li>You may be tasked with ordering countries by size, population, etc.</li>
+                <li>The countries involved are also randomly selected for each round.</li>
+                <li>Use the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top to restrict which countries will be used.</li>
               </ul>
-              <li>Countries can be dragged to position, or they can be added/moved/removed using the buttons.</li>
+              <li><h3>How to Select Answers</h3></li>
               <ul>
+                <li>Countries can be dragged to position, or they can be added/moved/removed using the button controls.</li>
                 <li>To drag on a mobile device, tap and hold on a country until it becomes draggable.</li>
                 <li>Some devices may not support drag-and-drop well, or at all, so the buttons can be used instead.</li>
               </ul>
-              <li>You have a limited number of submission attempts. If you run out (or exit this page), the quiz ends.</li>
+              <li><h3>Submission Rules</h3></li>
               <ul>
+                <li>You have a limited number of submission attempts. If you run out before completing a round, the quiz ends.</li>
                 <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
                 <li><strong>You needn't submit the full answer for the round in one go! It may be better to lock it in piece by piece.</strong></li>
                 <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
                 <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
               </ul>
-              <li>There are {QUIZ_MAX_LEVEL} levels to beat in total and {QUIZ_ROUNDS_PER_LEVEL} rounds per level.</li>
+              <li><h3>How to Progress</h3></li>
               <ul>
+                <li>There are {QUIZ_MAX_LEVEL} levels to beat in total and {QUIZ_ROUNDS_PER_LEVEL} rounds per level.</li>
                 <li>The number of countries involved starts small and increases with each round.</li>
                 <li>When you level up, a new set of rounds begins, and the obscurity of the countries involved increases.</li>
                 <li>Keep going for as long as you can! It's not about winning, but about lasting a little longer each time.</li>
-                <li>Leave the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top unchecked if you want a greater challenge.</li>
+                <li>Progress is automatically saved through the browser's local storage, so feel free to take breaks.</li>
               </ul>
-              <li>You can toggle displaying these instructions by clicking or tapping "{QUIZ_INSTRUCTIONS_SUBHEADER}."</li>
+              <li><h3>Other Things to Note</h3></li>
+              <ul>
+                <li>Mechanics may be updated or new features may be added in the future. <a href="mailto:alecmitnik@gmail.com">Feedback is welcome!</a></li>
+                <li><strong>You can toggle displaying these instructions by clicking or tapping "{QUIZ_INSTRUCTIONS_SUBHEADER}."</strong></li>
+              </ul>
             </ol>
           </details>
 
@@ -285,12 +334,12 @@ function Quiz() {
               {/* Quiz Controls */}
               {quizState && countriesForQuizRoundLoaded
                   && quizState.quiz.structure === "ranking"
-                  && <QuizControlsForRanking quizState={quizState}
+                  && <QuizControlsForRanking quizState={quizState as RankingQuizState}
                 setQuizState={setQuizState} />
               }
               {quizState && countriesForQuizRoundLoaded
                   && quizState.quiz.structure === "matching"
-                  && <QuizControlsForMatching quizState={quizState}
+                  && <QuizControlsForMatching quizState={quizState as MatchingQuizState}
                 setQuizState={setQuizState} />
               }
             </>
@@ -303,6 +352,15 @@ function Quiz() {
             {renderQuizOutcomeMessage(quizState)}
           </p>}
 
+          {/* Start Next Round Button */}
+          {quizzingActive && nextRoundReadyToStart && <button type="button"
+              disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
+              className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
+                  "" : " level-up"}`} onClick={() => startNextRound()}>
+            <span aria-hidden="true">✓&nbsp; </span>
+            {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
+          </button>}
+
           {/* Start New Quiz Button */}
           {!quizzingActive
               && <button type="button" disabled={countriesForQuizRoundRequested}
@@ -311,14 +369,14 @@ function Quiz() {
             {/* {!!state.quiz && <span aria-hidden="true">✗&nbsp; </span>} */}
             Start New Quiz
           </button>}
-
-          {/* Start Next Round Button */}
-          {quizzingActive && nextRoundReadyToStart && <button type="button"
-              disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
-              className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
-                  "" : " level-up"}`} onClick={() => startNextRound()}>
-            <span aria-hidden="true">✓&nbsp; </span>
-            {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
+          {quizzingActive && !countriesForQuizRoundRequested
+              && <button type="button"
+              className="quiz-action-button danger small give-up" onClick={() => {
+                if (window.confirm("Are you sure you want to lose your progress?")) {
+                  startNewQuiz();
+                }
+              }}>
+            Start New Quiz
           </button>}
         </div>
       </RenderWithLoading>

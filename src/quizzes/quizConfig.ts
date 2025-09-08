@@ -99,11 +99,13 @@ export interface RankingQuiz {
       cca3: Cca3Code) => React.ReactNode;
 };
 
+export type Quiz = MatchingQuiz | RankingQuiz;
+
 // TODO - could match on bordering countries, or rank by number of bordering countries,
 // latitude (actually quite ambiguous in its calculation and maybe not good to quiz on)...
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
-export const QUIZ_TYPES: Record<QuizType, MatchingQuiz | RankingQuiz> = {
+export const QUIZ_TYPES: Record<QuizType, Quiz> = {
   // Use formatted value for match value functions for easy string comparison
   MATCH_TO_CURRENCIES: {
     type: "MATCH_TO_CURRENCIES",
@@ -195,8 +197,23 @@ export const QUIZ_TYPES: Record<QuizType, MatchingQuiz | RankingQuiz> = {
   },
 };
 
-export interface QuizState {
-  quiz: MatchingQuiz | RankingQuiz;
+export interface MatchingQuizState {
+  quiz: MatchingQuiz;
+  submissionsRemaining: number;
+  countryCodes: Cca3Code[];
+  countryCodesLockedInAsCorrect: Cca3Code[];
+  countryCount: number;
+  round: number;
+  level: number;
+  incorrectSubmissions: [string, Cca3Code][][];
+
+  // Use sorted match value index as the key to allow for duplicate values.
+  // Use Object.values() to get the matched country codes/count.
+  matchedCountryCodes: Partial<Record<number, Cca3Code>>;
+};
+
+export interface RankingQuizState {
+  quiz: RankingQuiz;
   submissionsRemaining: number;
   countryCodes: Cca3Code[];
   countryCodesLockedInAsCorrect: Cca3Code[];
@@ -204,4 +221,7 @@ export interface QuizState {
   round: number;
   level: number;
   incorrectSubmissions: Cca3Code[][];
+  rankedCountryCodes: Cca3Code[];
 };
+
+export type QuizState = MatchingQuizState | RankingQuizState;
