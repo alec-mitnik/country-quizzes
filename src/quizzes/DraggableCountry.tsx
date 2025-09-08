@@ -3,8 +3,8 @@ import { useRef, type DragEvent } from "react";
 import { Link } from "react-router-dom";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
-import type { QuizTypeKey } from "../pages/Quiz";
 import { getLocatorMapSrc } from "../utils/utils";
+import type { QuizType } from "./quizConfig";
 
 interface DraggableCountryProps {
   cca3: Cca3Code;
@@ -15,7 +15,7 @@ interface DraggableCountryProps {
   isLockedIn?: boolean;
   roundActive: boolean;
   quizActive: boolean;
-  quizTypeKey: QuizTypeKey;
+  quizTypeKey: QuizType;
   countryCodeBeingDraggedOver?: Cca3Code | null;
   onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code) => void;
   onDragEnd: () => void;
@@ -40,7 +40,7 @@ interface DraggableCountryProps {
  * @param {boolean} [props.isLockedIn] Whether the country is locked in as correct and cannot be moved
  * @param {boolean} [props.roundActive] Whether the quiz round is currently active
  * @param {boolean} [props.quizActive] Whether the quiz is currently active
- * @param {QuizTypeKey} [props.quizTypeKey] The key of the type of the quiz
+ * @param {QuizType} [props.quizTypeKey] The key of the type of the quiz
  * @param {Cca3Code} [props.countryCodeBeingDraggedOver] The country code of the country being dragged over, if any
  * @param {function} [props.onDragStart] Function to call when the country is dragged
  * @param {function} [props.onDragEnd] Function to call when the country is dropped

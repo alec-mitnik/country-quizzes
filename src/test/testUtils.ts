@@ -4,5 +4,7 @@
  * @param received The value to check
  */
 export function expectNotToBeVisibleInDocument(received: unknown) {
-  !received || expect(received).not.toBeVisible();
+  if (received) {
+    expect(received).not.toBeVisible();
+  }
 }

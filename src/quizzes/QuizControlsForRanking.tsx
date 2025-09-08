@@ -1,21 +1,20 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
-import type Quiz from "../pages/Quiz";
-import type { RankingQuizType } from "../pages/Quiz";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
+import type { QuizState, RankingQuiz } from "./quizConfig";
 
 const CUSTOM_DRAG_TYPE = 'application/country-code';
 
 interface QuizControlsForRankingProps {
-  quiz: Quiz;
-  setQuiz: (quiz: Quiz) => void;
+  quizState: QuizState;
+  setQuizState: (quizState: QuizState) => void;
 }
 
-function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
+function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankingProps) {
   const [rankedCountryCodes, setRankedCountryCodes] = useState<Cca3Code[]>([]);
   const [selectedCountryCode, setSelectedCountryCode] = useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
@@ -31,6 +30,16 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   const [srAnnouncement, setSrAnnouncement] = useState('');
   const srAnnouncementTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
+  const alreadyGuessed = useMemo(() => {
+    for (const incorrectSubmission of quizState.incorrectSubmissions) {
+      if (incorrectSubmission.toString() === rankedCountryCodes.toString()) {
+        return true;
+      }
+    };
+
+    return false;
+  }, [rankedCountryCodes, quizState.incorrectSubmissions]);
+
   useEffect(() => {
     // Reset state when the country codes change for a new round
     setRankedCountryCodes([]);
@@ -41,15 +50,15 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
       clearTimeout(srAnnouncementTimeoutIdRef.current);
       clearTimeout(dragTestTimeoutIdRef.current);
     };
-  }, [quiz.countryCodes]);
+  }, [quizState.countryCodes]);
 
   const { independentOnly, storedCountryData } = useCountries();
 
-  const quizType = quiz.type as RankingQuizType;
-  const rankingTypeLabel = quizType.rankingTypeLabel;
+  const quiz = quizState.quiz as RankingQuiz;
+  const rankingTypeLabel = quiz.rankingTypeLabel;
 
   const unrankedCountryCodes = useMemo(() => {
-    const unrankedCodes = quiz.countryCodes.filter(
+    const unrankedCodes = quizState.countryCodes.filter(
       (countryCode) => !rankedCountryCodes.includes(countryCode));
 
     // Sort alphabetically by country name
@@ -59,7 +68,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
     });
 
     return unrankedCodes;
-  }, [rankedCountryCodes, storedCountryData.countries, quiz.countryCodes]);
+  }, [rankedCountryCodes, storedCountryData.countries, quizState.countryCodes]);
 
   function announceForScreenReaders(message: string) {
     clearTimeout(srAnnouncementTimeoutIdRef.current);
@@ -174,9 +183,12 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
     let submissionCorrect = true;
     let previousValue = Number.MAX_SAFE_INTEGER;
 
+    // For a correct submission, clear out previous incorrect submissions
+    let incorrectSubmissions: Cca3Code[][] = [];
+
     // Submission is correct if all ranked values go in descending order
     for (const countryCode of rankedCountryCodes) {
-      const currentValue = quizType.valueFunction(storedCountryData, countryCode);
+      const currentValue = quiz.valueFunction(storedCountryData, countryCode);
 
       if (currentValue > previousValue) {
         submissionCorrect = false;
@@ -188,13 +200,17 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
     let newRankedCountryCodes = rankedCountryCodes;
 
-    const submissionsRemaining = quiz.submissionsRemaining - 1;
+    const submissionsRemaining = quizState.submissionsRemaining - 1;
     let screenReaderMessage = "";
 
     if (!submissionCorrect) {
-      // Submission was incorrect, so clear out any non-locked-in countries
+      // Record the incorrect submission
+      incorrectSubmissions = [...quizState.incorrectSubmissions,
+          [...newRankedCountryCodes]];
+
+      // Clear out any non-locked-in countries
       newRankedCountryCodes = rankedCountryCodes.filter(
-          code => quiz.countryCodesLockedInAsCorrect.includes(code));
+          code => quizState.countryCodesLockedInAsCorrect.includes(code));
       setRankedCountryCodes(newRankedCountryCodes);
 
       // Briefly animate the ranked list shaking
@@ -217,18 +233,19 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
 
     const newLockedInCountryCodes = newRankedCountryCodes;
 
-    if (quiz.countryCodes.length === newRankedCountryCodes.length) {
+    if (quizState.countryCodes.length === newRankedCountryCodes.length) {
       screenReaderMessage += " All countries correctly ranked. Ready for the next round.";
     } else if (submissionsRemaining <= 0) {
-      screenReaderMessage += ` The quiz has ended on round ${quiz.round}.`;
+      screenReaderMessage += ` The quiz has ended on round ${quizState.round}.`;
     }
 
     announceForScreenReaders(screenReaderMessage);
 
-    setQuiz({
-      ...quiz,
+    setQuizState({
+      ...quizState,
       countryCodesLockedInAsCorrect: newLockedInCountryCodes,
       submissionsRemaining,
+      incorrectSubmissions,
     });
   }
 
@@ -255,7 +272,7 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
   }
 
   return (
-    (quiz.type.structure !== "ranking") ? null : <>
+    (quizState.quiz.structure !== "ranking") ? null : <>
       <p className="sr-only" aria-live="polite">{srAnnouncement}</p>
 
       <div className="quiz-controls">
@@ -267,14 +284,14 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
           {unrankedCountryCodes.map((countryCode) => (
             <li key={countryCode}>
               <DraggableCountry cca3={countryCode}
-                  revealedValueLabel={quizType.labelFunction(storedCountryData, independentOnly, countryCode)}
+                  revealedValueLabel={quiz.labelFunction(storedCountryData, independentOnly, countryCode)}
                   isSelected={countryCode === selectedCountryCode}
                   isDragged={countryCode === selectedCountryCode && isDraggingCountryCode}
-                  roundActive={quiz.submissionsRemaining > 0
-                      && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
-                  quizActive={quiz.submissionsRemaining > 0
-                      || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
-                  quizTypeKey={quiz.type.key}
+                  roundActive={quizState.submissionsRemaining > 0
+                      && quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length}
+                  quizActive={quizState.submissionsRemaining > 0
+                      || quizState.countryCodesLockedInAsCorrect.length >= quizState.countryCodes.length}
+                  quizTypeKey={quiz.type}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
                   onDrag={handleDrag}
@@ -291,15 +308,15 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
           {rankedCountryCodes.map((countryCode, index) => (
             <li key={countryCode}>
               <DraggableCountry cca3={countryCode} rankIndex={index}
-                  revealedValueLabel={quizType.labelFunction(storedCountryData, independentOnly, countryCode)}
+                  revealedValueLabel={quiz.labelFunction(storedCountryData, independentOnly, countryCode)}
                   isSelected={countryCode === selectedCountryCode}
                   isDragged={countryCode === selectedCountryCode && isDraggingCountryCode}
-                  isLockedIn={quiz.countryCodesLockedInAsCorrect.includes(countryCode)}
-                  roundActive={quiz.submissionsRemaining > 0
-                      && quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length}
-                  quizActive={quiz.submissionsRemaining > 0
-                      || quiz.countryCodesLockedInAsCorrect.length >= quiz.countryCodes.length}
-                  quizTypeKey={quiz.type.key}
+                  isLockedIn={quizState.countryCodesLockedInAsCorrect.includes(countryCode)}
+                  roundActive={quizState.submissionsRemaining > 0
+                      && quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length}
+                  quizActive={quizState.submissionsRemaining > 0
+                      || quizState.countryCodesLockedInAsCorrect.length >= quizState.countryCodes.length}
+                  quizTypeKey={quiz.type}
                   countryCodeBeingDraggedOver={countryCodeBeingDraggedOver}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
@@ -317,11 +334,12 @@ function QuizControlsForRanking({quiz, setQuiz}: QuizControlsForRankingProps) {
         </DraggableCountryList>
       </div>
 
-      {quiz.countryCodesLockedInAsCorrect.length < quiz.countryCodes.length && <QuizSubmitButton
+      {quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length && <QuizSubmitButton
           onSubmit={attemptSubmit}
-          disabled={rankedCountryCodes.length <= quiz.countryCodesLockedInAsCorrect.length
+          alreadyGuessed={alreadyGuessed}
+          disabled={rankedCountryCodes.length <= quizState.countryCodesLockedInAsCorrect.length
               || rankedCountryCodes.length < 2}
-          submissionsRemaining={quiz.submissionsRemaining} />}
+          submissionsRemaining={quizState.submissionsRemaining} />}
     </>
   );
 }
