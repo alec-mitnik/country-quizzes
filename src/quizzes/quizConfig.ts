@@ -99,13 +99,13 @@ export interface RankingQuiz {
       cca3: Cca3Code) => React.ReactNode;
 };
 
-export type Quiz = MatchingQuiz | RankingQuiz;
+export type CountryQuiz = MatchingQuiz | RankingQuiz;
 
 // TODO - could match on bordering countries, or rank by number of bordering countries,
 // latitude (actually quite ambiguous in its calculation and maybe not good to quiz on)...
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
-export const QUIZ_TYPES: Record<QuizType, Quiz> = {
+export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   // Use formatted value for match value functions for easy string comparison
   MATCH_TO_CURRENCIES: {
     type: "MATCH_TO_CURRENCIES",

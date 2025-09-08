@@ -3,7 +3,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
 import { useLocalStorageStateBoolean, useLocalStorageStateObject } from "../hooks/useLocalStorageState";
-import { QUIZ_TYPES, type MatchingQuizState, type Quiz, type QuizState, type QuizType, type RankingQuizState } from "../quizzes/quizConfig";
+import { QUIZ_TYPES, type CountryQuiz, type MatchingQuizState, type QuizState, type QuizType, type RankingQuizState } from "../quizzes/quizConfig";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import RenderWithLoading from "../RenderWithLoading";
@@ -100,7 +100,7 @@ function Quiz() {
         (key: string, value: unknown) => {
           if (key === "quiz") {
             // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
-            return (value as Quiz).type as QuizType;
+            return (value as CountryQuiz).type as QuizType;
           }
 
           return value;
