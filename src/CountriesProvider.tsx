@@ -4,7 +4,7 @@ import { CountriesContext } from "./CountriesContext";
 import { useLocalStorageStateBoolean } from "./hooks/useLocalStorageState";
 import countryPageviews from "./supplementalData/countryPageviews.json";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
-import { extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels, setPopulationDensityLabels, setPopulationLabels, type CurrenciesData } from "./utils/countryUtils";
+import { extractAlphabeticalStringArray, extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels, setPopulationDensityLabels, setPopulationLabels, sortCountryCodesByName, type CurrenciesData } from "./utils/countryUtils";
 
 interface CountryPageviewData {
   cca3: Cca3Code;
@@ -142,30 +142,42 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             console.error("Country data is missing its name:", country);
             continue;
           }
-          if (country.independent == null) {
-            console.error("Country data is missing its independence status:", country);
-            continue;
-          }
-
-          // Log errors for these but allow the country data to be kept
-          if (country.area == null || isNaN(country.area)) {
-            console.error("Country data is missing its area:", country);
-          }
-          if (country.population == null || isNaN(country.population)) {
-            console.error("Country data is missing its population:", country);
-          }
-
-          const cca3 = country.cca3;
-          const countryName = country.name.common;
-          const independent = country.independent;
-
-          const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
-          const population = country.population != null && !isNaN(country.population) ?
-              country.population : undefined;
 
           if (shallowData) {
-            // Update of all country names, codes, independence status,
-            // flags, areas, and populations only
+            if (country.independent == null) {
+              console.error("Country data is missing its independence status:", country);
+              continue;
+            }
+
+            // Log errors for these but allow the country data to be kept
+            if (country.area == null || isNaN(country.area)) {
+              console.error("Country data is missing its area:", country);
+            }
+            if (country.population == null || isNaN(country.population)) {
+              console.error("Country data is missing its population:", country);
+            }
+          }
+
+          // Country name and code are always requested for any fetch
+          const cca3 = country.cca3;
+          const countryName = country.name.common;
+
+          if (shallowData) {
+            // Update of all country shallow data:
+            // name, code, independence status, flags, borders, areas, and populations only
+
+            const independent = country.independent;
+            let borders = country.borders;
+
+            // Sri Lanka erroneously has India as a bordering country
+            // (and India doesn't even have Sri Lanka as one)
+            if (cca3 === "LKA") {
+              borders = [];
+            }
+
+            const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
+            const population = country.population != null && !isNaN(country.population) ?
+                country.population : undefined;
 
             // Use the pre-loaded supplemental description if provided, indicating a need to override
             const flagDescription =
@@ -177,6 +189,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               cca3,
               name: countryName,
               independent,
+              borders,
               area: {
                 ...newData.countries[cca3]?.data?.area,
                 rawValue: area,
@@ -198,18 +211,14 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               newData.countries[cca3].data = newCountryData;
             }
           } else {
-            // Update of all of a single country's data that will be used
+            // Update of a single country's non-shallow data that will be used:
+            // name, code, currencies, capital, languages, continents
 
-            // Use the pre-loaded supplemental description if provided, indicating a need to override
-            const flagDescription =
-                newData.countries[cca3]?.data?.flagDescription ?? extractFlagAltDescription(country);
-            const flag = country.flags?.svg;
-            const borders = country.borders;
             const currencies = extractCurrencies(country);
             const formattedCurrencies = Object.keys(currencies);
-            const capitals = country.capital;
+            const capitals = extractAlphabeticalStringArray(country.capital);
             const languages = extractLanguages(country);
-            const continents = country.continents;
+            const continents = extractAlphabeticalStringArray(country.continents);
 
             // Shallow data may not have been fetched yet
             newData.countries[cca3] = {
@@ -218,22 +227,6 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                 ...newData.countries[cca3]?.data,
                 cca3,
                 name: countryName,
-                independent,
-                area: {
-                  ...newData.countries[cca3]?.data?.area,
-                  rawValue: area,
-                },
-                population: {
-                  ...newData.countries[cca3]?.data?.population,
-                  rawValue: population,
-                },
-                populationDensity: {
-                  ...newData.countries[cca3]?.data?.populationDensity,
-                  rawValue: getPopulationDensityValue(country.population, country.area),
-                },
-                flag,
-                flagDescription,
-                borders,
                 currencies: {
                   label: formattedCurrencies.length === 1 ? "Currency" : "Currencies",
                   rawValue: formattedCurrencies,
@@ -310,10 +303,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             }
           };
 
-          // Construct and set the area and population formatted values
           for (const cca3 of Object.keys(newData.countries)) {
             const country = newData.countries[cca3]?.data;
 
+            // Construct and set the area and population formatted values
             setAreaLabels(country, areaValueFunction, newData.rankings.all.byArea,
                 newData.rankings.independentOnly.byArea);
             setPopulationLabels(country, populationValueFunction, newData.rankings.all.byPopulation,
@@ -321,6 +314,11 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             setPopulationDensityLabels(country, populationDensityValueFunction,
                 newData.rankings.all.byPopulationDensity,
                 newData.rankings.independentOnly.byPopulationDensity);
+
+            // Sort the borders by country name
+            if (country?.borders) {
+              sortCountryCodesByName(country.borders, newData.countries);
+            }
           }
         }
 

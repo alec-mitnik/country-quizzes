@@ -6,6 +6,7 @@ import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
 import type { QuizState, RankingQuizState } from "./quizConfig";
+import { isQuizActive } from "./quizUtils";
 
 const CUSTOM_DRAG_TYPE = 'application/country-code';
 
@@ -38,6 +39,10 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
 
     return false;
   }, [quizState.rankedCountryCodes, quizState.incorrectSubmissions]);
+
+  const quizActive = isQuizActive(quizState);
+  const roundActive = quizActive && quizState.submissionsRemaining > 0
+      && quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length;
 
   function setRankedCountryCodes(rankedCountryCodes: Cca3Code[]) {
     setQuizState({
@@ -292,11 +297,9 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
                       storedCountryData, independentOnly, countryCode)}
                   isSelected={countryCode === selectedCountryCode}
                   isDragged={countryCode === selectedCountryCode && isDraggingCountryCode}
-                  roundActive={quizState.submissionsRemaining > 0
-                      && quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length}
-                  quizActive={quizState.submissionsRemaining > 0
-                      || quizState.countryCodesLockedInAsCorrect.length >= quizState.countryCodes.length}
-                  quizTypeKey={quizState.quiz.type}
+                  roundActive={roundActive}
+                  quizActive={quizActive}
+                  quizType={quizState.quiz.type}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}
                   onDrag={handleDrag}
@@ -318,11 +321,9 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
                   isSelected={countryCode === selectedCountryCode}
                   isDragged={countryCode === selectedCountryCode && isDraggingCountryCode}
                   isLockedIn={quizState.countryCodesLockedInAsCorrect.includes(countryCode)}
-                  roundActive={quizState.submissionsRemaining > 0
-                      && quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length}
-                  quizActive={quizState.submissionsRemaining > 0
-                      || quizState.countryCodesLockedInAsCorrect.length >= quizState.countryCodes.length}
-                  quizTypeKey={quizState.quiz.type}
+                  roundActive={roundActive}
+                  quizActive={quizActive}
+                  quizType={quizState.quiz.type}
                   countryCodeBeingDraggedOver={countryCodeBeingDraggedOver}
                   onDragStart={(event) => handleDragStart(event, countryCode)}
                   onDragEnd={handleDragEnd}

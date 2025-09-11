@@ -1,5 +1,5 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
-import type { StoredCountry } from "../CountriesProvider";
+import type { StoredCountry, StoredCountryWrapper } from "../CountriesProvider";
 import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
 import { convertToOrdinal, roundToPrecision, toPreciseLocaleString } from "./utils";
 
@@ -36,6 +36,13 @@ type Country = {
 }
 */
 
+/**
+ * Gets the rank of the given country in the given ranked array, accounting for ties
+ * @param rankedArray Array of country codes sorted by rank
+ * @param cca3 Country code to get the rank for
+ * @param valueFunction Function for deriving the value being ranked
+ * @returns Ranking of the country accounting for ties
+ */
 export function getRankAccountingForTies(rankedArray: Cca3Code[], cca3: Cca3Code,
     valueFunction: (cca3: Cca3Code) => number) {
   let index = rankedArray.indexOf(cca3);
@@ -48,16 +55,26 @@ export function getRankAccountingForTies(rankedArray: Cca3Code[], cca3: Cca3Code
   return index + 1;
 }
 
+/**
+ * Gets the formatted string for an array of values
+ * @param value Array of string values
+ * @returns A comma separated list of values or "None"
+ */
 export function formatCountryDataArray(value: string[] | undefined) {
   return value?.length ? value.join(", ") : "None";
 }
 
 export type CurrenciesData = Record<string, { symbol: string, term: string }>;
 
+/**
+ * Extracts currencies data from the given country
+ * @param country Partial country to extract currencies from
+ * @returns Extracted currencies data
+ */
 export function extractCurrencies(country: Partial<Country>) {
   // Keep separate references to the currency symbol and term
   // so that the symbol can be hidden from screen readers
-  const currencies: CurrenciesData = {};
+  let currencies: CurrenciesData = {};
 
   if (country?.currencies) {
     for (const valueEntry of Object.values({...country.currencies})) {
@@ -77,20 +94,52 @@ export function extractCurrencies(country: Partial<Country>) {
         };
       }
     }
+
+    // Sort alphabetically by term
+    currencies = Object.fromEntries(
+        Object.entries(currencies).sort((a, b) => a[1].term.localeCompare(b[1].term)));
   }
 
   return currencies;
 }
 
+/**
+ * Extracts languages from the given country
+ * @param country Partial country to extract languages from
+ * @returns Extracted languages, sorted alphabetically
+ */
 export function extractLanguages(country: Partial<Country>) {
   let languages: string[] = [];
 
   if (country?.languages) {
-    languages = Object.values({...country?.languages})
-        .filter(language => language);
+    languages = Object.values({...country?.languages}).filter(Boolean);
+
+    // Sort alphabetically
+    languages.sort((a, b) => a.localeCompare(b));
   }
 
   return languages;
+}
+
+/**
+ * Sorts an array of strings alphabetically and filters out falsy values
+ * @param values Array of strings to sort
+ * @returns Sorted array
+ */
+export function extractAlphabeticalStringArray(values: string[] | undefined) {
+  const sortedValues = values?.filter(Boolean).sort((a, b) => a.localeCompare(b)) ?? undefined;
+  return sortedValues;
+}
+
+/**
+ * Sorts the given country codes by name
+ * @param countryCodes Country codes to sort
+ * @param storedCountries Stored country data containing the country names
+ */
+export function sortCountryCodesByName(countryCodes: Cca3Code[],
+    storedCountries: Partial<Record<Cca3Code, StoredCountryWrapper>>) {
+  countryCodes.sort((a, b) => storedCountries[a]?.data?.name
+      ?.localeCompare(storedCountries[b]?.data?.name ?? "") ?? 0);
 }
 
 /**

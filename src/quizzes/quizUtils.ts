@@ -1,0 +1,207 @@
+import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { CountryStorage, StoredCountry } from "../CountriesProvider";
+import { QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
+import { extractRandomArrayElement, getRandomArrayElement } from "../utils/utils";
+import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } from "./quizConfig";
+
+/**
+ * Selects a new random quiz type
+ * @param currentType Current quiz type, if any, to not repeat
+ * @returns A random new quiz type
+ */
+export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
+  // return "MATCH_TO_BORDERING_COUNTRIES"; // For easy testing
+  const quizTypes = Object.keys(QUIZ_TYPES) as QuizType[];
+  const quizzes = quizTypes.length < 2 ? quizTypes
+      : quizTypes.filter(quizType => quizType !== currentType);
+  const randomType = getRandomArrayElement<QuizType>(quizzes);
+  return randomType;
+}
+
+/**
+ * Determines the message to show when a quiz ends
+ * @param quizState Quiz state data
+ * @returns String message for the outcome of the quiz
+ */
+export function renderQuizOutcomeMessage(quizState: QuizState) {
+  const quizCountryCodes = (quizState as MatchingQuizState)?.countryCodesOverride ??
+        quizState?.countryCodes ?? [];
+
+  if (quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL
+      && Object.values(quizState.countryCodesLockedInAsCorrect).flat().length >= quizCountryCodes.length) {
+    // Cleared all 10 levels
+    return "You beat the quiz! You're a country whiz.";
+  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
+    // Cleared 8 levels
+    return "Amazing! You really know your stuff.";
+  }else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.6)) {
+    // Cleared 6 levels
+    return "Well done! You lasted a while.";
+  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.4)) {
+    // Cleared 4 levels
+    return "Not bad. Go again?";
+  } else {
+    // Default
+    return "Better luck next time.";
+  }
+}
+
+/**
+ * Determines if the quiz is currently active (not completed or failed)
+ * @param quizState The quiz state data
+ * @returns Whether the quiz is currently active
+ */
+export function isQuizActive(quizState: QuizState | null) {
+  if (!quizState) {
+    return false;
+  }
+
+  const numberOfLockedInCountryCodes =
+      Object.values(quizState.countryCodesLockedInAsCorrect).flat().length
+  const quizCountryCodes = (quizState as MatchingQuizState)?.countryCodesOverride ??
+      quizState.countryCodes;
+  const nextRoundReadyToStart = numberOfLockedInCountryCodes === quizCountryCodes.length;
+
+  return (quizState.level < QUIZ_MAX_LEVEL
+          || quizState.round < QUIZ_ROUNDS_PER_LEVEL
+          || numberOfLockedInCountryCodes < quizCountryCodes.length)
+      && (nextRoundReadyToStart || quizState.submissionsRemaining > 0);
+}
+
+/**
+ * Randomly selects country codes for a quiz.
+ * @param independentOnly Whether to only select from independent countries
+ * @param storedCountryData The country data to select from
+ * @param count The number of countries to select
+ * @param level The quiz level which determines the obscurity of countries to select
+ * @param fieldToRequire Optional field to require selected countries to have a value for.
+ * Must be part of the shallow data expected to already be loaded.
+ * @param forBordersQuiz Whether the selection is for a bordering countries quiz
+ * which requires special constraints
+ * @returns The randomly selected country codes
+ */
+export function getRandomCountryCodes(independentOnly: boolean, storedCountryData: CountryStorage,
+    count: number, level: number, fieldToRequire?: keyof StoredCountry, forBordersQuiz = false) {
+  const countriesData = storedCountryData.countries;
+  const familiarityRankings = independentOnly ? storedCountryData.rankings.independentOnly.byFamiliarity
+      : storedCountryData.rankings.all.byFamiliarity;
+
+  let countryCodes;
+
+  const halfMaxLevel = Math.round(QUIZ_MAX_LEVEL * 0.5);
+
+  // Restrict to country familiarity proportional to the quiz level
+  if (level <= halfMaxLevel) {
+    // Level 1 involves only the top 5th most familiar countries,
+    // up to level 5 involving all countries
+    const familiarityLimit = Math.ceil(familiarityRankings.length * level / halfMaxLevel);
+    countryCodes = familiarityRankings.slice(0, familiarityLimit);
+  } else {
+    // Level 6 involves all countries, up to level 10 involving
+    // only the bottom 5th least familiar countries
+    const familiarityThreshold = Math.floor(
+        familiarityRankings.length * (level - halfMaxLevel - 1) / halfMaxLevel);
+    countryCodes = familiarityRankings.slice(familiarityThreshold);
+  }
+
+  if (fieldToRequire) {
+    countryCodes = countryCodes.filter(cca3 => countriesData[cca3]?.data?.[fieldToRequire]);
+  }
+
+  let selectedCountryCodes: (Cca3Code | undefined)[] = [];
+
+  if (forBordersQuiz) {
+    // Make sure at least two of the selected countries have bordering countries
+    // and that the total number of bordering countries among all selected countries
+    // is between the count and 1.5 times the count
+
+    function getCountriesWithBorderingCountries(countryCodes: (Cca3Code | undefined)[],
+        min = 1, max = Infinity) {
+      return countryCodes.filter(cca3 => {
+        const numBorders = cca3 ? storedCountryData.countries[cca3]?.data?.borders?.length ?? 0 : 0;
+        return cca3 && numBorders >= min && numBorders <= max;
+      }) as Cca3Code[];
+    }
+
+    const maxBorderingCountries = Math.round(count * 1.5);
+    const minCountriesWithBorders = 2;
+    countryCodes = getCountriesWithBorderingCountries(countryCodes, 0, maxBorderingCountries - 1);
+
+    // Naive approach
+    /* for (let i = 0; i < 100; i++) {
+      let countForAttempt = count;
+      const countryCodesForAttempt = [...countryCodes];
+
+      while (countryCodesForAttempt.length && countForAttempt > 0) {
+        selectedCountryCodes.push(extractRandomArrayElement<Cca3Code>(countryCodesForAttempt));
+        countForAttempt--;
+      }
+
+      const totalBorderingCountries = selectedCountryCodes.map(cca3 =>
+          cca3 ? storedCountryData.countries[cca3]?.data?.borders ?? [] : []).flat().length;
+
+      if (totalBorderingCountries >= count && totalBorderingCountries <= maxBorderingCountries
+          && getCountriesWithBorderingCountries(selectedCountryCodes).length >= 2) {
+        console.log("A ATTEMPTS:", i + 1, "TOTAL:", totalBorderingCountries);
+        break;
+      }
+
+      selectedCountryCodes = [];
+    } */
+
+    if (selectedCountryCodes.length < count) {
+      // console.log("A ATTEMPTS:", "100+");
+
+      // Controlled approach
+      for (let i = 0; i < 100; i++) {
+        let countForAttempt = count;
+        let bordersAllowed = maxBorderingCountries - minCountriesWithBorders;
+        let countryCodesForAttempt =
+            getCountriesWithBorderingCountries(countryCodes, 1, bordersAllowed);
+
+        while (countryCodesForAttempt.length) {
+          selectedCountryCodes.push(extractRandomArrayElement<Cca3Code>(countryCodesForAttempt));
+          countForAttempt--;
+
+          if (countForAttempt <= 0) {
+            break;
+          }
+
+          const selectedBorderingCountries = selectedCountryCodes.map(cca3 =>
+              cca3 ? storedCountryData.countries[cca3]?.data?.borders ?? [] : []).flat().length;
+          bordersAllowed = maxBorderingCountries - selectedBorderingCountries
+              - Math.max(0, minCountriesWithBorders - (count - countForAttempt));
+          let minBorders = 0;
+
+          if (countForAttempt > count - minCountriesWithBorders) {
+            minBorders = 1;
+          } else if (countForAttempt < 2) {
+            minBorders = Math.max(0, count - selectedBorderingCountries);
+          }
+
+          countryCodesForAttempt =
+              getCountriesWithBorderingCountries(countryCodes, minBorders, bordersAllowed)
+              .filter(cca3 => !selectedCountryCodes.includes(cca3));
+        }
+
+        const totalBorderingCountries = selectedCountryCodes.map(cca3 =>
+            cca3 ? storedCountryData.countries[cca3]?.data?.borders ?? [] : []).flat().length;
+
+        if (totalBorderingCountries >= count && totalBorderingCountries <= maxBorderingCountries
+            && getCountriesWithBorderingCountries(selectedCountryCodes).length >= minCountriesWithBorders) {
+          break;
+        }
+
+        console.error("Borders quiz country selection failed:", selectedCountryCodes);
+        selectedCountryCodes = [];
+      }
+    }
+  } else {
+    while (countryCodes.length && count > 0) {
+      selectedCountryCodes.push(extractRandomArrayElement<Cca3Code>(countryCodes));
+      count--;
+    }
+  }
+
+  return selectedCountryCodes.filter(Boolean) as Cca3Code[];
+}

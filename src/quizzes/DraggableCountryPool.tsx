@@ -6,12 +6,15 @@ interface DraggableCountryPoolProps {
   headerId: string;
   headerText: React.ReactNode;
   headerLevel?: number;
+  contentBelowHeader?: React.ReactNode;
   singleCapacity?: boolean;
   canBeDroppedIntoDirectly?: boolean;
   isTargetContainer?: boolean;
   emptyMessage: string;
   children: React.ReactNode;
   selectedCountryCode?: Cca3Code | null;
+  isTargetForAdd?: boolean;
+  onTargetForAddToggle?: () => void;
   onDrop?: (event: DragEvent) => void;
 }
 
@@ -20,20 +23,24 @@ interface DraggableCountryPoolProps {
  * @param {string} [props.headerId] ID of the header element
  * @param {React.ReactNode} [props.headerText] Text or markup to go inside the header element
  * @param {number} [props.headerLevel=2] Level of the header element
+ * @param {React.ReactNode} [props.contentBelowHeader] Optional content to display below the header
  * @param {boolean} [props.singleCapacity=false] If true, only one country
  * can be stored in the pool at a time
- * @param {boolean} [props.canBeDroppedIntoDirectly=true] If false,
- * countries are expected to be dropped into nested child pools
+ * @param {boolean} [props.canBeDroppedIntoDirectly=true] If false, is at capacity,
+ * or countries are expected to be dropped into nested child pools
  * @param {boolean} [props.isTargetContainer=false] If true, is styled with a light border
  * and plays a shaking animation on incorrect submission
  * @param {string} [props.emptyMessage] Message to display when the pool is empty
  * @param {React.ReactNode} props.children Draggable country components held by the pool
  * @param {Cca3Code | null} [props.selectedCountryCode] The code of the currently selected/dragged country
+ * @param {boolean} [props.isTargetForAdd=false] Whether the pool is the target for adding
+ * @param {function} [props.onTargetForAddToggle] Function to call when the pool is set as the target for adding
  * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the pool
  */
-function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
+function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBelowHeader,
     singleCapacity = false, canBeDroppedIntoDirectly = true, isTargetContainer = false,
-    emptyMessage, children, selectedCountryCode, onDrop }: DraggableCountryPoolProps) {
+    emptyMessage, children, selectedCountryCode, isTargetForAdd = false, onTargetForAddToggle,
+    onDrop }: DraggableCountryPoolProps) {
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
@@ -101,21 +108,34 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2,
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
+  const targetForAddButton: React.ReactNode = !!onTargetForAddToggle ? <button type="button"
+    onClick={() => onTargetForAddToggle()}
+    aria-label={isTargetForAdd ? "Stop targeting this value" : "Target this value for adding"}
+    className="target-for-add-button">
+      <span aria-hidden="true" className="symbol-font">⌖</span>
+  </button> : null;
+
+  const headerTextWithOffset = <>{targetForAddButton}{headerText}</>
+
   return <ComponentWrapper className={`draggable-country-pool${isBeingDraggedOver ? " being-dragged-over" : ""
-      }${isTargetContainer ? " target-container" : ""}`}
+      }${isTargetContainer ? " target-container" : ""}${isTargetForAdd ? " target-for-add" : ""}`}
       aria-labelledby={headerId}
       onDragEnter={handleDragEnter}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
       onDragEnd={handleDragEnd}>
+    {targetForAddButton}
+
     {headerLevel === 0 && <div id={headerId}>{headerText}</div>}
-    {headerLevel === 1 && <h1 id={headerId}>{headerText}</h1>}
-    {headerLevel === 2 && <h2 id={headerId}>{headerText}</h2>}
-    {headerLevel === 3 && <h3 id={headerId}>{headerText}</h3>}
-    {headerLevel === 4 && <h4 id={headerId}>{headerText}</h4>}
-    {headerLevel === 5 && <h5 id={headerId}>{headerText}</h5>}
-    {headerLevel === 6 && <h6 id={headerId}>{headerText}</h6>}
+    {headerLevel === 1 && <h1 id={headerId}>{headerTextWithOffset}</h1>}
+    {headerLevel === 2 && <h2 id={headerId}>{headerTextWithOffset}</h2>}
+    {headerLevel === 3 && <h3 id={headerId}>{headerTextWithOffset}</h3>}
+    {headerLevel === 4 && <h4 id={headerId}>{headerTextWithOffset}</h4>}
+    {headerLevel === 5 && <h5 id={headerId}>{headerTextWithOffset}</h5>}
+    {headerLevel === 6 && <h6 id={headerId}>{headerTextWithOffset}</h6>}
+
+    {contentBelowHeader}
 
     {hasChildren ? (<ChildrenWrapper>
       {children}

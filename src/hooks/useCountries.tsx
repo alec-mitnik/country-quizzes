@@ -5,18 +5,19 @@ import useFetch from "./useFetch";
 
 // Include area and population to allow for displaying the overall rankings.
 // Include flags to be able to filter out countries with missing flag descriptions from flag quizzes.
+// Include borders to be able to filter out countries with no bordering countries from border quizzes.
 const SHALLOW_DATA_URL =
-    "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population,flags";
+    "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population,flags,borders";
 
 /**
- * Gives the full fetch URL to use for getting full data for specified countries
+ * Gives the full fetch URL to use for getting non-shallow data for specified countries
  * @param countryCodes cca3 codes of the countries to get data for
  * @returns The constructed URL
  */
 function getFullCountryFetchUrl(countryCodes: string[]) {
   return `https://restcountries.com/v3.1/alpha?codes=${
     countryCodes.join(",")
-  }&fields=cca3,name,independent,capital,flags,currencies,borders,continents,languages,area,population`;
+  }&fields=cca3,name,capital,currencies,continents,languages`;
 }
 
 /**

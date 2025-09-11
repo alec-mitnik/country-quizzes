@@ -224,6 +224,17 @@
         max-width: 100%;
       }
 
+      > .content-below-header {
+        padding: 4px 16px;
+        width: var(--drag-width);
+        max-width: 100%;
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        align-items: center;
+        text-align: center;
+      }
+
       ul, ol {
         list-style: none;
         padding: 0;
@@ -300,6 +311,39 @@
           /* Prevent onDragLeave from being triggered by child elements */
           pointer-events: none;
         }
+      }
+
+      .target-for-add-button {
+        /* Mimic draggable country control button styles */
+        border-width: 2px;
+        padding: 0 8px;
+        box-shadow: 0 1px 1px 0 var(--shadow-color);
+        outline-offset: 2px;
+
+        font-weight: normal;
+        overflow: hidden;
+        font-size: 1rem;
+
+        &:not(.draggable-country-pool > &) {
+          /* Duplicate button on the left side
+          to keep the header centered */
+          visibility: hidden;
+        }
+
+        > span {
+          display: inline flow-root;
+          transform: scale(2);
+        }
+      }
+
+      > .target-for-add-button {
+        float: right;
+        margin: 0 0 2px 8px;
+      }
+
+      &.target-for-add {
+        border-style: dashed;
+        border-color: var(--background-color-accent);
       }
     }
 

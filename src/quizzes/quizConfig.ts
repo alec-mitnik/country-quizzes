@@ -1,5 +1,14 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
+import { formatCountryDataArray } from "../utils/countryUtils";
+
+// Increment this any time a breaking change is introduce to quiz data
+// so that preexisting data will be completely discarded rather than cause an error
+export const QUIZ_BREAKING_VERSION = 1;
+
+// Increment this any time a breaking change is introduce to quiz round data
+// so that only preexisting data for the current round will be discarded
+export const QUIZ_ROUND_BREAKING_VERSION = 1;
 
 /*
  * TODO - ideas:
@@ -73,15 +82,16 @@ import type { CountryStorage, StoredCountry } from "../CountriesProvider";
  *
  * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
  */
-export type QuizType = "MATCH_TO_CURRENCIES" | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS"
-    | "MATCH_TO_LOCATIONS" | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION"
-    | "ORDER_BY_POPULATION_DENSITY";
+export type QuizType = "MATCH_TO_CURRENCIES" | "MATCH_TO_BORDERING_COUNTRIES"
+    | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
+    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY";
 
 // TODO - grouping quiz types, etc.
 export interface MatchingQuiz {
   type: QuizType;
   description: string;
   structure: "matching";
+  singleCapacity: boolean;
   matchTypeLabel: string;
   fieldToRequire?: keyof StoredCountry;
   valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => string;
@@ -101,8 +111,8 @@ export interface RankingQuiz {
 
 export type CountryQuiz = MatchingQuiz | RankingQuiz;
 
-// TODO - could match on bordering countries, or rank by number of bordering countries,
-// latitude (actually quite ambiguous in its calculation and maybe not good to quiz on)...
+// TODO - could rank by number of bordering countries, or latitude
+// (actually quite ambiguous in its calculation and maybe not good to quiz on)...
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
 export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
@@ -111,17 +121,33 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     type: "MATCH_TO_CURRENCIES",
     description: "Match the countries to their currency.",
     structure: "matching",
-    matchTypeLabel: "Currencies",
+    singleCapacity: true,
+    matchTypeLabel: "Country Currencies",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.markupValue ?? "Unknown",
   },
+  MATCH_TO_BORDERING_COUNTRIES: {
+    type: "MATCH_TO_BORDERING_COUNTRIES",
+    description: "Match the countries to their bordering countries.",
+    structure: "matching",
+    singleCapacity: false,
+    matchTypeLabel: "Bordering Countries",
+    // Comma separated list of bordering country codes or "None",
+    // gets parsed back into an array of country codes to turn into links, which isn't ideal...
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        formatCountryDataArray(storedCountryData.countries[cca3]?.data?.borders),
+    // Name of the country
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.name ?? cca3,
+  },
   MATCH_TO_CAPITALS: {
     type: "MATCH_TO_CAPITALS",
     description: "Match the countries to their capitals.",
     structure: "matching",
-    matchTypeLabel: "Capitals",
+    singleCapacity: true,
+    matchTypeLabel: "Country Capitals",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -131,7 +157,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     type: "MATCH_TO_FLAGS",
     description: "Match the countries to their flags.",
     structure: "matching",
-    matchTypeLabel: "Flags",
+    singleCapacity: true,
+    matchTypeLabel: "Country Flags",
     // Not really necessary for flags after manually gathering replacements
     // for the missing flag descriptions, but might as well just in case
     fieldToRequire: "flagDescription",
@@ -144,7 +171,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     type: "MATCH_TO_LOCATIONS",
     description: "Match the countries to their locations.",
     structure: "matching",
-    matchTypeLabel: "Locations",
+    singleCapacity: true,
+    matchTypeLabel: "Country Locations",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -200,21 +228,25 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
 export interface MatchingQuizState {
   quiz: MatchingQuiz;
   submissionsRemaining: number;
+  roundStartSubmissionsRemaining: number;
   countryCodes: Cca3Code[];
-  countryCodesLockedInAsCorrect: Cca3Code[];
+  countryCodesOverride?: Cca3Code[]; // For bordering country quizzes
+  // Have to match the structure of matchedCountryCodes
+  countryCodesLockedInAsCorrect: Partial<Record<number, Cca3Code[]>>;
   countryCount: number;
   round: number;
   level: number;
-  incorrectSubmissions: [string, Cca3Code][][];
+  incorrectSubmissions: [string, Cca3Code[]][][];
 
   // Use sorted match value index as the key to allow for duplicate values.
-  // Use Object.values() to get the matched country codes/count.
-  matchedCountryCodes: Partial<Record<number, Cca3Code>>;
+  // Use Object.values().flat() to get the matched country codes/count.
+  matchedCountryCodes: Partial<Record<number, Cca3Code[]>>;
 };
 
 export interface RankingQuizState {
   quiz: RankingQuiz;
   submissionsRemaining: number;
+  roundStartSubmissionsRemaining: number;
   countryCodes: Cca3Code[];
   countryCodesLockedInAsCorrect: Cca3Code[];
   countryCount: number;

@@ -1,7 +1,7 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useEffect } from "react";
 import { Link, useParams } from "react-router-dom";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
+import CountryLinksValue from "../CountryLinksValue";
 import useCountries from "../hooks/useCountries";
 import useSmoothLoadingImageRef from "../hooks/useSmoothLoadingImageRef";
 import RenderWithLoading from "../RenderWithLoading";
@@ -68,25 +68,6 @@ function Country() {
     );
   }
 
-  function renderCountryLinksValue(value: Cca3Code[] = []) {
-    if (value.length === 0) {
-      return "None";
-    } else {
-      return (
-        <span>
-          {value.map((code, index) => (
-            <React.Fragment key={code}>
-              {index > 0 ? ", " : ""}
-              <Link to={`/countries/${code}`}>
-                {storedCountryData.countries[code]?.data?.name ?? "ERROR"}
-              </Link>
-            </React.Fragment>
-          ))}
-        </span>
-      );
-    }
-  }
-
   return (
     <div className="country-component component-wrapper">
       <Link to="/countries">
@@ -133,10 +114,10 @@ function Country() {
 
               {renderCountryDataValue(continents?.label, continents?.formattedValue)}
               {renderCountryDataValue(borders?.length === 1 ? "Bordering Country" : "Bordering Countries",
-                  renderCountryLinksValue(borders))}
+                  <CountryLinksValue value={borders} />)}
               {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
               {!independent && parentCountryCca3 && renderCountryDataValue("Parent Country",
-                  renderCountryLinksValue([parentCountryCca3]))}
+                  <CountryLinksValue value={[parentCountryCca3]} />)}
             </div>
 
             <div className="country-data-wrapper">

@@ -9,6 +9,7 @@ import {
   COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
   NO_COUNTRIES_MATCHED_MESSAGE
 } from "../utils/consts";
+import { sortCountryCodesByName } from "../utils/countryUtils";
 import "./Countries.css";
 import Page from "./Page";
 
@@ -43,10 +44,8 @@ function Countries() {
         case "populationDensity":
           return storedCountryData.rankings[independentOnly ? "independentOnly" : "all"].byPopulationDensity;
         default: {
-          let countriesByName = Object.values(storedCountryData.countries).sort((a, b) => {
-            // Sort alphabetically by name
-            return a?.data?.name.localeCompare(b?.data?.name ?? "") ?? 0;
-          }).map((country) => country?.data?.cca3).filter(Boolean) as Cca3Code[];
+          let countriesByName = Object.keys(storedCountryData.countries) as Cca3Code[];
+          sortCountryCodesByName(countriesByName, storedCountryData.countries);
 
           // Filter by independence
           if (independentOnly) {

@@ -23,6 +23,28 @@ function useLocalStorageStateBoolean(propertyName: string) {
 
 /**
  * Creates a state and setState function that are kept in sync
+ * with a localStorage number value
+ * @param {string} propertyName Name of the localStorage key
+ * @param {number} defaultValue Default value to use if not in localStorage
+ * @returns The state and setState function
+ */
+function useLocalStorageStateNumber(propertyName: string, defaultValue: number) {
+  // Load from and save to local storage
+  const [state, setStateInternal] = useState(
+      parseFloat(localStorage.getItem(propertyName) ?? String(defaultValue)));
+
+  const setState = useCallback((state: number) => {
+    setStateInternal(state);
+    localStorage.setItem(propertyName, String(state));
+  }, [setStateInternal, propertyName]);
+
+  // Use `as const` to strongly type each array element individually
+  // rather than have them all typed as a union of all possible types
+  return [state, setState] as const;
+}
+
+/**
+ * Creates a state and setState function that are kept in sync
  * with a localStorage string value
  * @param {string} propertyName Name of the localStorage key
  * @param {string} defaultValue Default value to use if not in localStorage
@@ -77,4 +99,7 @@ function useLocalStorageStateObject<T>(propertyName: string, defaultValue: T,
   return [state, setState] as const;
 }
 
-export { useLocalStorageStateBoolean, useLocalStorageStateObject, useLocalStorageStateString };
+export {
+  useLocalStorageStateBoolean, useLocalStorageStateNumber,
+  useLocalStorageStateObject, useLocalStorageStateString
+};

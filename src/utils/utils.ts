@@ -1,11 +1,29 @@
 import React, { type PropsWithChildren } from "react";
 
 /**
+ * For when filter can't be used because there can be duplicates
+ * and you only want to remove one
+ * @param array Array to remove the first match from
+ * @param value Value to remove
+ */
+export function removeFirstMatchFromArray<T>(array: T[], value: T) {
+  const index = array.indexOf(value);
+
+  if (index > -1) {
+    array.splice(index, 1);
+  }
+}
+
+/**
  * Selects a random element from the given array without modifying the array
  * @param array The array to select from
  * @returns The randomly selected element
  */
 export function getRandomArrayElement<T>(array: T[]) {
+  if (!array?.length) {
+    return undefined;
+  }
+
   return array[Math.floor(Math.random() * array.length)];
 }
 
@@ -15,6 +33,10 @@ export function getRandomArrayElement<T>(array: T[]) {
  * @returns The randomly selected element
  */
 export function extractRandomArrayElement<T>(array: T[]) {
+  if (!array?.length) {
+    return undefined;
+  }
+
   const randomIndex = Math.floor(Math.random() * array.length);
   return array.splice(randomIndex, 1)[0];
 }

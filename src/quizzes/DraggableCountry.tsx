@@ -15,7 +15,7 @@ interface DraggableCountryProps {
   isLockedIn?: boolean;
   roundActive: boolean;
   quizActive: boolean;
-  quizTypeKey: QuizType;
+  quizType: QuizType;
   countryCodeBeingDraggedOver?: Cca3Code | null;
   onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code) => void;
   onDragEnd: () => void;
@@ -40,7 +40,7 @@ interface DraggableCountryProps {
  * @param {boolean} [props.isLockedIn] Whether the country is locked in as correct and cannot be moved
  * @param {boolean} [props.roundActive] Whether the quiz round is currently active
  * @param {boolean} [props.quizActive] Whether the quiz is currently active
- * @param {QuizType} [props.quizTypeKey] The key of the type of the quiz
+ * @param {QuizType} [props.quizType] The type of the quiz
  * @param {Cca3Code} [props.countryCodeBeingDraggedOver] The country code of the country being dragged over, if any
  * @param {function} [props.onDragStart] Function to call when the country is dragged
  * @param {function} [props.onDragEnd] Function to call when the country is dropped
@@ -55,7 +55,7 @@ interface DraggableCountryProps {
  * @param {function} [props.onMoveDown] Function to call when the move down control is activated
  */
 function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
-    isDragged, isLockedIn = false, roundActive, quizActive, quizTypeKey, countryCodeBeingDraggedOver,
+    isDragged, isLockedIn = false, roundActive, quizActive, quizType, countryCodeBeingDraggedOver,
     onDragStart, onDragEnd, onDrag, onDragEnter, onDragOver, onDragLeave,
     onDrop, onRemove, onAdd, onMoveUp, onMoveDown}: DraggableCountryProps) {
   const elementRef = useRef<HTMLDivElement>(null);
@@ -139,17 +139,20 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         </span>
 
         {showRank && `${rankIndex + 1}. `}{
-          quizActive ? countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
-        }{!roundActive && <> ({
+          quizActive || quizType === "MATCH_TO_BORDERING_COUNTRIES" ?
+              countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
+        }{!roundActive && quizType !== "MATCH_TO_BORDERING_COUNTRIES" && <> ({
           storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
         })</>}{(!roundActive || isLockedIn) && !!revealedValueLabel && <>: {revealedValueLabel}</>}
 
-        {!roundActive && quizTypeKey !== "MATCH_TO_LOCATIONS" && <div><CaptionedImageDialogButton
-            imageDescription="Country Location"
-            buttonLabelOverride="View Country Location"
-            src={key ? getLocatorMapSrc(key) : undefined}
-            caption={storedCountryData.countries[cca3]?.data?.location ??
-                "The location of this country. No additional description available."}>
+        {!roundActive && quizType !== "MATCH_TO_LOCATIONS"
+            && quizType !== "MATCH_TO_BORDERING_COUNTRIES"
+            && <div><CaptionedImageDialogButton
+                imageDescription="Country Location"
+                buttonLabelOverride="View Country Location"
+                src={key ? getLocatorMapSrc(key) : undefined}
+                caption={storedCountryData.countries[cca3]?.data?.location ??
+                    "The location of this country. No additional description available."}>
           View Country Location
         </CaptionedImageDialogButton></div>}
       </div>
