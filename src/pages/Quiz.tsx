@@ -146,7 +146,7 @@ function Quiz() {
       // If an in-progress quiz is loaded, have to reload the country data
       loadCountriesForQuizRound(quizState.countryCodes);
     }
-  }, [quizActive, quizState?.countryCodes, countriesForQuizRoundLoaded,
+  }, [quizActive, quizState, countriesForQuizRoundLoaded,
       countriesForQuizRoundRequested, loadCountriesForQuizRound]);
 
   useEffect(() => {
@@ -204,7 +204,8 @@ function Quiz() {
 
     // Load the new quiz country data
     loadCountriesForQuizRound(countryCodes);
-  }, [independentOnly, storedCountryData, loadCountriesForQuizRound, setQuizState]);
+  }, [quizState?.quiz.type, independentOnly, storedCountryData,
+      loadCountriesForQuizRound, setQuizState]);
 
   const startNewQuiz = useCallback(() => {
     if (countriesForQuizRoundRequested) {

@@ -49,7 +49,7 @@ describe('DraggableCountry', () => {
       <div className="quiz-component component-wrapper">
         <DraggableCountry cca3={testCountry.cca3} isSelected={false} isDragged={false}
             isLockedIn={false} roundActive={true} quizActive={true} rankIndex={0}
-            quizTypeKey={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
+            quizType={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
             revealedValueLabel={testCountry.area.formattedValueForIndependentOnly} />
       </div>
     );
@@ -83,7 +83,7 @@ describe('DraggableCountry', () => {
       <div className="quiz-component component-wrapper">
         <DraggableCountry cca3={testCountry.cca3} isSelected={false} isDragged={false}
             isLockedIn={true} roundActive={true} quizActive={true} rankIndex={0}
-            quizTypeKey={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
+            quizType={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
             revealedValueLabel={testCountry.area.formattedValueForIndependentOnly} />
       </div>
     );
@@ -117,7 +117,7 @@ describe('DraggableCountry', () => {
       <div className="quiz-component component-wrapper">
         <DraggableCountry cca3={testCountry.cca3} isSelected={false} isDragged={false}
             isLockedIn={true} roundActive={false} quizActive={true} rankIndex={0}
-            quizTypeKey={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
+            quizType={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
             revealedValueLabel={testCountry.area.formattedValueForIndependentOnly} />
       </div>
     );
@@ -153,7 +153,7 @@ describe('DraggableCountry', () => {
         <div className="quiz-component component-wrapper">
           <DraggableCountry cca3={testCountry.cca3} isSelected={false} isDragged={false}
               isLockedIn={false} roundActive={false} quizActive={false}
-              quizTypeKey={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
+              quizType={"ORDER_BY_SIZE"} onDragStart={vi.fn()} onDragEnd={vi.fn()}
               revealedValueLabel={testCountry.area.formattedValueForIndependentOnly} />
         </div>
       </MemoryRouter>

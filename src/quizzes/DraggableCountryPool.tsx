@@ -108,7 +108,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBe
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
-  const targetForAddButton: React.ReactNode = !!onTargetForAddToggle ? <button type="button"
+  const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <button type="button"
     onClick={() => onTargetForAddToggle()}
     aria-label={isTargetForAdd ? "Stop targeting this value" : "Target this value for adding"}
     className="target-for-add-button">
