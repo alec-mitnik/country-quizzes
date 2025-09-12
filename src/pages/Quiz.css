@@ -73,7 +73,7 @@
       border-color: transparent;
 
       .level-up-background {
-      /* Animation doesn't work on a pseudo-element in iOS Safari */
+      /* Animation of background-position doesn't work on a pseudo-element in iOS Safari */
       /* &::before { */
         /* content: ''; */
         display: inline flow-root;
@@ -88,15 +88,13 @@
         that you can wind up at a position identical to the start before 100%, for infinite looping */
         background-image: linear-gradient(var(--background-color-accent), var(--background-color-accent)),
             linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
-            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
-            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
             #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8);
-        background-size: 800%;
+        background-size: 100%, 400%;
         background-clip: padding-box, border-box;
         background-origin: border-box;
 
         @media not (prefers-reduced-motion: reduce) {
-          animation: rainbowMotion 10s infinite linear;
+          animation: rainbowMotion 4s infinite linear;
         }
       }
     }
@@ -439,7 +437,7 @@
 
 @keyframes rainbowMotion {
   0% { background-position-x: 0, 0; }
-  100% { background-position: 0, 61.7%; }
+  100% { background-position: 0, 77.5%; }
 }
 
 @keyframes animateShake {
