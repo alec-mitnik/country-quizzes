@@ -56,6 +56,10 @@
       margin-top: 250px;
     }
 
+    .level-up-background {
+      display: none;
+    }
+
     &.level-up {
       font-size: 1.25rem;
       box-shadow: 0 2px 8px 2px var(--shadow-color);
@@ -68,9 +72,11 @@
       background: transparent;
       border-color: transparent;
 
-      &::before {
-        content: '';
-        display: block;
+      .level-up-background {
+      /* Animation doesn't work on a pseudo-element in iOS Safari */
+      /* &::before { */
+        /* content: ''; */
+        display: inline flow-root;
         border: 3px solid transparent;
         position: absolute;
         inset: -1px;
@@ -88,10 +94,6 @@
         background-size: 800%;
         background-clip: padding-box, border-box;
         background-origin: border-box;
-
-        /* iOS Safari fix */
-        /* transform: translateZ(0); */ /* Force hardware acceleration */
-        /* will-change: background-position; */ /* Hint to browser about animation */
 
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 10s infinite linear;
