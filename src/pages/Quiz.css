@@ -88,6 +88,10 @@
         background-clip: padding-box, border-box;
         background-origin: border-box;
 
+        /* iOS Safari fix */
+        transform: translateZ(0); /* Force hardware acceleration */
+        will-change: background-position; /* Hint to browser about animation */
+
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 10s infinite linear;
         }
