@@ -70,10 +70,10 @@
       background: transparent;
       border-color: transparent;
 
-      &::before {
-        content: '';
+      /* &::before { */
+        /* content: ''; */
         border: 3px solid transparent;
-        position: absolute;
+        /* position: absolute; */
         inset: -1px;
         z-index: -1;
         border-radius: inherit;
@@ -97,7 +97,7 @@
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 10s infinite linear;
         }
-      }
+      /* } */
     }
   }
 
