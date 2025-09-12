@@ -52,15 +52,46 @@
   .quiz-action-button {
     margin-block: 16px 48px;
 
-    &.level-up {
-      /* TODO - style this fancier with colors and animation (plus a sound effect would be nice) */
-      font-size: 1.25rem;
-      box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
-          0 2px 4px 0 var(--shadow-color);
-    }
-
     &.give-up {
       margin-top: 250px;
+    }
+
+    &.level-up {
+      font-size: 1.25rem;
+      box-shadow: 0 2px 8px 2px var(--shadow-color);
+
+      /* Old version before adding the rainbow */
+      /* box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
+          0 2px 4px 0 var(--shadow-color); */
+
+      position: relative;
+      background: transparent;
+      border-color: transparent;
+
+      &::before {
+        content: '';
+        border: 3px solid transparent;
+        position: absolute;
+        inset: -1px;
+        z-index: -1;
+        border-radius: inherit;
+        filter: blur(1px);
+
+        /* Background position cannot go beyond 100%, so need to repeat the gradient enough times
+        that you can wind up at a position identical to the start before 100%, for infinite looping */
+        background-image: linear-gradient(var(--background-color-accent), var(--background-color-accent)),
+            linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
+            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
+            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
+            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8);
+        background-size: 800%;
+        background-clip: padding-box, border-box;
+        background-origin: border-box;
+
+        @media not (prefers-reduced-motion: reduce) {
+          animation: rainbowMotion 10s infinite linear;
+        }
+      }
     }
   }
 
@@ -397,6 +428,11 @@
       }
     }
   }
+}
+
+@keyframes rainbowMotion {
+  0% { background-position: 0 0, 0 0; }
+  100% { background-position: 0 0, 61.7% 0; }
 }
 
 @keyframes animateShake {

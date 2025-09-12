@@ -215,6 +215,7 @@ button {
     &:hover:not(:disabled) {
       cursor: pointer;
       filter: brightness(0.85);
+      transform: scale(1.02);
     }
   }
 
