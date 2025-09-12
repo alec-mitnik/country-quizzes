@@ -4,7 +4,12 @@ import { CountriesContext } from "./CountriesContext";
 import { useLocalStorageStateBoolean } from "./hooks/useLocalStorageState";
 import countryPageviews from "./supplementalData/countryPageviews.json";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
-import { extractAlphabeticalStringArray, extractCurrencies, extractFlagAltDescription, extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels, setPopulationDensityLabels, setPopulationLabels, sortCountryCodesByName, type CurrenciesData } from "./utils/countryUtils";
+import {
+  extractAlphabeticalStringArray, extractCurrencies, extractFlagAltDescription,
+  extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels,
+  setPopulationDensityLabels, setPopulationLabels, sortCountryCodesByName,
+  type CurrenciesData
+} from "./utils/countryUtils";
 
 interface CountryPageviewData {
   cca3: Cca3Code;
@@ -197,6 +202,10 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               population: {
                 ...newData.countries[cca3]?.data?.population,
                 rawValue: population,
+              },
+              populationDensity: {
+                ...newData.countries[cca3]?.data?.populationDensity,
+                rawValue: getPopulationDensityValue(country.population, country.area),
               },
               flag,
               flagDescription,
