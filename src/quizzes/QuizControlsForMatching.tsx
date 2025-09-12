@@ -321,19 +321,25 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     });
   }
 
-  function canSlotAcceptCountryCode(countryCode: Cca3Code, matchIndex: number) {
+  function canSlotAcceptCountryCode(countryCode: Cca3Code, matchIndex: number, allowSwaps = true) {
     const countryCodesAtSlot = sortedMatchedCountryCodes[matchIndex];
 
     if (countryCodesAtSlot?.length) {
-      if (singleCapacity
-          && quizState.countryCodesLockedInAsCorrect[matchIndex]?.includes(countryCodesAtSlot[0])) {
-        // Occupied by a locked-in country
-        return false;
-      }
-
       if (countryCodesAtSlot.includes(countryCode)) {
         // Occupied by the same country already
         return false;
+      }
+
+      if (singleCapacity) {
+        if (allowSwaps) {
+          if (quizState.countryCodesLockedInAsCorrect[matchIndex]?.includes(countryCodesAtSlot[0])) {
+            // Occupied by a locked-in country
+            return false;
+          }
+        } else if (countryCodesAtSlot.length) {
+          // Occupied by a country
+          return false;
+        }
       }
     }
 
@@ -379,7 +385,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     if (matchIndex < 0) {
       // No designated slot, so find the first available slot
       for (let i = 0; i < sortedMatchValues.length; i++) {
-        if (!singleCapacity || !sortedMatchedCountryCodes[i]?.length) {
+        if (canSlotAcceptCountryCode(countryCode, i, false)) {
           matchIndex = i;
           break;
         }
