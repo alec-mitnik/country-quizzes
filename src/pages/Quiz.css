@@ -64,18 +64,18 @@
       /* box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
           0 2px 4px 0 var(--shadow-color); */
 
-      position: relative;
-      background: transparent;
-      border-color: transparent;
+      /* position: relative; */
+      /* background: transparent; */
+      /* border-color: transparent; */
 
       /* &::before {
         content: ''; */
         border: 3px solid transparent;
         /* position: absolute; */
-        inset: -1px;
+        /* inset: -1px;
         z-index: -1;
         border-radius: inherit;
-        filter: blur(1px);
+        filter: blur(1px); */
 
         /* Background position cannot go beyond 100%, so need to repeat the gradient enough times
         that you can wind up at a position identical to the start before 100%, for infinite looping */
@@ -89,8 +89,8 @@
         background-origin: border-box;
 
         /* iOS Safari fix */
-        transform: translateZ(0); /* Force hardware acceleration */
-        will-change: background-position; /* Hint to browser about animation */
+        /* transform: translateZ(0); */ /* Force hardware acceleration */
+        /* will-change: background-position; */ /* Hint to browser about animation */
 
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 10s infinite linear;
