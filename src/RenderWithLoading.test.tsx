@@ -5,7 +5,9 @@ import { LOADING_MESSAGE } from './utils/consts';
 
 const noDataMessage = "No data";
 const contentText = "Test";
-const renderedContent: React.ReactNode = <p>{contentText}</p>;
+const focusId = "focusId";
+const renderedContent: React.ReactNode =
+    <p id={focusId} tabIndex={-1}>{contentText}</p>;
 const errorMessage = "Error";
 
 describe('RenderWithLoading', () => {
@@ -89,7 +91,26 @@ describe('RenderWithLoading', () => {
 
     // Check for the children content
     expect(screen.getByText(contentText)).toBeInTheDocument();
+
+    // Check that it doesn't set focus when not specified
+    const focusTarget = document.getElementById(focusId);
+    expect(focusTarget).toBeInTheDocument();
+    expect(focusTarget).not.toHaveFocus();
+  });
+
+  it('focuses the specified element when loaded', () => {
+    render(
+      <MemoryRouter>
+        <RenderWithLoading loaded={true} error={null} dataExists={true}
+            noDataMessage={noDataMessage} focusOnLoad={focusId}>
+          {renderedContent}
+        </RenderWithLoading>
+      </MemoryRouter>
+    );
+
+    // Check for the children content
+    const focusTarget = document.getElementById(focusId);
+    expect(focusTarget).toBeInTheDocument();
+    expect(focusTarget).toHaveFocus();
   });
 });
-
-// TODO - test focusOnLoad...

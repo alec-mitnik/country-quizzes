@@ -1,9 +1,15 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, within } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useParams } from 'react-router-dom';
+import type { StoredCountry } from '../CountriesProvider';
 import useCountries from '../hooks/useCountries';
 import { testCountry, testStoredCountryData } from '../test/data';
+import { copyObjectWithoutReassignment } from '../test/testUtils';
 import { BACK_TO_COUNTRIES_LINK_TEXT, DEFAULT_COUNTRY_STORAGE, NO_COUNTRY_DATA_MESSAGE } from '../utils/consts';
+import { getLocatorMapSrc } from '../utils/utils';
 import Country from './Country';
+
+const NUM_EXPECTED_DATA_TERMS = 11;
 
 // Mock the hook
 vi.mock('../hooks/useCountries');
@@ -18,6 +24,8 @@ vi.mock('react-router-dom', async (importOriginal) => {
     useParams: vi.fn(),
   };
 });
+
+const originalTestCountry = structuredClone(testCountry);
 
 beforeEach(() => {
   vi.clearAllMocks();
@@ -40,6 +48,7 @@ beforeEach(() => {
 
 afterEach(() => {
   vi.resetAllMocks();
+  copyObjectWithoutReassignment(testCountry, originalTestCountry);
 });
 
 afterAll(() => {
@@ -105,13 +114,15 @@ describe('Country', () => {
     // Location, Flag, Continent, Bordering Countries, Capital, Language,
     // Currency, Independent, Parent Country (only when applicable),
     // Size, Total Population, Population Density
-    expect(screen.getAllByRole('term')).toHaveLength(11);
-    expect(screen.getAllByRole('definition')).toHaveLength(11);
+    expect(screen.getAllByRole('term')).toHaveLength(NUM_EXPECTED_DATA_TERMS);
+    expect(screen.getAllByRole('definition')).toHaveLength(NUM_EXPECTED_DATA_TERMS);
   });
 });
 
 describe('Country rendered data', () => {
-  it('includes the flag', () => {
+  it('includes the flag', async () => {
+    const user = userEvent.setup();
+
     render(
       // MemoryRouter required when possibly rendering Link components
       <MemoryRouter>
@@ -133,9 +144,90 @@ describe('Country rendered data', () => {
     expect(flagDataDescription).toBeInTheDocument();
     expect(flagDataDescription).toHaveRole('definition');
 
-    // Check for the flag image with alt text TODO
-    // expect(within(flagDataDescription).getByRole('img',
-    //     { name: testCountry.flagDescription })).toBeInTheDocument();
+    // Check for the flag image
+    const flagImage = within(flagDataDescription).getByRole('img');
+    expect(flagImage).toBeInTheDocument();
+    expect(flagImage).toHaveAttribute('src', testCountry.flag);
+
+    // Check for the flag description
+
+    // Testing library can't find summary elements by role
+    // const flagSummaryButton = within(flagDataDescription).getByRole('DisclosureTriangleGrouped',
+    //     { name: 'Flag Description' });
+    const flagSummaryButton = flagDataDescription.querySelector('summary');
+    expect(flagSummaryButton).toBeInTheDocument();
+    assert(flagSummaryButton);
+
+    // Testing library doesn't see its accessible name...
+    // const flagDescription = within(flagDataDescription).getByRole('p',
+    //     { name: testCountry.flagDescription });
+    const flagDetails = flagSummaryButton.closest('details');
+    expect(flagDetails).toBeInTheDocument();
+    assert(flagDetails);
+    const flagDescription = within(flagDetails).getByText(testCountry.flagDescription);
+    expect(flagDescription).toBeInTheDocument();
+
+    // Flag description should be collapsed by default
+    expect(flagDescription).not.toBeVisible();
+
+    await user.click(flagSummaryButton);
+
+    expect(flagDescription).toBeVisible();
+  });
+
+  it('includes the location', async () => {
+    const user = userEvent.setup();
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the location data term
+
+    // Testing library doesn't see its accessible name...
+    // const locationDataTerm = screen.getByRole('term', { name: "Location" });
+
+    const locationDataTerm = screen.getByText("Location");
+    expect(locationDataTerm).toBeInTheDocument();
+    expect(locationDataTerm).toHaveRole('term');
+
+    // Check for the location data description
+    const locationDataDescription = locationDataTerm.nextElementSibling as HTMLElement;
+    expect(locationDataDescription).toBeInTheDocument();
+    expect(locationDataDescription).toHaveRole('definition');
+
+    // Check for the location image
+    const locationImage = within(locationDataDescription).getByRole('img');
+    expect(locationImage).toBeInTheDocument();
+    expect(locationImage).toHaveAttribute('src', getLocatorMapSrc(testCountry.worldFactbookCountryKey));
+
+    // Check for the location description
+
+    // Testing library can't find summary elements by role
+    // const locationSummaryButton = within(flagDataDescription).getByRole('DisclosureTriangleGrouped',
+    //     { name: 'Location Description' });
+    const locationSummaryButton = locationDataDescription.querySelector('summary');
+    expect(locationSummaryButton).toBeInTheDocument();
+    assert(locationSummaryButton);
+
+    // Testing library doesn't see its accessible name...
+    // const locationDescription = within(flagDataDescription).getByRole('p',
+    //     { name: testCountry.location });
+    const locationDetails = locationSummaryButton.closest('details');
+    expect(locationDetails).toBeInTheDocument();
+    assert(locationDetails);
+    const locationDescription = within(locationDetails).getByText(testCountry.location);
+    expect(locationDescription).toBeInTheDocument();
+
+    // Location description should be collapsed by default
+    expect(locationDescription).not.toBeVisible();
+
+    await user.click(locationSummaryButton);
+
+    expect(locationDescription).toBeVisible();
   });
 
   it('includes the continent', () => {
@@ -162,7 +254,8 @@ describe('Country rendered data', () => {
     expect(continentDataDescription).toHaveTextContent(testCountry.continents.formattedValue);
   });
 
-  it('includes the bordering countries', () => {
+  // Also tests handling empty data
+  it('includes the bordering countries when none are specified', () => {
     render(
       // MemoryRouter required when possibly rendering Link components
       <MemoryRouter>
@@ -184,8 +277,34 @@ describe('Country rendered data', () => {
     expect(bordersDataDescription).toBeInTheDocument();
     expect(bordersDataDescription).toHaveRole('definition');
     expect(bordersDataDescription).toHaveTextContent("None");
+  });
 
-    // TODO - test with non-empty bordering countries list
+  // Also tests singular labeling compared to plural
+  it('includes the bordering country when one is specified', () => {
+    (testCountry as StoredCountry).borders = [testCountry.cca3];
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the bordering country data term
+
+    // Testing library doesn't see its accessible name...
+    // const bordersDataTerm = screen.getByRole('term', { name: "Bordering Countries" });
+
+    const bordersDataTerm = screen.getByText("Bordering Country");
+    expect(bordersDataTerm).toHaveRole('term');
+    expect(bordersDataTerm).toBeInTheDocument();
+
+    // Check for the bordering country data description link
+    const bordersDataDescription = bordersDataTerm.nextElementSibling as HTMLElement;
+    expect(bordersDataDescription).toBeInTheDocument();
+    expect(bordersDataDescription).toHaveRole('definition');
+    expect(within(bordersDataDescription).getByRole('link',
+        { name: testCountry.name })).toBeInTheDocument();
   });
 
   it('includes the capital', () => {
@@ -358,7 +477,74 @@ describe('Country rendered data', () => {
     expect(populationDensityDataDescription).toHaveTextContent(
         testCountry.populationDensity.formattedValueForIndependentOnly);
   });
-});
 
-// TODO - test for singular, plural, and missing data
-// TODO - test parent country
+  it('includes the parent country link when specified and not independent', () => {
+    testCountry.independent = false;
+    (testCountry as StoredCountry).parentCountryCca3 = testCountry.cca3;
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the parent country data term
+
+    // Testing library doesn't see its accessible name...
+    // const parentCountryDataTerm = screen.getByRole('term', { name: "Parent Country" });
+
+    const parentCountryDataTerm = screen.getByText("Parent Country");
+    expect(parentCountryDataTerm).toBeInTheDocument();
+    expect(parentCountryDataTerm).toHaveRole('term');
+
+    // Check for the parent country data description link
+    const parentCountryDataDescription = parentCountryDataTerm.nextElementSibling as HTMLElement;
+    expect(parentCountryDataDescription).toBeInTheDocument();
+    expect(parentCountryDataDescription).toHaveRole('definition');
+    expect(within(parentCountryDataDescription).getByRole('link',
+        { name: testCountry.name })).toBeInTheDocument();
+
+    // Check for the expected number of data terms
+    expect(screen.getAllByRole('term')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
+    expect(screen.getAllByRole('definition')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
+  });
+
+  it('does not include the parent country when specified but independent', () => {
+    (testCountry as StoredCountry).parentCountryCca3 = testCountry.cca3;
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the parent country data term
+
+    // Testing library doesn't see its accessible name...
+    // const parentCountryDataTerm = screen.queryByRole('term', { name: "Parent Country" });
+
+    const parentCountryDataTerm = screen.queryByText("Parent Country");
+    expect(parentCountryDataTerm).not.toBeInTheDocument();
+  });
+
+  it('does not include the parent country when not independent but not specified', () => {
+    testCountry.independent = false;
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the parent country data term
+
+    // Testing library doesn't see its accessible name...
+    // const parentCountryDataTerm = screen.queryByRole('term', { name: "Parent Country" });
+
+    const parentCountryDataTerm = screen.queryByText("Parent Country");
+    expect(parentCountryDataTerm).not.toBeInTheDocument();
+  });
+});
