@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import CountryLinksValue from "../CountryLinksValue";
 import useCountries from "../hooks/useCountries";
-import { CUSTOM_DRAG_TYPE } from "../utils/consts";
+import { CUSTOM_DRAG_TYPE, QUIZ_ONE_GO_TIP } from "../utils/consts";
 import { sortCountryCodesByName } from "../utils/countryUtils";
 import { getLocatorMapSrc, getReactNodeString, removeFirstMatchFromArray } from "../utils/utils";
 import CaptionedImageForMatching from "./CaptionedImageForMatching";
@@ -750,6 +750,16 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           })}
         </DraggableCountryPool>
       </div>
+
+      {/* Reminder that you don't have to submit everything in one go */}
+      {roundActive && !Object.keys(quizState.countryCodesLockedInAsCorrect).length
+          && !!quizState.incorrectSubmissions.length
+          && Object.values(Object.fromEntries(quizState.incorrectSubmissions[
+              quizState.incorrectSubmissions.length - 1])).flat().length
+              === quizCountryCodes.length
+          && <p className="quiz-message" aria-live="polite">
+        Remember: {QUIZ_ONE_GO_TIP}
+      </p>}
 
       {numberOfLockedInCountryCodes < quizCountryCodes.length && <QuizSubmitButton
           onSubmit={attemptSubmit}

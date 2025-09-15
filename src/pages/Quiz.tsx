@@ -19,7 +19,7 @@ import RenderWithLoading from "../RenderWithLoading";
 import {
   INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
   QUIZ_COUNTRY_COUNT_INCREASE,
-  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL, QUIZ_STARTING_COUNTRY_COUNT,
+  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL, QUIZ_STARTING_COUNTRY_COUNT,
   QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL,
   QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND, QUIZ_TITLE
 } from "../utils/consts";
@@ -289,7 +289,7 @@ function Quiz() {
               <ul>
                 <li>You have a limited number of submission attempts. If you run out before completing a round, the quiz ends.</li>
                 <li>When you make a submission, it will lock in if (and only if) no part of it is incorrect.</li>
-                <li><strong>You needn't submit the full answer for the round in one go! It may be better to lock it in piece by piece.</strong></li>
+                <li><strong>{QUIZ_ONE_GO_TIP}</strong></li>
                 <li>Once the full correct answer has been submitted, you can move on to the next round.</li>
                 <li>Remaining submission attempts carry over, with new rounds also granting additional attempts.</li>
               </ul>
@@ -338,11 +338,19 @@ function Quiz() {
                 <div>
                   <dt>Quiz Type</dt>
                   <dd id="quiz-type-description" tabIndex={-1}>
-                    {quizState?.quiz.description}{quizState?.quiz.structure === "ranking"
-                        && <><br />Only relative order matters for locking in.</>}
-                    {/* TODO - ranking quizzes get too hard and not very fun as more countries are added... */}
+                    {quizState?.quiz.description}
+                    {quizState?.quiz.type === "ORDER_BY_POPULATION_DENSITY"
+                        && <><br />This refers to total population compared to size (number of people per sq mi/km).</>}
                   </dd>
                 </div>
+
+                {quizState?.quiz.structure === "ranking" && <div>
+                  <dt>Note About Ranking</dt>
+                  <dd>
+                    Ranked country numbering and locking in only take into account the currently ranked countries.
+                    <br /><strong>Remaining unranked countries can still go before or between them!</strong>
+                  </dd>
+                </div>}
               </dl>}
 
               {/* Quiz Controls */}

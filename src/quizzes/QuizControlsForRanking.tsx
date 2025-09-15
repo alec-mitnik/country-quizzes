@@ -1,6 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
+import { QUIZ_ONE_GO_TIP } from "../utils/consts";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
@@ -340,6 +341,15 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
             ))}
         </DraggableCountryList>
       </div>
+
+      {/* Reminder that you don't have to submit everything in one go */}
+      {roundActive && !quizState.countryCodesLockedInAsCorrect.length
+          && !!quizState.incorrectSubmissions.length
+          && quizState.incorrectSubmissions[quizState.incorrectSubmissions.length - 1].length
+              === quizState.countryCodes.length
+          && <p className="quiz-message" aria-live="polite">
+        Remember: {QUIZ_ONE_GO_TIP}
+      </p>}
 
       {quizState.countryCodesLockedInAsCorrect.length < quizState.countryCodes.length && <QuizSubmitButton
           onSubmit={attemptSubmit}

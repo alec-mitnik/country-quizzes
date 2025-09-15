@@ -33,6 +33,7 @@ export const NO_COUNTRY_DATA_MESSAGE = "Country data not found";
 export const BACK_TO_COUNTRIES_LINK_TEXT = "Back to Countries";
 
 export const QUIZ_INSTRUCTIONS_SUBHEADER = "How to Play";
+export const QUIZ_ONE_GO_TIP = "You needn't submit the full answer for the round in one go! It may be better to lock it in piece by piece.";
 export const QUIZ_STARTING_COUNTRY_COUNT = 3;
 export const QUIZ_STARTING_SUBMISSIONS_COUNT = 8;
 export const QUIZ_COUNTRY_COUNT_INCREASE = 1;

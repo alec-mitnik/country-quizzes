@@ -44,6 +44,10 @@
     padding-inline: 8px;
   }
 
+  .quiz-message {
+    margin-block: 8px;
+  }
+
   .quiz-outcome-message {
     margin-block: 8px;
     font-size: 1.25rem;

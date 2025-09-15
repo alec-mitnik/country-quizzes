@@ -16,6 +16,8 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * Provide a more hands-on tutorial that introduces the mechanics one by one.
  * Add hint/reminder messaging.
  *
+ * Adapt code to be data agnostic and work for other topics, like mushrooms.
+ *
  * Maybe there's an API for country fun facts that I could use to pepper in interesting trivia.
  *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
