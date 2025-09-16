@@ -210,8 +210,11 @@ dialog {
 }
 
 button {
-  /* Should be okay to do since there are :active styles */
+  /* Should be okay to make this color transparent
+  since there are :active styles */
   -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  user-select: none;
   background: var(--background-color-accent);
   color: var(--background-color-accent-foreground-primary);
   font-weight: bold;
