@@ -380,8 +380,10 @@ function Quiz() {
               className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
                   "" : " level-up"}`} onClick={() => startNextRound()}>
             <span className="level-up-background"></span>
-            <span aria-hidden="true">✓&nbsp; </span>
-            {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
+            <span className="level-up-content">
+              <span aria-hidden="true">✓&nbsp; </span>
+              {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
+            </span>
           </button>}
 
           {/* Start New Quiz Button */}

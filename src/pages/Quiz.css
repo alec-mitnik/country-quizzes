@@ -67,7 +67,7 @@
     &.level-up {
       font-size: 1.25rem;
       box-shadow: 0 2px 8px 2px var(--shadow-color);
-      background: transparent;
+      background-color: var(--shadow-color);
       text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black;
       position: relative;
       overflow: hidden;
@@ -90,7 +90,6 @@
         width: calc(100% + var(--layout-max-width));
         height: calc(100% + var(--layout-max-width));
         inset: calc(-0.5 * var(--layout-max-width));
-        z-index: -1;
         filter: blur(10px);
         background-image: conic-gradient(in hsl longer hue, #f00, #f00, #f00);
 
@@ -105,11 +104,15 @@
         border: 3px solid transparent;
         position: absolute;
         inset: 0;
-        z-index: -1;
         border-radius: inherit;
         filter: blur(0.5px);
         background-clip: padding-box;
         background-color: rgba(0 0 0 / 0.25);
+      }
+
+      .level-up-content {
+        position: relative;
+        z-index: 1;
       }
     }
   }
