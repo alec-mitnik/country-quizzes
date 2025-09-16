@@ -67,10 +67,16 @@
     &.level-up {
       font-size: 1.25rem;
       box-shadow: 0 2px 8px 2px var(--shadow-color);
+
+      /* Hiding overflow leaves a small gap on iOS, so fill it with a background */
       background-color: var(--shadow-color);
+      overflow: hidden;
+
+      /* The outline gets covered up by the child components,
+      so need to move it to outside the button */
+      outline-offset: 2px;
       text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black;
       position: relative;
-      overflow: hidden;
 
       @media (hover: hover) and (pointer: fine) {
         &:hover:not(:disabled) {
@@ -92,6 +98,10 @@
         inset: calc(-0.5 * var(--layout-max-width));
         filter: blur(10px);
         background-image: conic-gradient(in hsl longer hue, #f00, #f00, #f00);
+
+        @media (prefers-color-scheme: dark) {
+          background-image: conic-gradient(in hsl longer hue, #ff8080, #ff8080, #ff8080);
+        }
 
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 12s infinite linear;
