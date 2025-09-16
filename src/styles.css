@@ -27,6 +27,7 @@
   --background-color-primary-foreground-accent: #5a4dd3;
   --danger-color: #c50000;
   --background-color-accent: #10009e; /* Used as the meta theme color */
+  --hover-brightness: 0.85;
   --background-color-accent-foreground-primary: #e9e9e9;
   --shadow-color: rgba(0, 0, 0, 0.5);
   --shadow-color-foreground: white;
@@ -38,6 +39,7 @@
     --background-color-primary-foreground-accent: #a099e1;
     --danger-color: #ffb3b3;
     --background-color-accent: #565091;
+    --hover-brightness: 0.6;
   }
 
   /* Makes native browser elements like form controls
@@ -114,8 +116,16 @@ nav {
 
       @media (hover: hover) and (pointer: fine) {
         &:hover {
-          color: inherit;
+          /* The hover-brightness var is configured for light vs dark backgrounds,
+          whereas this usually has the accent color background */
           filter: brightness(0.85);
+          color: inherit;
+        }
+      }
+
+      @media (hover: hover) and (pointer: fine) and (prefers-contrast: more) {
+        &:hover {
+          filter: brightness(var(--hover-brightness));
         }
       }
     }
@@ -212,11 +222,14 @@ button {
   box-shadow: 0 2px 4px 0 var(--shadow-color);
 
   @media (hover: hover) and (pointer: fine) {
-    &:hover:not(:disabled) {
-      cursor: pointer;
+    &:hover:not(:disabled):not(.level-up) {
       filter: brightness(0.85);
       transform: scale(1.02);
     }
+  }
+
+  &:not(:disabled) {
+    cursor: pointer;
   }
 
   &:disabled {
@@ -238,7 +251,20 @@ details {
   summary {
     /* Nicer presentation of focus outline */
     padding-inline: 16px;
+    border-radius: 8px;
+    width: max-content;
+    margin-inline: auto;
     cursor: pointer;
+    background: var(--background-color-primary);
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        /* Prefer filter over backdrop-filter so that it doesn't leave
+        unaffected text background in high-contrast mode.  This requires
+        having a background color set though, so use the primary background. */
+        filter: brightness(var(--hover-brightness));
+      }
+    }
   }
 }
 

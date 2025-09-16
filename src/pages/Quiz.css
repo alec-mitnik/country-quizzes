@@ -67,39 +67,51 @@
     &.level-up {
       font-size: 1.25rem;
       box-shadow: 0 2px 8px 2px var(--shadow-color);
-
-      /* Old version before adding the rainbow */
-      /* box-shadow: 0 2px 8px 2px var(--background-color-primary-foreground-accent),
-          0 2px 4px 0 var(--shadow-color); */
-
-      position: relative;
       background: transparent;
-      border-color: transparent;
+      text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black;
+      position: relative;
+      overflow: hidden;
 
-      .level-up-background {
-      /* Animation of background-position doesn't work on a pseudo-element in iOS Safari */
-      /* &::before { */
-        /* content: ''; */
-        display: inline flow-root;
-        border: 3px solid transparent;
+      @media (hover: hover) and (pointer: fine) {
+        &:hover:not(:disabled) {
+          transform: scale(1.02);
+
+          &::after {
+            background-color: rgba(0 0 0 / 0.4);
+            filter: brightness(0.85);
+          }
+        }
+      }
+
+      &::before {
+        content: '';
+        display: block;
         position: absolute;
-        inset: -1px;
+        width: calc(100% + var(--layout-max-width));
+        height: calc(100% + var(--layout-max-width));
+        inset: calc(-0.5 * var(--layout-max-width));
         z-index: -1;
-        border-radius: inherit;
-        filter: blur(1px);
-
-        /* Background position cannot go beyond 100%, so need to repeat the gradient enough times
-        that you can wind up at a position identical to the start before 100%, for infinite looping */
-        background-image: linear-gradient(var(--background-color-accent), var(--background-color-accent)),
-            linear-gradient(45deg, #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8,
-            #ff0000, #ff7300, #fffb00, #48ff00, #00ffd5, #002bff, #7a00ff, #ff00c8);
-        background-size: 100%, 400%;
-        background-clip: padding-box, border-box;
-        background-origin: border-box;
+        filter: blur(10px);
+        background-image: conic-gradient(in hsl longer hue, #f00, #f00, #f00);
 
         @media not (prefers-reduced-motion: reduce) {
-          animation: rainbowMotion 4s infinite linear;
+          /* Note that animation of background-position doesn't work
+          on a pseudo-element in iOS Safari, but animating transforms does */
+          animation: rainbowMotion 12s infinite linear;
         }
+      }
+
+      &::after {
+        content: '';
+        display: block;
+        border: 3px solid transparent;
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        border-radius: inherit;
+        filter: blur(0.5px);
+        background-clip: padding-box;
+        background-color: rgba(0 0 0 / 0.25);
       }
     }
   }
@@ -402,10 +414,13 @@
       max-width: var(--drag-width);
 
       button.image-dialog-button {
+        /* Ensure that a hovered details summary doesn't show on top */
+        position: relative;
+        z-index: 1;
         float: left;
         margin: 0 16px 8px 0;
         padding: 0;
-        outline-offset: 0;
+        outline-offset: 1px;
         background: transparent;
         border: none;
         border-radius: 0;
@@ -440,8 +455,8 @@
 }
 
 @keyframes rainbowMotion {
-  0% { background-position-x: 0, 0; }
-  100% { background-position: 0, 77.5%; }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(359deg); }
 }
 
 @keyframes animateShake {

@@ -367,9 +367,8 @@ function Quiz() {
             </>
           </RenderWithLoading>
 
-          {/* TODO - make scrolling internal, so that the action button is always shown? */}
-
-          {/* TODO - show more messages, like encouragement for getting everything right in one go */}
+          {/* TODO - show more messages, like encouragement for getting everything right in one go,
+          or a fun fact about one of the countries locked in */}
           {!quizActive && !!quizState && <p className="quiz-outcome-message" aria-live="polite">
             {renderQuizOutcomeMessage(quizState)}
           </p>}
@@ -380,7 +379,6 @@ function Quiz() {
               disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
               className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
                   "" : " level-up"}`} onClick={() => startNextRound()}>
-            <span className="level-up-background"></span>
             <span aria-hidden="true">✓&nbsp; </span>
             {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
           </button>}

@@ -75,20 +75,21 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  */
 
 /*
- * More types can be added in the future, like grouping countries into categories,
- * such as independent or not, has a star on its flag, is landlocked, is an island (no bordering countries),
- * higher or lower than the median population density, hemisphere, etc.
+ * More types can be added in the future, like ranking by number of bordering countries,
+ * or grouping countries into categories, such as independent or not, has a star on its flag,
+ * is landlocked, is an island (no bordering countries), higher or lower than
+ * the median population density, hemisphere, etc.
  *
  * Another type could be showing countries in a fixed order, and having to mark them as
  * higher or lower that the previous country in terms of ranking order (size, population, etc.).
  *
- * Some quiz types would inherently easier than others, so may want to balance difficulty somehow.
+ * Some quiz types are inherently easier than others, so may want to balance difficulty somehow,
+ * maybe by granting a different number of additional submissions.
  */
 export type QuizType = "MATCH_TO_CURRENCIES" | "MATCH_TO_BORDERING_COUNTRIES"
     | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
     | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY";
 
-// TODO - grouping quiz types, etc.
 export interface MatchingQuiz {
   type: QuizType;
   description: string;
@@ -112,9 +113,6 @@ export interface RankingQuiz {
 };
 
 export type CountryQuiz = MatchingQuiz | RankingQuiz;
-
-// TODO - could rank by number of bordering countries, or latitude
-// (actually quite ambiguous in its calculation and maybe not good to quiz on)...
 
 // Note that fieldToRequire must be part of the shallow data expected to already be loaded
 export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
