@@ -210,6 +210,8 @@ dialog {
 }
 
 button {
+  /* Should be okay to do since there are :active styles */
+  -webkit-tap-highlight-color: transparent;
   background: var(--background-color-accent);
   color: var(--background-color-accent-foreground-primary);
   font-weight: bold;
@@ -221,7 +223,7 @@ button {
   border: 1px solid var(--shadow-color);
   box-shadow: 0 2px 4px 0 var(--shadow-color);
 
-  /* @media (hover: hover) and (pointer: fine) {
+  @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled):not(.level-up) {
       &:not(:active) {
         transform: scale(1.02);
@@ -229,7 +231,7 @@ button {
 
       filter: brightness(0.85);
     }
-  } */
+  }
 
   &:active:not(:disabled) {
     transform: scale(0.95);
