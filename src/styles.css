@@ -223,9 +223,16 @@ button {
 
   @media (hover: hover) and (pointer: fine) {
     &:hover:not(:disabled):not(.level-up) {
+      &:not(:active) {
+        transform: scale(1.02);
+      }
+
       filter: brightness(0.85);
-      transform: scale(1.02);
     }
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.98);
   }
 
   &:not(:disabled) {
