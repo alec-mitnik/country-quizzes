@@ -83,8 +83,8 @@
         }
       }
 
-      &::before {
-        content: '';
+      /* Animation on a pseudo-element doesn't work in iOS Safari */
+      .level-up-background {
         display: block;
         position: absolute;
         width: calc(100% + var(--layout-max-width));
@@ -95,8 +95,6 @@
         background-image: conic-gradient(in hsl longer hue, #f00, #f00, #f00);
 
         @media not (prefers-reduced-motion: reduce) {
-          /* Note that animation of background-position doesn't work
-          on a pseudo-element in iOS Safari, but animating transforms does */
           animation: rainbowMotion 12s infinite linear;
         }
       }
