@@ -1,3 +1,5 @@
+import Button from "../Button";
+
 interface QuizSubmitButtonProps {
   disabled: boolean,
   alreadyGuessed: boolean,
@@ -15,13 +17,13 @@ interface QuizSubmitButtonProps {
  */
 function QuizSubmitButton({disabled, alreadyGuessed, onSubmit,
     submissionsRemaining}: QuizSubmitButtonProps) {
-  return submissionsRemaining > 0 ? <button type="button"
+  return submissionsRemaining > 0 ? <Button type="button"
       className={`quiz-action-button${submissionsRemaining === 1 ? " danger" : ""}`}
       disabled={disabled || alreadyGuessed}
       onClick={onSubmit}>
     {alreadyGuessed ? "Already Guessed!"
         : `Submit${submissionsRemaining < 4 ? ` (${submissionsRemaining} left!)` : ""}`}
-  </button> : null;
+  </Button> : null;
 }
 
 export default QuizSubmitButton;

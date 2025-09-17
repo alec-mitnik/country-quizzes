@@ -15,8 +15,6 @@
 
     button.dialog-close-button {
       margin-bottom: 8px;
-      padding: 4px 8px;
-      outline-offset: -3px;
       align-self: flex-end;
       position: absolute;
       right: 1rem;

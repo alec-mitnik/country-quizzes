@@ -1,6 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useRef, type DragEvent } from "react";
 import { Link } from "react-router-dom";
+import Button from "../Button";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
 import { getLocatorMapSrc } from "../utils/utils";
@@ -110,27 +111,29 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         <span className="button-controls">
           {/* Putting the symbol font on a span rather than the button directly
           preserves height better, so do it for all the buttons, for consistency */}
-          {roundActive && onMoveUp && !isLockedIn && <button type="button"
+          {roundActive && onMoveUp && !isLockedIn && <Button type="button"
               className="move-up-button" aria-label={`Move ${countryName} up.`}
               onClick={onMoveUp}>
             <span aria-hidden="true" className="symbol-font">🠝</span>
-          </button>}
+          </Button>}
 
-          {roundActive && onMoveDown && !isLockedIn && <button type="button"
+          {roundActive && onMoveDown && !isLockedIn && <Button type="button"
               className="move-down-button" aria-label={`Move ${countryName} down.`}
               onClick={onMoveDown}>
             <span aria-hidden="true" className="symbol-font">🠟</span>
-          </button>}
+          </Button>}
 
-          {roundActive && onRemove && !isLockedIn && <button type="button"
+          {roundActive && onRemove && !isLockedIn && <Button type="button"
               className="remove-button" aria-label={`Remove ${countryName}.`} onClick={onRemove}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
-          </button>}
+          </Button>}
 
-          {roundActive && onAdd && <button type="button" className="add-button"
+          {/* The period at the end of the aria-label adds a helpful pause
+          before the word "button" is spoken */}
+          {roundActive && onAdd && <Button type="button" className="add-button"
               aria-label={`Add ${countryName}.`} onClick={onAdd}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
-          </button>}
+          </Button>}
         </span>
 
         <span aria-hidden="true" className="symbol-wrapper">

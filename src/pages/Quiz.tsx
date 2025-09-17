@@ -1,5 +1,6 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useCallback, useEffect, useMemo, useState } from "react";
+import Button from "../Button";
 import useCountries from "../hooks/useCountries";
 import {
   useLocalStorageStateBoolean, useLocalStorageStateNumber,
@@ -375,7 +376,7 @@ function Quiz() {
 
           {/* TODO - sound effect? */}
           {/* Start Next Round Button */}
-          {quizActive && nextRoundReadyToStart && <button type="button"
+          {quizActive && nextRoundReadyToStart && <Button type="button"
               disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
               className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
                   "" : " level-up"}`} onClick={() => startNextRound()}>
@@ -384,25 +385,25 @@ function Quiz() {
               <span aria-hidden="true">✓&nbsp; </span>
               {(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ? "Start Next Round" : "Level Up!"}
             </span>
-          </button>}
+          </Button>}
 
           {/* Start New Quiz Button */}
           {!quizActive
-              && <button type="button" disabled={countriesForQuizRoundRequested}
+              && <Button type="button" disabled={countriesForQuizRoundRequested}
               className="quiz-action-button" onClick={() => startNewQuiz()}>
             Start New Quiz
-          </button>}
+          </Button>}
 
           {/* End Quiz Button */}
           {quizActive && !countriesForQuizRoundRequested
-              && <button type="button"
+              && <Button type="button"
               className="quiz-action-button danger small give-up" onClick={() => {
                 if (window.confirm("Are you sure you want to lose your progress?")) {
                   setQuizState(null);
                 }
               }}>
             End Quiz
-          </button>}
+          </Button>}
         </div>
       </RenderWithLoading>
     </Page>

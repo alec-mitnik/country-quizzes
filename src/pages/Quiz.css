@@ -65,28 +65,47 @@
     }
 
     &.level-up {
-      font-size: 1.25rem;
-      box-shadow: 0 2px 8px 2px var(--shadow-color);
-
-      /* Hiding overflow leaves a small gap on iOS, so fill it with a background */
-      background-color: var(--shadow-color);
-      overflow: hidden;
-
       /* The outline gets covered up by the child components,
       so need to move it to outside the button */
       outline-offset: 2px;
-      text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black;
-      position: relative;
+      font-size: 1.25rem;
+
+      .button-shell {
+        text-shadow: 0 0 2px black, 0 0 3px black, 0 0 4px black;
+        box-shadow: 0 2px 8px 2px var(--shadow-color);
+
+        /* Hiding overflow leaves a small gap on iOS, so fill it with a background */
+        background-color: var(--shadow-color);
+        overflow: hidden;
+        position: relative;
+
+        &::after {
+          content: '';
+          display: block;
+          border: 3px solid transparent;
+          position: absolute;
+          inset: 0;
+          border-radius: inherit;
+          filter: blur(0.5px);
+          background-clip: padding-box;
+          background-color: rgba(0 0 0 / 0.25);
+        }
+
+        .level-up-content {
+          position: relative;
+          z-index: 1;
+        }
+      }
 
       @media (hover: hover) and (pointer: fine) {
         &:hover:not(:disabled) {
           &:not(:active) {
-            transform: scale(1.02);
+            transform: scale(var(--button-hover-scale));
           }
 
-          &::after:not(:disabled) {
+          .button-shell::after {
+            filter: brightness(var(--light-hover-brightness));
             background-color: rgba(0 0 0 / 0.4);
-            filter: brightness(0.85);
           }
         }
       }
@@ -108,23 +127,6 @@
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 12s infinite linear;
         }
-      }
-
-      &::after {
-        content: '';
-        display: block;
-        border: 3px solid transparent;
-        position: absolute;
-        inset: 0;
-        border-radius: inherit;
-        filter: blur(0.5px);
-        background-clip: padding-box;
-        background-color: rgba(0 0 0 / 0.25);
-      }
-
-      .level-up-content {
-        position: relative;
-        z-index: 1;
       }
     }
   }
@@ -210,25 +212,28 @@
         /* Keep the button symbol aligned with the text baseline
         and allow the second line to pass underneath */
         margin-block: -2px;
-        border-width: 2px;
-        padding: 0 8px;
-        box-shadow: 0 1px 1px 0 var(--shadow-color);
         outline-offset: 2px;
 
+        .button-shell {
+          border-width: 2px;
+          padding: 0 8px;
+          box-shadow: 0 1px 1px 0 var(--shadow-color);
+        }
+
         &.remove-button {
-          /* Marking this red can be mistaken as an incorrect match/rank */
-          /* border-color: var(--danger-color);
-          background: var(--background-color-primary);
-          color: var(--danger-color); */
+          /* Marking this red can be mistaken as an incorrect match/rank,
+          so just use standard colors */
 
-          > span {
-            /* Modern version of the legacy inline-block value */
-            display: inline flow-root;
-            transform: rotate(45deg);
+          .button-shell {
+            > span {
+              /* Modern version of the legacy inline-block value */
+              display: inline flow-root;
+              transform: rotate(45deg);
 
-            /* This is the one calibrated for the symbol font */
-            transform-origin: 50% 45%;
-            /* transform-origin: 50% 56%; */
+              /* This is the one calibrated for the symbol font */
+              transform-origin: 50% 45%;
+              /* transform-origin: 50% 56%; */
+            }
           }
         }
       }
@@ -390,28 +395,31 @@
 
       .target-for-add-button {
         /* Mimic draggable country control button styles */
-        border-width: 2px;
-        padding: 0 8px;
-        box-shadow: 0 1px 1px 0 var(--shadow-color);
         outline-offset: 2px;
 
+        .button-shell {
+          border-width: 2px;
+          padding: 0 8px;
+          box-shadow: 0 1px 1px 0 var(--shadow-color);
+          overflow: hidden;
+
+          > span {
+            display: inline flow-root;
+            transform: scale(2);
+          }
+        }
+
         font-weight: normal;
-        overflow: hidden;
         font-size: 1rem;
 
-        &:not(.draggable-country-pool > &) {
+        &:not(.draggable-country-pool > .button-component &) {
           /* Duplicate button on the left side
           to keep the header centered */
           visibility: hidden;
         }
-
-        > span {
-          display: inline flow-root;
-          transform: scale(2);
-        }
       }
 
-      > .target-for-add-button {
+      .target-for-add-button {
         float: right;
         margin: 0 0 2px 8px;
       }
@@ -432,24 +440,6 @@
         z-index: 1;
         float: left;
         margin: 0 16px 8px 0;
-        padding: 0;
-        outline-offset: 1px;
-        background: transparent;
-        border: none;
-        border-radius: 0;
-        display: inline flex;
-        box-shadow: none;
-        color: var(--background-color-primary-foreground-accent);
-        text-decoration: underline dotted;
-        text-underline-offset: 0.1em;
-        text-decoration-thickness: 0.05em;
-
-        @media (hover: hover) and (pointer: fine) {
-          &:hover {
-            text-decoration-style: solid;
-            text-decoration-thickness: 0.15em;
-          }
-        }
 
         img.flag {
           width: 100px;

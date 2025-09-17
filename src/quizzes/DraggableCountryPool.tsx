@@ -1,5 +1,6 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
+import Button from "../Button";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 
 interface DraggableCountryPoolProps {
@@ -108,12 +109,14 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBe
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
-  const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <button type="button"
+  // The period at the end of the aria-label adds a helpful pause
+  // before the word "button" is spoken
+  const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <Button type="button"
     onClick={() => onTargetForAddToggle()}
-    aria-label={isTargetForAdd ? "Stop targeting this value" : "Target this value for adding"}
+    aria-label={isTargetForAdd ? "Stop targeting this value." : "Target this value for adding."}
     className="target-for-add-button">
       <span aria-hidden="true" className="symbol-font">⌖</span>
-  </button> : null;
+  </Button> : null;
 
   const headerTextWithOffset = <>{targetForAddButton}{headerText}</>
 

@@ -19,7 +19,7 @@ function CaptionedImageForMatching({ imageTerm, src,
   return <>
     <figure>
       <CaptionedImageDialogButton imageDescription={`Country ${imageTerm}`} src={src} caption={caption}>
-        <SmoothLoadingImage src={src} alt={`Country ${imageTerm}`} className="flag" />
+        <SmoothLoadingImage src={src} alt={`Country ${imageTerm}`} className="flag" draggable={false} />
       </CaptionedImageDialogButton>
 
       <figcaption>

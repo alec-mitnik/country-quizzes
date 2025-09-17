@@ -1,0 +1,123 @@
+.button-component {
+  --button-hover-scale: 1.05;
+  --button-active-scale: 0.8;
+
+  button {
+    all: unset;
+    outline: revert;
+    line-height: revert;
+
+    /* The button and span aren't always flush otherwise,
+    such as when containing an image */
+    display: inline flex;
+
+    /* Should be okay to make this color transparent
+    since there are :active styles */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-touch-callout: none;
+    user-select: none;
+    outline-offset: -4px;
+    border-radius: 8px;
+    transition: all 0.1s ease-in-out, opacity 0.3s ease-in-out;
+    font-size: inherit;
+    font-family: inherit;
+    font-weight: bold;
+
+    .button-shell {
+      /* The transforms need to be on a non-inline container,
+      but that's handled by the button display being inline flex,
+      and adding that display here causes the calculated height to shrink */
+      /* display: inline flex; */
+      transition: all 0.1s ease-in-out, opacity 0.3s ease-in-out;
+      border-radius: inherit;
+      width: 100%;
+      height: 100%;
+      padding: 12px 16px;
+      background: var(--background-color-accent);
+      color: var(--background-color-accent-foreground-primary);
+      border-radius: inherit;
+      border: 1px solid var(--shadow-color);
+      box-shadow: 0 2px 4px 0 var(--shadow-color);
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled):not(.level-up) {
+        &:not(:active) {
+          transform: scale(var(--button-hover-scale));
+        }
+
+        .button-shell {
+          filter: brightness(var(--light-hover-brightness));
+        }
+      }
+    }
+
+    &:active:not(:disabled) {
+      .button-shell {
+        /* Apply to a separate element so that transition to/from active state
+        can be isolated and to prevent the button hitbox from shrinking */
+        transform: scale(var(--button-active-scale));
+      }
+    }
+
+    &:not(:active) {
+      .button-shell {
+        /* Bounce transition for exiting the active state */
+        transition: all 0.1s ease-in-out,
+            transform 0.4s cubic-bezier(0.54, 2.06, 0.23, 0.39),
+            opacity 0.3s ease-in-out;
+      }
+    }
+
+    &:not(:disabled) {
+      cursor: pointer;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+    }
+
+    &.danger {
+      .button-shell {
+        background: var(--danger-color);
+        color: var(--background-color-primary)
+      }
+    }
+
+    &.small {
+      outline-offset: -3px;
+
+      .button-shell {
+        padding: 4px 8px;
+      }
+    }
+
+    &.image-dialog-button {
+      outline-offset: 1px;
+      border-radius: 0;
+
+      .button-shell {
+        display: inline flex;
+        padding: 0;
+        background: transparent;
+        border: none;
+        box-shadow: none;
+
+        /* For if the image doesn't load and text is shown instead */
+        color: var(--background-color-primary-foreground-accent);
+        text-decoration: underline dotted;
+        text-underline-offset: 0.1em;
+        text-decoration-thickness: 0.05em;
+      }
+
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          .button-shell {
+            text-decoration-style: solid;
+            text-decoration-thickness: 0.15em;
+          }
+        }
+      }
+    }
+  }
+}

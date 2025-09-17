@@ -93,7 +93,8 @@ function Country() {
                           <CaptionedImageDialogButton imageDescription="Country Location"
                             src={locatorMapSrc} caption={location ??
                                 "The location of this country. No additional description available."}>
-                            <img ref={mapImgCallbackRef} className="flag" src={locatorMapSrc} alt="Country Location" />
+                            <img ref={mapImgCallbackRef} className="flag" src={locatorMapSrc}
+                                alt="Country Location" draggable={false} />
                           </CaptionedImageDialogButton>
                         </div>}
 
@@ -133,7 +134,8 @@ function Country() {
                           <CaptionedImageDialogButton imageDescription="Country Flag"
                             src={flag} caption={flagDescription ??
                                 "The flag of this country. No additional description available."}>
-                            <img ref={flagImgCallbackRef} className="flag" src={flag} alt="Country Flag" />
+                            <img ref={flagImgCallbackRef} className="flag" src={flag}
+                                alt="Country Flag" draggable={false} />
                           </CaptionedImageDialogButton>
                         </div>
 

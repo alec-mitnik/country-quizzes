@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import Button from "./Button"
 import "./CaptionedImageDialogButton.css"
 import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef"
 import { LOADING_IMAGE_MESSAGE } from "./utils/consts"
@@ -27,9 +28,9 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
   return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog">
-      <button type="button" aria-label={`Close ${imageDescription} Dialog`}
-          autoFocus className="dialog-close-button"
-          onClick={() => dialogRef.current?.close()}>Close [X]</button>
+      <Button type="button" aria-label={`Close ${imageDescription} Dialog`}
+          autoFocus className="dialog-close-button small"
+          onClick={() => dialogRef.current?.close()}>Close [X]</Button>
 
       <h1>
         {imageDescription}
@@ -47,11 +48,11 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
       </figure>
     </dialog>
 
-    <button type="button" className="image-dialog-button small"
+    <Button type="button" className="image-dialog-button small"
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
         onClick={() => dialogRef.current?.showModal()}>
       {children}
-    </button>
+    </Button>
   </div>;
 }
 
