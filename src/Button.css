@@ -93,7 +93,7 @@
       }
     }
 
-    &.image-dialog-button {
+    figure &.image-dialog-button {
       outline-offset: 1px;
       border-radius: 0;
 
