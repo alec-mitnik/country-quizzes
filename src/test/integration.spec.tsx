@@ -82,9 +82,6 @@ describe(APP_TITLE, () => {
     // Check for Country page title displayed as a header
     expect(screen.getByRole('heading', { name: testCountry.name })).toBeInTheDocument();
 
-    // Check for the flag image with alt text TODO
-    // expect(screen.getByRole('img', { name: testCountry.flagDescription })).toBeInTheDocument();
-
     // Navigate back to the Countries page using the back link
     const backLink = screen.getByRole('link', { name: BACK_TO_COUNTRIES_LINK_TEXT });
     await user.click(backLink);

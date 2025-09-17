@@ -173,7 +173,7 @@
       transition: color 0.1s 0s allow-discrete,
           border 0.1s 0s allow-discrete;
 
-      button {
+      .button-controls {
         visibility: hidden;
       }
     }
