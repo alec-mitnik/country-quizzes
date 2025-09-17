@@ -105,6 +105,10 @@ nav {
       height: 100%;
       outline-offset: -4px;
 
+      /* The snappiness of immediate transition is preferable
+      for perusing the Countries directory */
+      /* transition: filter 0.1s ease-in-out; */
+
       &.active, &.active:hover {
         background: var(--background-color-primary);
         color: var(--background-color-primary-foreground-accent);
@@ -219,6 +223,7 @@ details {
     margin-inline: auto;
     cursor: pointer;
     background: var(--background-color-primary);
+    transition: filter 0.1s ease-in-out;
 
     @media (hover: hover) and (pointer: fine) {
       &:hover:not(:disabled) {
