@@ -285,6 +285,7 @@ function Quiz() {
                 <li>Countries can be dragged to position, or they can be added/moved/removed using the button controls.</li>
                 <li>To drag on a mobile device, tap and hold on a country until it becomes draggable.</li>
                 <li>Some devices may not support drag-and-drop well, or at all, so the buttons can be used instead.</li>
+                <li>Match values have buttons that can be used to target them directly when adding countries.</li>
               </ul>
               <li><h3>Submission Rules</h3></li>
               <ul>
@@ -341,7 +342,7 @@ function Quiz() {
                   <dd id="quiz-type-description" tabIndex={-1}>
                     {quizState?.quiz.description}
                     {quizState?.quiz.type === "ORDER_BY_POPULATION_DENSITY"
-                        && <><br />This refers to total population compared to size (number of people per sq mi/km).</>}
+                        && <><br />This refers to total population compared to size (i.e. how cramped the people are).</>}
                   </dd>
                 </div>
 
