@@ -165,9 +165,7 @@ export function getReactNodeString(node: React.ReactNode, fallback = 'unknown'):
  * United States Minor Outlying Islands (needed to combine Navassa Island,
  *     Wake Island, and United States Pacific Island Wildlife Refuges)
  * Svalbard and Jan Mayen (separated, so I combined them)
- * Their locator map for Sint Maarten is also erroneously a copy of Curacao's,
- * so a slightly tweaked version of the Saint Martin map is used as a replacement for that.
- * Also edited the map for Israel to give it a callout box for clarity.
+ * Edited the map for Israel to give it a callout box for clarity.
  *
  * For reference, the full URL for the locator map on the World Factbook website
  * would be the same filename prefixed with:
