@@ -82,7 +82,13 @@ export function extractCurrencies(country: Partial<Country>) {
         // Extract currencies using just the last word ("dollar" vs. "United States dollar")
         // For the purpose of quizzing on
         const nameArray = valueEntry.name.split(" ");
-        const currencyTerm = nameArray[nameArray.length - 1];
+        let currencyTerm = nameArray[nameArray.length - 1];
+
+        if (country.cca3 === "VEN") {
+          // For Venezuela, the REST Countries API gives "Venezuelan bolívar soberano",
+          // but the common term seems to be "bolívar."
+          currencyTerm = "bolívar";
+        }
 
         // This prevents duplicates (in the case of e.g. multiple types of $ dollar)
         // and can also be used for simple string comparison for matching

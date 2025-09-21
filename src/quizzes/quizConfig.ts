@@ -76,7 +76,9 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
 
 /*
  * More types can be added in the future, like ranking by number of bordering countries,
- * or grouping countries into categories, such as independent or not, has a star on its flag,
+ * or grouping countries into categories, such as independent or not, has a star on its flag
+ * (not feasible unless all stars are sure to be described in the flag descriptions,
+ * including within coats of arms, and would need to clarify if the sun counts),
  * is landlocked, is an island (no bordering countries), higher or lower than
  * the median population density, hemisphere, etc.
  *

@@ -342,7 +342,7 @@ function Quiz() {
                   <dd id="quiz-type-description" tabIndex={-1}>
                     {quizState?.quiz.description}
                     {quizState?.quiz.type === "ORDER_BY_POPULATION_DENSITY"
-                        && <><br />This refers to total population compared to size (i.e. how cramped the people are).</>}
+                        && <><br />This refers to total population compared to size (i.e. how crowded it is on average).</>}
                   </dd>
                 </div>
 
