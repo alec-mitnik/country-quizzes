@@ -746,7 +746,7 @@
       "worldFactbookCountryKey": "FP",
       "location": "Oceania, five archipelagoes in the South Pacific Ocean about halfway between South America and Australia",
       "parentCountryCca3": "FRA",
-      "flagDescription": "The flag of this country has two red horizontal bands flanking a wide white band in a 1:2:1 ratio. Centered on the white band is a disk with a blue-and-white wave pattern depicting the sea on the lower half and a gold-and-white ray pattern depicting the sun on the upper half. A Polynesian canoe on the disk has a crew of five."
+      "flagDescription": "The flag of this country has two red horizontal bands flanking a wide white band in a 1:2:1 ratio. Centered on the white band is a disk with a blue-and-white wave pattern depicting the sea on the lower half and a gold-and-white ray pattern depicting the sun on the upper half. A canoe on the disk has a crew of five."
     }
   },
   "ATF": {
@@ -1749,7 +1749,7 @@
       "worldFactbookCountryKey": "QA",
       "location": "Middle East, peninsula bordering the Persian Gulf and Saudi Arabia",
       "funFacts": [
-        "Foreign workers amount to around 88% of its population, resulting in there being over 3 males for every female"
+        "Foreign workers amount to around 88% of its population, resulting in there being over 3 men for every woman"
       ]
     }
   },
