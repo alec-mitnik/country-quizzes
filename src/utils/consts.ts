@@ -42,7 +42,9 @@ export const QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL = 5;
 export const QUIZ_ROUNDS_PER_LEVEL = 5;
 export const QUIZ_MAX_LEVEL = 10;
 
-// Prevent match type quizzes from having all the same match values
+// Prevent match type quizzes from having all the same match values,
+// but only applied for values that are part of shallow data,
+// as it's not available to filter on otherwise, so won't apply to currencies...
 export const QUIZ_MAX_DUPLICATE_MATCH_VALUES = 2;
 
 export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;

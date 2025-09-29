@@ -30,6 +30,7 @@ export function renderQuizOutcomeMessage(quizState: QuizState) {
   if (quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL
       && Object.values(quizState.countryCodesLockedInAsCorrect).flat().length >= quizCountryCodes.length) {
     // Cleared all 10 levels
+    // TODO - add confetti/fireworks effect or something
     return "You beat the quiz! You're a country whiz.";
   } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
     // Cleared 8 levels
