@@ -7,7 +7,7 @@ import {
   useLocalStorageStateObject
 } from "../hooks/useLocalStorageState";
 import {
-  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, type CountryQuiz, type MatchingQuizState,
+  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
   type QuizState, type QuizType, type RankingQuizState
 } from "../quizzes/quizConfig";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
@@ -159,7 +159,8 @@ function Quiz() {
   }, [quizActive, countriesForQuizRoundLoaded, countriesForQuizRoundRequested,
       quizState, setQuizState]);
 
-  const updateQuizStateForNewRound = useCallback((newQuizState: Partial<QuizState>) => {
+  const updateQuizStateForNewRound = useCallback((newQuizState: Partial<QuizState>,
+      countryCount = QUIZ_STARTING_COUNTRY_COUNT) => {
     const randomQuizType = getRandomNewQuizType(quizState?.quiz.type);
 
     if (!randomQuizType) {
@@ -169,13 +170,14 @@ function Quiz() {
 
     const randomQuiz = QUIZ_TYPES[randomQuizType];
     newQuizState.quiz = randomQuiz;
-    const count = newQuizState.countryCount ?? QUIZ_STARTING_COUNTRY_COUNT;
     let countryCodes: Cca3Code[] = [];
+    let countryCodeSecondaryIndexes: number[] | undefined = undefined;
 
-    while (countryCodes.length < count) {
-      countryCodes = getRandomCountryCodes(independentOnly, storedCountryData,
-          count, newQuizState.level ?? 1, randomQuiz.fieldToRequire,
-          randomQuiz.type === "MATCH_TO_BORDERING_COUNTRIES");
+    while (countryCodes.length < countryCount) {
+      [countryCodes, countryCodeSecondaryIndexes] = getRandomCountryCodes(independentOnly,
+          storedCountryData, countryCount, newQuizState.level ?? 1, randomQuiz.type,
+          randomQuiz.fieldToRequire, (randomQuiz as MatchingQuiz)?.valueArrayFunction,
+          randomQuiz.valueFunction);
     }
 
     newQuizState.countryCodes = countryCodes;
@@ -183,6 +185,10 @@ function Quiz() {
     if (randomQuiz.structure === "matching") {
       const newMatchingQuizState = newQuizState as Partial<MatchingQuizState>;
       newMatchingQuizState.matchedCountryCodes = {};
+
+      if (countryCodeSecondaryIndexes?.length) {
+        newMatchingQuizState.countryCodeSecondaryIndexes = countryCodeSecondaryIndexes;
+      }
 
       if (randomQuizType === "MATCH_TO_BORDERING_COUNTRIES") {
         // Combine all bordering countries into a single list
@@ -217,7 +223,6 @@ function Quiz() {
       submissionsRemaining: QUIZ_STARTING_SUBMISSIONS_COUNT,
       roundStartSubmissionsRemaining: QUIZ_STARTING_SUBMISSIONS_COUNT,
       countryCodesLockedInAsCorrect: [],
-      countryCount: QUIZ_STARTING_COUNTRY_COUNT,
       round: 1,
       level: 1,
       incorrectSubmissions: [],
@@ -231,15 +236,16 @@ function Quiz() {
       return;
     };
 
+    let countryCount = QUIZ_STARTING_COUNTRY_COUNT
+        + quizState.round * QUIZ_COUNTRY_COUNT_INCREASE;
     let newRound = quizState.round + 1;
     let newLevel = quizState.level;
-    let newCountryCount = quizState.countryCount + QUIZ_COUNTRY_COUNT_INCREASE;
     let submissionCountIncrease = QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND;
 
     if (newRound > QUIZ_ROUNDS_PER_LEVEL) {
       newLevel = quizState.level + 1;
       newRound = 1;
-      newCountryCount = QUIZ_STARTING_COUNTRY_COUNT;
+      countryCount = QUIZ_STARTING_COUNTRY_COUNT;
       submissionCountIncrease = QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL;
     }
 
@@ -250,13 +256,12 @@ function Quiz() {
       submissionsRemaining,
       roundStartSubmissionsRemaining: submissionsRemaining,
       countryCodesLockedInAsCorrect: [],
-      countryCount: newCountryCount,
       round: newRound,
       level: newLevel,
       incorrectSubmissions: [],
     } as Partial<QuizState>;
 
-    updateQuizStateForNewRound(newQuizState);
+    updateQuizStateForNewRound(newQuizState, countryCount);
   }, [quizState, countriesForQuizRoundRequested, updateQuizStateForNewRound]);
 
   return (
@@ -351,6 +356,13 @@ function Quiz() {
                   <dd>
                     Ranked country numbering and locking in only take into account the currently ranked countries.
                     <br /><strong>Remaining unranked countries can still go before or between them!</strong>
+                  </dd>
+                </div>}
+
+                {quizState?.quiz.structure === "matching" && !quizState.quiz.singleCapacity && <div>
+                  <dt>Note About Matching</dt>
+                  <dd>
+                    For this round, each value can match to zero, one, or multiple countries.
                   </dd>
                 </div>}
               </dl>}

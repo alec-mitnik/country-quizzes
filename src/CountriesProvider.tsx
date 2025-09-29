@@ -37,6 +37,7 @@ interface IndependenceDependentFormattedCountryField<T> {
 export interface StoredCountry {
   cca3: Cca3Code;
   name: string;
+  funFacts?: string[];
   worldFactbookCountryKey?: string;             // For identifying the locator map
   location?: string;
   independent?: boolean;

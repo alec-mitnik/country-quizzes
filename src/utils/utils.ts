@@ -15,6 +15,21 @@ export function removeFirstMatchFromArray<T>(array: T[], value: T) {
 }
 
 /**
+ * Removes the first instance of the given element from the given array
+ * @param array The array to extract from
+ * @param element The element to extract
+ */
+export function removeElementFromArray<T>(array: T[], element: T) {
+  const index = array.indexOf(element);
+
+  if (index < 0) {
+    return;
+  }
+
+  array.splice(index, 1);
+}
+
+/**
  * Selects a random element from the given array without modifying the array
  * @param array The array to select from
  * @returns The randomly selected element

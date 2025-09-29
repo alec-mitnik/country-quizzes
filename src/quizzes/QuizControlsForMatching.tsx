@@ -66,10 +66,14 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   const { storedCountryData } = useCountries();
 
   const sortedMatchValues = useMemo(() => {
-    const matchValues: {cca3: Cca3Code, value: string, label: React.ReactNode}[]
-        = quizState.countryCodes.map((countryCode) => {
-      const value = quizState.quiz.valueFunction(storedCountryData, countryCode);
-      let label = quizState.quiz.labelFunction(storedCountryData, countryCode);
+    const matchValues: {cca3: Cca3Code, valueArray: string[] | undefined,
+        secondaryIndex: number | undefined, value: string,
+        label: React.ReactNode}[] = quizState.countryCodes.map((countryCode, index) => {
+      const valueArray = quizState.quiz.valueArrayFunction ?
+          quizState.quiz.valueArrayFunction(storedCountryData, countryCode) : undefined;
+      const secondaryIndex = quizState.countryCodeSecondaryIndexes?.[index];
+      const value = quizState.quiz.valueFunction(storedCountryData, countryCode, secondaryIndex);
+      let label = quizState.quiz.labelFunction(storedCountryData, countryCode, secondaryIndex);
 
       if (quizState.quiz.type === "MATCH_TO_FLAGS") {
         label = <CaptionedImageForMatching
@@ -89,6 +93,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       return {
         cca3: countryCode,
+        valueArray,
+        secondaryIndex,
         value,
         label,
       };
@@ -108,7 +114,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     return matchValues;
-  }, [storedCountryData, quizState.quiz, quizState.countryCodes]);
+  }, [storedCountryData, quizState.quiz, quizState.countryCodes, quizState.countryCodeSecondaryIndexes]);
 
   const unmatchedCountryCodes = useMemo(() => {
     const unmatchedCodes = [...quizCountryCodes];
@@ -238,7 +244,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     // Submission is correct if all matched (non-blank) values are correct
     for (const [index, countryCodes] of Object.entries(sortedMatchedCountryCodes)) {
-      const matchedValue = sortedMatchValues[parseInt(index)].value;
+      const {value: matchedValue, valueArray: matchedValueArray, secondaryIndex} =
+          sortedMatchValues[parseInt(index)];
 
       if (!matchedValue || !countryCodes?.length) {
         continue;
@@ -246,13 +253,13 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       for (const countryCode of countryCodes) {
         if (quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES") {
-          // Matched value is comma separated list of bordering country codes
-          if (!matchedValue.split(", ").includes(countryCode)) {
+          if (matchedValueArray && !matchedValueArray.includes(countryCode)) {
             submissionCorrect = false;
             break;
           }
         } else {
-          const correctValue = quizState.quiz.valueFunction(storedCountryData, countryCode);
+          const correctValue = quizState.quiz.valueFunction(
+              storedCountryData, countryCode, secondaryIndex);
 
           if (correctValue !== matchedValue) {
             submissionCorrect = false;
@@ -652,6 +659,10 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
             let matchDataLabel = matchData.label;
             let revealedBorders: React.ReactNode = undefined;
 
+            if (quizState.quiz.type === "MATCH_TO_FUN_FACTS") {
+              matchDataLabel = <p>{matchDataLabel}</p>
+            }
+
             if (quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" && !roundActive) {
               let borderingCountryCodes: Cca3Code[] | undefined = undefined;
               // let borderingCountries: string[] | undefined = undefined;
@@ -699,9 +710,10 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
             // and details collapse states, so need to handle focus manually...
             return (
               <li key={itemKey}>
-                <DraggableCountryPool headerId={`matched-pool-header-${itemKey}`}
+                <DraggableCountryPool headerId={`matched-pool-header-${matchIndex}`}
                     headerText={matchDataLabel}
-                    headerLevel={quizState.quiz.type === "MATCH_TO_FLAGS"
+                    headerLevel={quizState.quiz.type === "MATCH_TO_FUN_FACTS"
+                        || quizState.quiz.type === "MATCH_TO_FLAGS"
                         || quizState.quiz.type === "MATCH_TO_LOCATIONS" ? 0 : 3}
                     contentBelowHeader={contentBelowHeader}
                     singleCapacity={singleCapacity}
@@ -709,12 +721,14 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
                         || (!(selectedCountryCode && matchValueCountryCodes.includes(selectedCountryCode))
                         && !(singleCapacity && quizState.countryCodesLockedInAsCorrect[matchIndex]?.includes(
                             matchValueCountryCodes[0])))}
-                    emptyMessage={roundActive ? `Drag${singleCapacity ? " the" : ""} matching ${
+                    emptyMessage={roundActive ? `Drag${singleCapacity ? " the" : " any"} matching ${
                         singleCapacity ? "country" : "countries"} here` : ""}
                     selectedCountryCode={selectedCountryCode}
                     isTargetForAdd={targetMatchIndexForAdd === matchIndex}
+                    hideTargetForAddButton={singleCapacity
+                        && !!quizState.matchedCountryCodes[matchIndex]?.length}
                     onTargetForAddToggle={roundActive && !(singleCapacity
-                        && quizState.matchedCountryCodes[matchIndex]?.length) ?
+                        && quizState.countryCodesLockedInAsCorrect[matchIndex]?.length) ?
                         () => setTargetMatchIndexForAdd(
                             matchIndex === targetMatchIndexForAdd ? -1 : matchIndex) : undefined}
                     onDrop={event => handleDropForMatchValue(event, matchIndex)}>

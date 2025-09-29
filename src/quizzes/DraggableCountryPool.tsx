@@ -15,6 +15,7 @@ interface DraggableCountryPoolProps {
   children: React.ReactNode;
   selectedCountryCode?: Cca3Code | null;
   isTargetForAdd?: boolean;
+  hideTargetForAddButton?: boolean;
   onTargetForAddToggle?: () => void;
   onDrop?: (event: DragEvent) => void;
 }
@@ -35,13 +36,14 @@ interface DraggableCountryPoolProps {
  * @param {React.ReactNode} props.children Draggable country components held by the pool
  * @param {Cca3Code | null} [props.selectedCountryCode] The code of the currently selected/dragged country
  * @param {boolean} [props.isTargetForAdd=false] Whether the pool is the target for adding
+ * @param {boolean} [props.hideTargetForAddButton=false] Whether target for add button visibility should be hidden
  * @param {function} [props.onTargetForAddToggle] Function to call when the pool is set as the target for adding
  * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the pool
  */
 function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBelowHeader,
     singleCapacity = false, canBeDroppedIntoDirectly = true, isTargetContainer = false,
-    emptyMessage, children, selectedCountryCode, isTargetForAdd = false, onTargetForAddToggle,
-    onDrop }: DraggableCountryPoolProps) {
+    emptyMessage, children, selectedCountryCode, isTargetForAdd = false, hideTargetForAddButton,
+    onTargetForAddToggle, onDrop }: DraggableCountryPoolProps) {
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
@@ -114,7 +116,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBe
   const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <Button type="button"
     onClick={() => onTargetForAddToggle()}
     aria-label={isTargetForAdd ? "Stop targeting this value." : "Target this value for adding."}
-    className="target-for-add-button">
+  className={`target-for-add-button${hideTargetForAddButton ? " hidden" : ""}`}>
       <span aria-hidden="true" className="symbol-font">⌖</span>
   </Button> : null;
 

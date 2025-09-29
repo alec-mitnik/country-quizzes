@@ -9,6 +9,8 @@ and a Quiz page.  Additional quiz types and other features are still in the work
 Supports light and dark color schemes, applying the preference detected by the browser.
 Works across different browsers and viewport sizes, and adheres to accessible practices, such as:
 * Providing alt text or captions for images, including flag and location map descriptions
+* Avoiding overly-complex language and providing explanations for terms
+* Showing both metric and imperial units
 * Graceful handling for when images fail to load or are disabled by the browser
 * Keyboard and screen reader support, including alternatives to drag-and-drop
 * Semantic HTML and appropriate aria attributes
@@ -40,3 +42,4 @@ https://www.cia.gov/the-world-factbook/countries/
 Any remaining flag descriptions or other missing info is derived from Wikipedia.
 I also use pageview counts for the countries, available through their APIs, as a way to gauge
 general country familiarity for the purposes of controlling the difficulty of quizzes.
+All fun facts are also verified through Wikipedia and its sources.

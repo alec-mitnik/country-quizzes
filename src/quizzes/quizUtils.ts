@@ -1,7 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
-import { QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
-import { extractRandomArrayElement, getRandomArrayElement } from "../utils/utils";
+import { QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
+import { extractRandomArrayElement, getRandomArrayElement, removeElementFromArray } from "../utils/utils";
 import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } from "./quizConfig";
 
 /**
@@ -10,7 +10,7 @@ import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } fro
  * @returns A random new quiz type
  */
 export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
-  // return "MATCH_TO_BORDERING_COUNTRIES"; // For easy testing
+  // return "MATCH_TO_FUN_FACTS"; // For easy testing
   const quizTypes = Object.keys(QUIZ_TYPES) as QuizType[];
   const quizzes = quizTypes.length < 2 ? quizTypes
       : quizTypes.filter(quizType => quizType !== currentType);
@@ -74,19 +74,25 @@ export function isQuizActive(quizState: QuizState | null) {
  * @param storedCountryData The country data to select from
  * @param count The number of countries to select
  * @param level The quiz level which determines the obscurity of countries to select
+ * @param quizType Type of the quiz, which may require special handling
  * @param fieldToRequire Optional field to require selected countries to have a value for.
  * Must be part of the shallow data expected to already be loaded.
- * @param forBordersQuiz Whether the selection is for a bordering countries quiz
- * which requires special constraints
- * @returns The randomly selected country codes
+ * @param valueArrayFunction Optional function to get the raw value array, if any
+ * @param valueFunctionForPreventingDuplicates Optional function to get the value to use
+ * for preventing duplicates.  Must be part of the shallow data expected to already be loaded,
+ * and only applies if fieldToRequire is specified.
+ * @returns The randomly selected country codes and secondary indexes if any
  */
 export function getRandomCountryCodes(independentOnly: boolean, storedCountryData: CountryStorage,
-    count: number, level: number, fieldToRequire?: keyof StoredCountry, forBordersQuiz = false) {
+    count: number, level: number, quizType: QuizType, fieldToRequire?: keyof StoredCountry,
+    valueArrayFunction?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined),
+    valueFunctionForPreventingDuplicates?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string)
+        | ((storedCountryData: CountryStorage, cca3: Cca3Code) => number)): [Cca3Code[], number[] | undefined] {
   const countriesData = storedCountryData.countries;
   const familiarityRankings = independentOnly ? storedCountryData.rankings.independentOnly.byFamiliarity
       : storedCountryData.rankings.all.byFamiliarity;
 
-  let countryCodes;
+  let countryCodes: Cca3Code[];
 
   const halfMaxLevel = Math.round(QUIZ_MAX_LEVEL * 0.5);
 
@@ -109,8 +115,9 @@ export function getRandomCountryCodes(independentOnly: boolean, storedCountryDat
   }
 
   let selectedCountryCodes: (Cca3Code | undefined)[] = [];
+  const countryCodeSecondaryIndexes: number[] = [];
 
-  if (forBordersQuiz) {
+  if (quizType === "MATCH_TO_BORDERING_COUNTRIES") {
     // Make sure at least two of the selected countries have bordering countries
     // and that the total number of bordering countries among all selected countries
     // is between the count and 1.5 times the count
@@ -197,11 +204,53 @@ export function getRandomCountryCodes(independentOnly: boolean, storedCountryDat
       }
     }
   } else {
+    const allowDuplicateCountryCodes = quizType === "MATCH_TO_FUN_FACTS" && valueArrayFunction;
+    const duplicatesCount: Record<string | number, number> = {};
+    const availableSecondaryIndexes: Partial<Record<Cca3Code, number[]>> = {};
+
     while (countryCodes.length && count > 0) {
-      selectedCountryCodes.push(extractRandomArrayElement<Cca3Code>(countryCodes));
+      const extractedCountryCode = allowDuplicateCountryCodes ?
+          getRandomArrayElement<Cca3Code>(countryCodes)
+          : extractRandomArrayElement<Cca3Code>(countryCodes);
+      selectedCountryCodes.push(extractedCountryCode);
       count--;
+
+      if (extractedCountryCode && fieldToRequire && valueFunctionForPreventingDuplicates) {
+        const value = valueFunctionForPreventingDuplicates(storedCountryData, extractedCountryCode);
+
+        if (duplicatesCount[value] > 0) {
+          duplicatesCount[value]++;
+        } else {
+          duplicatesCount[value] = 1;
+        }
+
+        if (allowDuplicateCountryCodes) {
+          // Assign if not defined
+          availableSecondaryIndexes[extractedCountryCode] ??=
+              valueArrayFunction(storedCountryData, extractedCountryCode)
+              ?.map((_, index) => index) ?? [0];
+
+          const indexArray = availableSecondaryIndexes[extractedCountryCode];
+          const randomSecondaryIndex = extractRandomArrayElement<number>(indexArray) ?? 0;
+          countryCodeSecondaryIndexes.push(randomSecondaryIndex);
+
+          if (!indexArray.length) {
+            // No other values available for this country
+            removeElementFromArray(countryCodes, extractedCountryCode);
+          }
+        }
+
+        if (duplicatesCount[value] >= QUIZ_MAX_DUPLICATE_MATCH_VALUES) {
+          // Value function secondary index defaults to 0, so doesn't really support
+          // filtering duplicates of values that use secondary indexes,
+          // but fun facts at least have no duplicates anyway
+          countryCodes = countryCodes.filter(cca3 =>
+              valueFunctionForPreventingDuplicates(storedCountryData, cca3) !== value);
+        }
+      }
     }
   }
 
-  return selectedCountryCodes.filter(Boolean) as Cca3Code[];
+  return [selectedCountryCodes.filter(Boolean) as Cca3Code[],
+      countryCodeSecondaryIndexes.length ? countryCodeSecondaryIndexes : undefined];
 }

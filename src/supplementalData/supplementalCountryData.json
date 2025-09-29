@@ -22,7 +22,10 @@
       "cca3": "ALB",
       "name": "Albania",
       "worldFactbookCountryKey": "AL",
-      "location": "Southeastern Europe, bordering the Adriatic Sea and Ionian Sea, between Greece to the south and Montenegro and Kosovo to the north"
+      "location": "Southeastern Europe, bordering the Adriatic Sea and Ionian Sea, between Greece to the south and Montenegro and Kosovo to the north",
+      "funFacts": [
+        "Home to over 173,000 concrete bunkers, which is about 15 per sq mi (6 per sq km) on average, and only a fraction of the over 750,000 it once had"
+      ]
     }
   },
   "DZA": {
@@ -66,7 +69,10 @@
       "worldFactbookCountryKey": "AV",
       "location": "Caribbean, islands between the Caribbean Sea and North Atlantic Ocean, east of Puerto Rico",
       "parentCountryCca3": "GBR",
-      "flagDescription": "The flag of this country is blue, with the flag of the UK in the canton and the national coat of arms centered in the fly half. The coat of arms depicts three orange dolphins in an interlocking circular design on a white background with a turquoise-blue field below."
+      "flagDescription": "The flag of this country is blue, with the flag of the UK in the canton and the national coat of arms centered in the fly half. The coat of arms depicts three orange dolphins in an interlocking circular design on a white background with a turquoise-blue field below.",
+      "funFacts": [
+        "Earns millions of dollars in revenue each year from its Internet country code top-level domain, \".ai\""
+      ]
     }
   },
   "ATA": {
@@ -75,7 +81,10 @@
       "name": "Antarctica",
       "worldFactbookCountryKey": "AY",
       "location": "Continent mostly south of the Antarctic Circle",
-      "flagDescription": "The flag of this country features a plain white map of the country on a blue background."
+      "flagDescription": "The flag of this country features a plain white map of the country on a blue background.",
+      "funFacts": [
+        "Contains about 70% of the world's freshwater reserves"
+      ]
     }
   },
   "ATG": {
@@ -99,7 +108,10 @@
       "cca3": "ARM",
       "name": "Armenia",
       "worldFactbookCountryKey": "AM",
-      "location": "Southwestern Asia, between Turkey (to the west) and Azerbaijan"
+      "location": "Southwestern Asia, between Turkey (to the west) and Azerbaijan",
+      "funFacts": [
+        "Made chess a mandatory part of its school curriculum"
+      ]
     }
   },
   "ABW": {
@@ -117,7 +129,11 @@
       "cca3": "AUS",
       "name": "Australia",
       "worldFactbookCountryKey": "AS",
-      "location": "Oceania, continent between the Indian Ocean and the South Pacific Ocean"
+      "location": "Oceania, continent between the Indian Ocean and the South Pacific Ocean",
+      "funFacts": [
+        "Slightly wider than the diameter of the Moon",
+        "Home to the Great Barrier Reef, the largest coral reef system in the world"
+      ]
     }
   },
   "AUT": {
@@ -125,7 +141,10 @@
       "cca3": "AUT",
       "name": "Austria",
       "worldFactbookCountryKey": "AU",
-      "location": "Central Europe, north of Italy and Slovenia"
+      "location": "Central Europe, north of Italy and Slovenia",
+      "funFacts": [
+        "Home of the Schönbrunn Zoo, the oldest zoo still in existence"
+      ]
     }
   },
   "AZE": {
@@ -133,7 +152,10 @@
       "cca3": "AZE",
       "name": "Azerbaijan",
       "worldFactbookCountryKey": "AJ",
-      "location": "Southwestern Asia, bordering the Caspian Sea, between Iran and Russia, with a small European portion north of the Caucasus range"
+      "location": "Southwestern Asia, bordering the Caspian Sea, between Iran and Russia, with a small European portion north of the Caucasus range",
+      "funFacts": [
+        "Its capital is 92 ft (28m) below sea level, the lowest national capital in the world and largest city in the world below sea level"
+      ]
     }
   },
   "BHS": {
@@ -141,7 +163,11 @@
       "cca3": "BHS",
       "name": "Bahamas",
       "worldFactbookCountryKey": "BF",
-      "location": "Chain of islands in the North Atlantic Ocean, southeast of Florida, northeast of Cuba"
+      "location": "Chain of islands in the North Atlantic Ocean, southeast of Florida, northeast of Cuba",
+      "funFacts": [
+        "Home to Pig Beach, part of an island inhabited not by humans but by feral pigs",
+        "Has experienced snow only once in recorded history"
+      ]
     }
   },
   "BHR": {
@@ -165,7 +191,10 @@
       "cca3": "BRB",
       "name": "Barbados",
       "worldFactbookCountryKey": "BB",
-      "location": "Caribbean, island in the North Atlantic Ocean, northeast of Venezuela"
+      "location": "Caribbean, island in the North Atlantic Ocean, northeast of Venezuela",
+      "funFacts": [
+        "The birthplace of singer Rihanna"
+      ]
     }
   },
   "BLR": {
@@ -189,7 +218,10 @@
       "cca3": "BLZ",
       "name": "Belize",
       "worldFactbookCountryKey": "BH",
-      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Mexico"
+      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Mexico",
+      "funFacts": [
+        "Home to the Cockscomb Basin Wildlife Sanctuary, the world's first nature reserve for jaguars"
+      ]
     }
   },
   "BEN": {
@@ -215,7 +247,11 @@
       "cca3": "BTN",
       "name": "Bhutan",
       "worldFactbookCountryKey": "BT",
-      "location": "Southern Asia, between China and India, north of Bangladesh"
+      "location": "Southern Asia, between China and India, north of Bangladesh",
+      "funFacts": [
+        "Due to a ban until 1999, is the last country in the world to be introduced to television",
+        "Over 98% mountain"
+      ]
     }
   },
   "BOL": {
@@ -223,7 +259,10 @@
       "cca3": "BOL",
       "name": "Bolivia",
       "worldFactbookCountryKey": "BL",
-      "location": "Central South America, northwest of Paraguay, southwest of Brazil"
+      "location": "Central South America, northwest of Paraguay, southwest of Brazil",
+      "funFacts": [
+        "Maintains an active navy despite being landlocked since 1904"
+      ]
     }
   },
   "BIH": {
@@ -257,7 +296,10 @@
       "cca3": "BRA",
       "name": "Brazil",
       "worldFactbookCountryKey": "BR",
-      "location": "Eastern South America, bordering the Atlantic Ocean"
+      "location": "Eastern South America, bordering the Atlantic Ocean",
+      "funFacts": [
+        "Produces the most coffee of any country"
+      ]
     }
   },
   "IOT": {
@@ -267,7 +309,10 @@
       "worldFactbookCountryKey": "IO",
       "location": "Archipelago in the Indian Ocean, south of India, about halfway between Africa and Indonesia",
       "parentCountryCca3": "GBR",
-      "flagDescription": "The flag of this country is white with six blue, wavy, horizontal stripes. The UK flag is in the canton. The striped section has a palm tree and yellow crown centered in the fly half."
+      "flagDescription": "The flag of this country is white with six blue, wavy, horizontal stripes. The UK flag is in the canton. The striped section has a palm tree and yellow crown centered in the fly half.",
+      "funFacts": [
+        "Earns millions of dollars in revenue each year from its Internet country code top-level domain, \".io\""
+      ]
     }
   },
   "VGB": {
@@ -293,7 +338,10 @@
       "cca3": "BGR",
       "name": "Bulgaria",
       "worldFactbookCountryKey": "BU",
-      "location": "Southeastern Europe, bordering the Black Sea, between Romania and Turkey"
+      "location": "Southeastern Europe, bordering the Black Sea, between Romania and Turkey",
+      "funFacts": [
+        "Its people shake their heads for \"yes\" and nod for \"no\""
+      ]
     }
   },
   "BFA": {
@@ -333,7 +381,11 @@
       "cca3": "CAN",
       "name": "Canada",
       "worldFactbookCountryKey": "CA",
-      "location": "Northern North America, bordering the North Atlantic Ocean on the east, North Pacific Ocean on the west, and the Arctic Ocean to the north"
+      "location": "Northern North America, bordering the North Atlantic Ocean on the east, North Pacific Ocean on the west, and the Arctic Ocean to the north",
+      "funFacts": [
+        "Produces the most maple syrup of any country",
+        "Has an official postal code for Santa Claus: H0H 0H0"
+      ]
     }
   },
   "CPV": {
@@ -393,7 +445,11 @@
       "cca3": "CHN",
       "name": "China",
       "worldFactbookCountryKey": "CH",
-      "location": "Eastern Asia, bordering the sea, between North Korea and Vietnam"
+      "location": "Eastern Asia, bordering the sea, between North Korea and Vietnam",
+      "funFacts": [
+        "Despite spanning the equivalent of five geographical time zones, uses a single national time zone",
+        "Where paper and silk were invented"
+      ]
     }
   },
   "CXR": {
@@ -421,7 +477,10 @@
       "cca3": "COL",
       "name": "Colombia",
       "worldFactbookCountryKey": "CO",
-      "location": "Northern South America, bordering the Caribbean Sea, between Panama and Venezuela, and bordering the North Pacific Ocean, between Ecuador and Panama"
+      "location": "Northern South America, bordering the Caribbean Sea, between Panama and Venezuela, and bordering the North Pacific Ocean, between Ecuador and Panama",
+      "funFacts": [
+        "Supplies the most emeralds internationally of any country"
+      ]
     }
   },
   "COM": {
@@ -448,7 +507,10 @@
       "name": "Costa Rica",
       "worldFactbookCountryKey": "CS",
       "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Nicaragua and Panama",
-      "flagDescription": "The flag of this country is composed of five horizontal bands of blue, white, red, white and blue. The central red band is twice the height of the other four bands. The national coat of arms is placed in a white elliptical disk toward the hoist side of the red band."
+      "flagDescription": "The flag of this country is composed of five horizontal bands of blue, white, red, white and blue. The central red band is twice the height of the other four bands. The national coat of arms is placed in a white elliptical disk toward the hoist side of the red band.",
+      "funFacts": [
+        "The most populous independent country to have no standing army"
+      ]
     }
   },
   "HRV": {
@@ -464,7 +526,10 @@
       "cca3": "CUB",
       "name": "Cuba",
       "worldFactbookCountryKey": "CU",
-      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, south of the US state of Florida"
+      "location": "Caribbean, island between the Caribbean Sea and the North Atlantic Ocean, south of the US state of Florida",
+      "funFacts": [
+        "Has the highest concentration of doctors of any nationality, many of whom work abroad"
+      ]
     }
   },
   "CUW": {
@@ -498,7 +563,7 @@
       "cca3": "DNK",
       "name": "Denmark",
       "worldFactbookCountryKey": "DA",
-      "location": "Northern Europe, bordering the Baltic Sea and the North Sea, on a peninsula north of Germany (Jutland), also includeing several major islands"
+      "location": "Northern Europe, bordering the Baltic Sea and the North Sea, on a peninsula north of Germany (Jutland), also including several major islands"
     }
   },
   "DJI": {
@@ -538,7 +603,10 @@
       "cca3": "ECU",
       "name": "Ecuador",
       "worldFactbookCountryKey": "EC",
-      "location": "Western South America, bordering the Pacific Ocean, between Colombia and Peru"
+      "location": "Western South America, bordering the Pacific Ocean, between Colombia and Peru",
+      "funFacts": [
+        "Home of Chimborazo, a volcano whose peak is the farthest point on Earth from its center, thanks to how the Earth bulges around the Equator"
+      ]
     }
   },
   "EGY": {
@@ -546,7 +614,10 @@
       "cca3": "EGY",
       "name": "Egypt",
       "worldFactbookCountryKey": "EG",
-      "location": "Northern Africa, bordering the Mediterranean Sea, between Libya and the Gaza Strip, and the Red Sea north of Sudan, and includes the Asian Sinai Peninsula"
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Libya and the Gaza Strip, and the Red Sea north of Sudan, and includes the Asian Sinai Peninsula",
+      "funFacts": [
+        "Produces over half of all jasmine (flowers used for perfumes)"
+      ]
     }
   },
   "SLV": {
@@ -554,7 +625,10 @@
       "cca3": "SLV",
       "name": "El Salvador",
       "worldFactbookCountryKey": "ES",
-      "location": "Central America, bordering the North Pacific Ocean, between Guatemala and Honduras"
+      "location": "Central America, bordering the North Pacific Ocean, between Guatemala and Honduras",
+      "funFacts": [
+        "The only North American country to not border the Atlantic Ocean or Caribbean Sea"
+      ]
     }
   },
   "GNQ": {
@@ -578,7 +652,10 @@
       "cca3": "EST",
       "name": "Estonia",
       "worldFactbookCountryKey": "EN",
-      "location": "Eastern Europe, bordering the Baltic Sea and Gulf of Finland, between Latvia and Russia"
+      "location": "Eastern Europe, bordering the Baltic Sea and Gulf of Finland, between Latvia and Russia",
+      "funFacts": [
+        "Offers nearly all public services online, including nationwide internet voting for binding general elections, the first country to do so"
+      ]
     }
   },
   "SWZ": {
@@ -594,7 +671,10 @@
       "cca3": "ETH",
       "name": "Ethiopia",
       "worldFactbookCountryKey": "ET",
-      "location": "Eastern Africa, west of Somalia"
+      "location": "Eastern Africa, west of Somalia",
+      "funFacts": [
+        "Uses a calendar that is approximately seven years and three months behind the commonly used Gregorian calendar"
+      ]
     }
   },
   "FLK": {
@@ -630,7 +710,11 @@
       "cca3": "FIN",
       "name": "Finland",
       "worldFactbookCountryKey": "FIN",
-      "location": "Northern Europe, bordering the Baltic Sea and Gulf of Bothnia, between Sweden and Russia"
+      "location": "Northern Europe, bordering the Baltic Sea and Gulf of Bothnia, between Sweden and Russia",
+      "funFacts": [
+        "Originated the term \"sauna,\" and nearly all of its homes have one built in",
+        "Provides a \"baby box\" care package to all new parents"
+      ]
     }
   },
   "FRA": {
@@ -638,7 +722,11 @@
       "cca3": "FRA",
       "name": "France",
       "worldFactbookCountryKey": "FR",
-      "location": "Western Europe, bordering the Bay of Biscay and English Channel, between Belgium and Spain, southeast of the UK, and bordering the Mediterranean Sea, between Italy and Spain"
+      "location": "Western Europe, bordering the Bay of Biscay and English Channel, between Belgium and Spain, southeast of the UK, and bordering the Mediterranean Sea, between Italy and Spain",
+      "funFacts": [
+        "With its overseas territories, uses 12 different time zones, more than any other country in the world",
+        "The most visited tourism destination"
+      ]
     }
   },
   "GUF": {
@@ -726,7 +814,11 @@
       "cca3": "GRC",
       "name": "Greece",
       "worldFactbookCountryKey": "GR",
-      "location": "Southern Europe, bordering the Aegean Sea, Ionian Sea, and the Mediterranean Sea, between Albania and Turkey"
+      "location": "Southern Europe, bordering the Aegean Sea, Ionian Sea, and the Mediterranean Sea, between Albania and Turkey",
+      "funFacts": [
+        "Where the Olympics originated",
+        "Where Western philosophy originated, shaped largely by the philosophers Socrates, Plato, and Aristotle"
+      ]
     }
   },
   "GRL": {
@@ -736,7 +828,10 @@
       "worldFactbookCountryKey": "GL",
       "location": "Northern North America, island between the Arctic Ocean and the North Atlantic Ocean, northeast of Canada",
       "parentCountryCca3": "DNK",
-      "flagDescription": "The flag of this country has two equal horizontal bands of white and red, with a large disk slightly to the hoist side of center. The top half of the disk is red, and the bottom half is white."
+      "flagDescription": "The flag of this country has two equal horizontal bands of white and red, with a large disk slightly to the hoist side of center. The top half of the disk is red, and the bottom half is white.",
+      "funFacts": [
+        "About 45% national park"
+      ]
     }
   },
   "GRD": {
@@ -832,7 +927,10 @@
       "cca3": "HND",
       "name": "Honduras",
       "worldFactbookCountryKey": "HO",
-      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Nicaragua"
+      "location": "Central America, bordering the Caribbean Sea, between Guatemala and Nicaragua",
+      "funFacts": [
+        "For over a century now, up to four times a year, it experiences an unexplained \"rain of fish\""
+      ]
     }
   },
   "HKG": {
@@ -850,7 +948,11 @@
       "cca3": "HUN",
       "name": "Hungary",
       "worldFactbookCountryKey": "HU",
-      "location": "Central Europe, northwest of Romania"
+      "location": "Central Europe, northwest of Romania",
+      "funFacts": [
+        "Its former currency, the pengő, experienced the most extreme hyperinflation ever recorded, reaching banknotes in circulation valued at 100 quintillion",
+        "Where the Rubik's Cube was invented"
+      ]
     }
   },
   "ISL": {
@@ -858,7 +960,10 @@
       "cca3": "ISL",
       "name": "Iceland",
       "worldFactbookCountryKey": "IC",
-      "location": "Northern Europe, island between the Greenland Sea and the North Atlantic Ocean, northwest of the United Kingdom"
+      "location": "Northern Europe, island between the Greenland Sea and the North Atlantic Ocean, northwest of the United Kingdom",
+      "funFacts": [
+        "Essentially free of mosquitoes"
+      ]
     }
   },
   "IND": {
@@ -866,7 +971,11 @@
       "cca3": "IND",
       "name": "India",
       "worldFactbookCountryKey": "IN",
-      "location": "Southern Asia, bordering the Arabian Sea and the Bay of Bengal, between Myanmar and Pakistan"
+      "location": "Southern Asia, bordering the Arabian Sea and the Bay of Bengal, between Myanmar and Pakistan",
+      "funFacts": [
+        "Has about a third of all cows",
+        "All its packaged food products are marked with green for vegetarian or brown for non-vegetarian"
+      ]
     }
   },
   "IDN": {
@@ -874,7 +983,10 @@
       "cca3": "IDN",
       "name": "Indonesia",
       "worldFactbookCountryKey": "ID",
-      "location": "Southeastern Asia, archipelago between the Indian Ocean and the Pacific Ocean"
+      "location": "Southeastern Asia, archipelago between the Indian Ocean and the Pacific Ocean",
+      "funFacts": [
+        "Has banned fishing and export of manta rays, becoming world's largest sanctuary for them"
+      ]
     }
   },
   "IRN": {
@@ -890,7 +1002,10 @@
       "cca3": "IRQ",
       "name": "Iraq",
       "worldFactbookCountryKey": "IZ",
-      "location": "Middle East, bordering the Persian Gulf, between Iran and Kuwait"
+      "location": "Middle East, bordering the Persian Gulf, between Iran and Kuwait",
+      "funFacts": [
+        "Where the earliest known writing system was developed, known as Cuneiform"
+      ]
     }
   },
   "IRL": {
@@ -916,7 +1031,10 @@
       "cca3": "ISR",
       "name": "Israel",
       "worldFactbookCountryKey": "ISR",
-      "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Lebanon"
+      "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Lebanon",
+      "funFacts": [
+        "Nearly all of its homes use solar power to heat their water"
+      ]
     }
   },
   "ITA": {
@@ -924,7 +1042,10 @@
       "cca3": "ITA",
       "name": "Italy",
       "worldFactbookCountryKey": "IT",
-      "location": "Southern Europe, a peninsula extending into the central Mediterranean Sea, northeast of Tunisia"
+      "location": "Southern Europe, a peninsula extending into the central Mediterranean Sea, northeast of Tunisia",
+      "funFacts": [
+        "Had some of the most influential explorers in history, including Marco Polo, Christopher Columbus, and Amerigo Vespucci"
+      ]
     }
   },
   "CIV": {
@@ -932,7 +1053,10 @@
       "cca3": "CIV",
       "name": "Ivory Coast",
       "worldFactbookCountryKey": "IV",
-      "location": "Western Africa, bordering the North Atlantic Ocean, between Ghana and Liberia"
+      "location": "Western Africa, bordering the North Atlantic Ocean, between Ghana and Liberia",
+      "funFacts": [
+        "Produces the most cocoa of any country"
+      ]
     }
   },
   "JAM": {
@@ -948,7 +1072,10 @@
       "cca3": "JPN",
       "name": "Japan",
       "worldFactbookCountryKey": "JA",
-      "location": "Eastern Asia, island chain in the North Pacific Ocean, east of the Korean Peninsula"
+      "location": "Eastern Asia, island chain in the North Pacific Ocean, east of the Korean Peninsula",
+      "funFacts": [
+        "Has the most vending machines per capita (per person) of any country"
+      ]
     }
   },
   "JEY": {
@@ -966,7 +1093,10 @@
       "cca3": "JOR",
       "name": "Jordan",
       "worldFactbookCountryKey": "JO",
-      "location": "Middle East, northwest of Saudi Arabia, between Israel (to the west) and Iraq"
+      "location": "Middle East, northwest of Saudi Arabia, between Israel (to the west) and Iraq",
+      "funFacts": [
+        "Home to the ancient city of Petra, known for its architecture carved from solid sandstone"
+      ]
     }
   },
   "KAZ": {
@@ -974,7 +1104,10 @@
       "cca3": "KAZ",
       "name": "Kazakhstan",
       "worldFactbookCountryKey": "KZ",
-      "location": "Central Asia, northwest of China, south of Russia"
+      "location": "Central Asia, northwest of China, south of Russia",
+      "funFacts": [
+        "Home of the launch site of the first manned spaceflight"
+      ]
     }
   },
   "KEN": {
@@ -990,7 +1123,10 @@
       "cca3": "KIR",
       "name": "Kiribati",
       "worldFactbookCountryKey": "KR",
-      "location": "Oceania, group of 32 coral atolls and one raised coral island in the Pacific Ocean, straddling the Equator, with the capital about halfway between Hawaii and Australia"
+      "location": "Oceania, group of 32 coral atolls and one raised coral island in the Pacific Ocean, straddling the Equator, with the capital about halfway between Hawaii and Australia",
+      "funFacts": [
+        "The first country each year to celebrate New Year's Day"
+      ]
     }
   },
   "UNK": {
@@ -1039,7 +1175,10 @@
       "cca3": "LBN",
       "name": "Lebanon",
       "worldFactbookCountryKey": "LE",
-      "location": "Middle East, bordering the Mediterranean Sea, between Israel and Syria"
+      "location": "Middle East, bordering the Mediterranean Sea, between Israel and Syria",
+      "funFacts": [
+        "The birthplace of actor Keanu Reeves"
+      ]
     }
   },
   "LSO": {
@@ -1047,7 +1186,10 @@
       "cca3": "LSO",
       "name": "Lesotho",
       "worldFactbookCountryKey": "LT",
-      "location": "Southern Africa, an enclave of South Africa"
+      "location": "Southern Africa, an enclave of South Africa",
+      "funFacts": [
+        "The largest country to be situated fully within another country (known as an \"enclave\")"
+      ]
     }
   },
   "LBR": {
@@ -1063,7 +1205,11 @@
       "cca3": "LBY",
       "name": "Libya",
       "worldFactbookCountryKey": "LY",
-      "location": "Northern Africa, bordering the Mediterranean Sea, between Egypt, Tunisia, and Algeria"
+      "location": "Northern Africa, bordering the Mediterranean Sea, between Egypt, Tunisia, and Algeria",
+      "funFacts": [
+        "Over 95% desert, with some areas going decades without any rainfall",
+        "From 1977 to 2011, its national flag was simply solid green"
+      ]
     }
   },
   "LIE": {
@@ -1071,7 +1217,10 @@
       "cca3": "LIE",
       "name": "Liechtenstein",
       "worldFactbookCountryKey": "LS",
-      "location": "Central Europe, between Austria and Switzerland"
+      "location": "Central Europe, between Austria and Switzerland",
+      "funFacts": [
+        "Unless you consider the Caspian Sea to be a lake, it's the world's only doubly-landlocked country"
+      ]
     }
   },
   "LTU": {
@@ -1087,7 +1236,10 @@
       "cca3": "LUX",
       "name": "Luxembourg",
       "worldFactbookCountryKey": "LU",
-      "location": "Western Europe, between France and Germany, southeast of Belgium"
+      "location": "Western Europe, between France and Germany, southeast of Belgium",
+      "funFacts": [
+        "The first country in the world to have free public transportation nationwide"
+      ]
     }
   },
   "MAC": {
@@ -1105,7 +1257,10 @@
       "cca3": "MDG",
       "name": "Madagascar",
       "worldFactbookCountryKey": "MA",
-      "location": "Southern Africa, island in the Indian Ocean, east of Mozambique"
+      "location": "Southern Africa, island in the Indian Ocean, east of Mozambique",
+      "funFacts": [
+        "Over 90% of its wildlife is endemic, not found anywhere else"
+      ]
     }
   },
   "MWI": {
@@ -1129,7 +1284,10 @@
       "cca3": "MDV",
       "name": "Maldives",
       "worldFactbookCountryKey": "MV",
-      "location": "Southern Asia, group of atolls in the Indian Ocean, south-southwest of India"
+      "location": "Southern Asia, group of atolls in the Indian Ocean, south-southwest of India",
+      "funFacts": [
+        "The world's lowest-lying country, with an average ground-level elevation of around 1.5m (less than 5 ft) above sea level"
+      ]
     }
   },
   "MLI": {
@@ -1153,7 +1311,10 @@
       "cca3": "MHL",
       "name": "Marshall Islands",
       "worldFactbookCountryKey": "RM",
-      "location": "Oceania, consists of 29 atolls and five isolated islands in the North Pacific Ocean, about halfway between Hawaii and Australia"
+      "location": "Oceania, consists of 29 atolls and five isolated islands in the North Pacific Ocean, about halfway between Hawaii and Australia",
+      "funFacts": [
+        "Has banned all fishing of sharks in the surrounding ocean, becoming world's largest sanctuary for them"
+      ]
     }
   },
   "MTQ": {
@@ -1179,7 +1340,10 @@
       "cca3": "MUS",
       "name": "Mauritius",
       "worldFactbookCountryKey": "MP",
-      "location": "Southern Africa, island in the Indian Ocean, east of Madagascar and Réunion"
+      "location": "Southern Africa, island in the Indian Ocean, east of Madagascar and Réunion",
+      "funFacts": [
+        "The only home of the now-extinct dodo bird"
+      ]
     }
   },
   "MYT": {
@@ -1197,7 +1361,11 @@
       "cca3": "MEX",
       "name": "Mexico",
       "worldFactbookCountryKey": "MX",
-      "location": "North America, bordering the North Pacific Ocean, between Guatemala and the United States, and bordering the Caribbean Sea"
+      "location": "North America, bordering the North Pacific Ocean, between Guatemala and the United States, and bordering the Caribbean Sea",
+      "funFacts": [
+        "Home of the ancient Aztec civilization",
+        "Its capital city, built on the bed of a drained lake, sinks almost 20 inches (50cm) every year"
+      ]
     }
   },
   "FSM": {
@@ -1222,7 +1390,11 @@
       "name": "Monaco",
       "worldFactbookCountryKey": "MN",
       "location": "Western Europe, bordering the Mediterranean Sea on the southern coast of France, near the border with Italy",
-      "flagDescription": "The flag of this country is composed of two equal horizontal bands of dark red and white at a 4:5 aspect ratio."
+      "flagDescription": "The flag of this country is composed of two equal horizontal bands of dark red and white at a 4:5 aspect ratio.",
+      "funFacts": [
+        "Nearly a third of its residents are millionaires",
+        "Only non-residents are allowed in its gambling establishments"
+      ]
     }
   },
   "MNG": {
@@ -1230,7 +1402,10 @@
       "cca3": "MNG",
       "name": "Mongolia",
       "worldFactbookCountryKey": "MG",
-      "location": "Northern Asia, between China and Russia"
+      "location": "Northern Asia, between China and Russia",
+      "funFacts": [
+        "Home to the only remaining species of wild horse"
+      ]
     }
   },
   "MNE": {
@@ -1288,7 +1463,10 @@
       "cca3": "NRU",
       "name": "Nauru",
       "worldFactbookCountryKey": "NR",
-      "location": "Oceania, island in the South Pacific Ocean, south of the Marshall Islands"
+      "location": "Oceania, island in the South Pacific Ocean, south of the Marshall Islands",
+      "funFacts": [
+        "The term for a person from this country (its demonym) is a palindrome (reads the same forwards and backwards)"
+      ]
     }
   },
   "NPL": {
@@ -1296,7 +1474,10 @@
       "cca3": "NPL",
       "name": "Nepal",
       "worldFactbookCountryKey": "NP",
-      "location": "Southern Asia, between China and India, west of Bhutan"
+      "location": "Southern Asia, between China and India, west of Bhutan",
+      "funFacts": [
+        "Has the only national flag with a non-rectangular shape and the only one taller than it is wide"
+      ]
     }
   },
   "NLD": {
@@ -1304,7 +1485,10 @@
       "cca3": "NLD",
       "name": "Netherlands",
       "worldFactbookCountryKey": "NL",
-      "location": "Western Europe, bordering the North Sea, between Belgium and Germany"
+      "location": "Western Europe, bordering the North Sea, between Belgium and Germany",
+      "funFacts": [
+        "Home of the Eurobridges Spijkenisse, an applied arts project of bridges built to resemble the fictional bridges depicted on the euro banknotes"
+      ]
     }
   },
   "NCL": {
@@ -1322,7 +1506,12 @@
       "cca3": "NZL",
       "name": "New Zealand",
       "worldFactbookCountryKey": "NZ",
-      "location": "Oceania, islands in the South Pacific Ocean, southeast of Australia"
+      "location": "Oceania, islands in the South Pacific Ocean, southeast of Australia",
+      "funFacts": [
+        "First nation in the world to grant all women the right to vote",
+        "Where instant coffee was invented",
+        "Home to Frying Pan Lake, the world's largest hot spring"
+      ]
     }
   },
   "NIC": {
@@ -1355,6 +1544,7 @@
       "name": "Niue",
       "worldFactbookCountryKey": "NE",
       "location": "Oceania, island in the South Pacific Ocean, east of Tonga",
+      "parentCountryCca3": "NZL",
       "flagDescription": "The flag of this country is yellow with the UK flag in the canton. The UK flag has five yellow five-pointed stars, with a large star on a blue disk in the center and smaller stars on each arm of the red cross"
     }
   },
@@ -1381,7 +1571,10 @@
       "cca3": "MKD",
       "name": "North Macedonia",
       "worldFactbookCountryKey": "MK",
-      "location": "Southeastern Europe, north of Greece, southwest of Bulgaria"
+      "location": "Southeastern Europe, north of Greece, southwest of Bulgaria",
+      "funFacts": [
+        "Home to the birthplace of Catholic saint Mother Teresa"
+      ]
     }
   },
   "MNP": {
@@ -1399,7 +1592,10 @@
       "cca3": "NOR",
       "name": "Norway",
       "worldFactbookCountryKey": "NO",
-      "location": "Northern Europe, bordering the North Sea and the North Atlantic Ocean, west of Sweden"
+      "location": "Northern Europe, bordering the North Sea and the North Atlantic Ocean, west of Sweden",
+      "funFacts": [
+        "Pioneered parasite-free salmon farming in the 1970s and brought salmon sushi to the world"
+      ]
     }
   },
   "OMN": {
@@ -1415,7 +1611,10 @@
       "cca3": "PAK",
       "name": "Pakistan",
       "worldFactbookCountryKey": "PK",
-      "location": "Southern Asia, bordering the Arabian Sea, between India on the east and Iran and Afghanistan on the west"
+      "location": "Southern Asia, bordering the Arabian Sea, between India on the east and Iran and Afghanistan on the west",
+      "funFacts": [
+        "Produces the most soccer balls of any country"
+      ]
     }
   },
   "PLW": {
@@ -1423,7 +1622,11 @@
       "cca3": "PLW",
       "name": "Palau",
       "worldFactbookCountryKey": "PS",
-      "location": "Oceania, group of islands in the North Pacific Ocean, southeast of the Philippines, north of the island of New Guinea"
+      "location": "Oceania, group of islands in the North Pacific Ocean, southeast of the Philippines, north of the island of New Guinea",
+      "funFacts": [
+        "Follows a strict matrilineal system, where family lines are passed from the mother",
+        "Home of Jellyfish Lake, where jellyfish evolved in isolation from predators, leaving them with stingers too weak to harm humans"
+      ]
     }
   },
   "PSE": {
@@ -1432,7 +1635,10 @@
       "name": "Palestine",
       "worldFactbookCountryKey": "PSE",
       "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Israel, and west of Jordan, east of Israel",
-      "flagDescription": "The flag of this country has three equal horizontal stripes of black, white, and green overlaid by a red triangle issuing from the hoist."
+      "flagDescription": "The flag of this country has three equal horizontal stripes of black, white, and green overlaid by a red triangle issuing from the hoist.",
+      "funFacts": [
+        "Home to the city of Bethlehem, where different denominations gather to celebrate Christmas on three different dates each year"
+      ]
     }
   },
   "PAN": {
@@ -1440,7 +1646,10 @@
       "cca3": "PAN",
       "name": "Panama",
       "worldFactbookCountryKey": "PM",
-      "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Colombia and Costa Rica"
+      "location": "Central America, bordering both the Caribbean Sea and the North Pacific Ocean, between Colombia and Costa Rica",
+      "funFacts": [
+        "The largest independent country to have no standing army"
+      ]
     }
   },
   "PNG": {
@@ -1448,7 +1657,10 @@
       "cca3": "PNG",
       "name": "Papua New Guinea",
       "worldFactbookCountryKey": "PP",
-      "location": "Oceania, group of islands including the eastern half of the island of New Guinea between the Coral Sea and the South Pacific Ocean, east of Indonesia"
+      "location": "Oceania, group of islands including the eastern half of the island of New Guinea between the Coral Sea and the South Pacific Ocean, east of Indonesia",
+      "funFacts": [
+        "Some of its people use a currency made from snail shells"
+      ]
     }
   },
   "PRY": {
@@ -1456,7 +1668,10 @@
       "cca3": "PRY",
       "name": "Paraguay",
       "worldFactbookCountryKey": "PA",
-      "location": "Central South America, northeast of Argentina, southwest of Brazil"
+      "location": "Central South America, northeast of Argentina, southwest of Brazil",
+      "funFacts": [
+        "Has the only national flag with different front and back designs"
+      ]
     }
   },
   "PER": {
@@ -1464,7 +1679,12 @@
       "cca3": "PER",
       "name": "Peru",
       "worldFactbookCountryKey": "PE",
-      "location": "Western South America, bordering the South Pacific Ocean, between Chile and Ecuador"
+      "location": "Western South America, bordering the South Pacific Ocean, between Chile and Ecuador",
+      "funFacts": [
+        "Produces the most quinoa of any country",
+        "Home of over 700 ancient geoglyphs known as the Nazca lines, formed by carving massive drawings into the ground",
+        "Home of La Rinconada, the highest permanent settlement in the world, at up to 3.2 mi (5.1km) above sea level"
+      ]
     }
   },
   "PHL": {
@@ -1472,7 +1692,11 @@
       "cca3": "PHL",
       "name": "Philippines",
       "worldFactbookCountryKey": "RP",
-      "location": "Southeastern Asia, archipelago bordering the South China Sea, east of Vietnam"
+      "location": "Southeastern Asia, archipelago bordering the South China Sea, east of Vietnam",
+      "funFacts": [
+        "Home to Vulcan Point, an island in a lake on an island in a lake on an island",
+        "Has the highest concentration of nurses of any nationality, many of whom work abroad"
+      ]
     }
   },
   "PCN": {
@@ -1490,7 +1714,10 @@
       "cca3": "POL",
       "name": "Poland",
       "worldFactbookCountryKey": "PL",
-      "location": "Central Europe, east of Germany"
+      "location": "Central Europe, east of Germany",
+      "funFacts": [
+        "Where bagels originated"
+      ]
     }
   },
   "PRT": {
@@ -1498,7 +1725,11 @@
       "cca3": "PRT",
       "name": "Portugal",
       "worldFactbookCountryKey": "PO",
-      "location": "Southwestern Europe, bordering the North Atlantic Ocean, west of Spain"
+      "location": "Southwestern Europe, bordering the North Atlantic Ocean, west of Spain",
+      "funFacts": [
+        "Produces about half of all cork (the stuff used as bottle stoppers)",
+        "The first country to allow usage and personal possession of all common drugs after decriminalizing them in 2001"
+      ]
     }
   },
   "PRI": {
@@ -1516,7 +1747,10 @@
       "cca3": "QAT",
       "name": "Qatar",
       "worldFactbookCountryKey": "QA",
-      "location": "Middle East, peninsula bordering the Persian Gulf and Saudi Arabia"
+      "location": "Middle East, peninsula bordering the Persian Gulf and Saudi Arabia",
+      "funFacts": [
+        "Foreign workers amount to around 88% of its population, resulting in there being over 3 males for every female"
+      ]
     }
   },
   "COG": {
@@ -1550,7 +1784,11 @@
       "cca3": "RUS",
       "name": "Russia",
       "worldFactbookCountryKey": "RS",
-      "location": "North Asia bordering the Arctic Ocean, extending from Eastern Europe to the North Pacific Ocean"
+      "location": "North Asia bordering the Arctic Ocean, extending from Eastern Europe to the North Pacific Ocean",
+      "funFacts": [
+        "Has over a fifth of all trees",
+        "Home to Lake Baikal, the world's deepest and largest freshwater lake by volume"
+      ]
     }
   },
   "RWA": {
@@ -1630,7 +1868,11 @@
       "cca3": "WSM",
       "name": "Samoa",
       "worldFactbookCountryKey": "WS",
-      "location": "Oceania, group of islands in the South Pacific Ocean, about halfway between Hawaii and New Zealand, north of Tonga"
+      "location": "Oceania, group of islands in the South Pacific Ocean, about halfway between Hawaii and New Zealand, north of Tonga",
+      "funFacts": [
+        "To better match surrounding nations, in 2009, it switched from driving on the right side of the road to driving on the left",
+        "To better match surrounding nations, it switched its time zone from UTC−11 to UTC+13, effectively skipping December 30th, 2011"
+      ]
     }
   },
   "SMR": {
@@ -1655,7 +1897,10 @@
       "cca3": "SAU",
       "name": "Saudi Arabia",
       "worldFactbookCountryKey": "SA",
-      "location": "Middle East, bordering the Persian Gulf and the Red Sea, north of Yemen"
+      "location": "Middle East, bordering the Persian Gulf and the Red Sea, north of Yemen",
+      "funFacts": [
+        "The largest country in the world to have no permanent rivers"
+      ]
     }
   },
   "SEN": {
@@ -1737,7 +1982,10 @@
       "cca3": "SOM",
       "name": "Somalia",
       "worldFactbookCountryKey": "SO",
-      "location": "Eastern Africa, bordering the Gulf of Aden and the Indian Ocean, east of Ethiopia"
+      "location": "Eastern Africa, bordering the Gulf of Aden and the Indian Ocean, east of Ethiopia",
+      "funFacts": [
+        "Has the most camels of any country"
+      ]
     }
   },
   "ZAF": {
@@ -1779,7 +2027,10 @@
       "cca3": "ESP",
       "name": "Spain",
       "worldFactbookCountryKey": "SP",
-      "location": "Southwestern Europe, southwest of France, bordering the Mediterranean Sea, North Atlantic Ocean, and Bay of Biscay"
+      "location": "Southwestern Europe, southwest of France, bordering the Mediterranean Sea, North Atlantic Ocean, and Bay of Biscay",
+      "funFacts": [
+        "Its national anthem has no official lyrics"
+      ]
     }
   },
   "LKA": {
@@ -1803,7 +2054,10 @@
       "cca3": "SUR",
       "name": "Suriname",
       "worldFactbookCountryKey": "NS",
-      "location": "Northern South America, bordering the North Atlantic Ocean, between French Guiana and Guyana"
+      "location": "Northern South America, bordering the North Atlantic Ocean, between French Guiana and Guyana",
+      "funFacts": [
+        "Over 90% rainforest"
+      ]
     }
   },
   "SJM": {
@@ -1830,7 +2084,11 @@
       "name": "Switzerland",
       "worldFactbookCountryKey": "SZ",
       "location": "Central Europe, east of France, north of Italy",
-      "flagDescription": "The flag of this country is square shaped. It features a white cross centered on a red field."
+      "flagDescription": "The flag of this country is square shaped. It features a white cross centered on a red field.",
+      "funFacts": [
+        "Where milk chocolate originated",
+        "Home of the longest stairway in the world, with a total of 11,674 steps climbing up Mount Niesen"
+      ]
     }
   },
   "SYR": {
@@ -1863,7 +2121,10 @@
       "cca3": "TZA",
       "name": "Tanzania",
       "worldFactbookCountryKey": "TZ",
-      "location": "Eastern Africa, bordering the Indian Ocean, between Kenya and Mozambique"
+      "location": "Eastern Africa, bordering the Indian Ocean, between Kenya and Mozambique",
+      "funFacts": [
+        "Home of the birthplace of Freddie Mercury, frontman of the rock band Queen"
+      ]
     }
   },
   "THA": {
@@ -1905,7 +2166,10 @@
       "cca3": "TON",
       "name": "Tonga",
       "worldFactbookCountryKey": "TN",
-      "location": "Oceania, archipelago in the South Pacific Ocean, about two-thirds of the way from Hawaii to New Zealand, southwest of Fiji"
+      "location": "Oceania, archipelago in the South Pacific Ocean, about two-thirds of the way from Hawaii to New Zealand, southwest of Fiji",
+      "funFacts": [
+        "A haven for bats, considered to be sacred and thus cannot be hunted or harmed"
+      ]
     }
   },
   "TTO": {
@@ -1913,7 +2177,11 @@
       "cca3": "TTO",
       "name": "Trinidad and Tobago",
       "worldFactbookCountryKey": "TD",
-      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, northeast of Venezuela, south of Grenada"
+      "location": "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, northeast of Venezuela, south of Grenada",
+      "funFacts": [
+        "The birthplace of rapper Nicki Minaj",
+        "Where the \"How low can you go?\" limbo game originated"
+      ]
     }
   },
   "TUN": {
@@ -1955,7 +2223,10 @@
       "cca3": "TUV",
       "name": "Tuvalu",
       "worldFactbookCountryKey": "TV",
-      "location": "Oceania, island group consisting of nine coral atolls in the South Pacific Ocean, about half way from Hawaii to Australia, northwest of Wallis and Futuna"
+      "location": "Oceania, island group consisting of nine coral atolls in the South Pacific Ocean, about half way from Hawaii to Australia, northwest of Wallis and Futuna",
+      "funFacts": [
+        "Earns millions of dollars in revenue each year from its Internet country code top-level domain, \".tv\""
+      ]
     }
   },
   "UGA": {
@@ -1979,7 +2250,10 @@
       "cca3": "ARE",
       "name": "United Arab Emirates",
       "worldFactbookCountryKey": "AE",
-      "location": "Middle East, bordering the Gulf of Oman and the Persian Gulf, between Oman and Saudi Arabia"
+      "location": "Middle East, bordering the Gulf of Oman and the Persian Gulf, between Oman and Saudi Arabia",
+      "funFacts": [
+        "Home to the Burj Khalifa, the tallest building in the world"
+      ]
     }
   },
   "GBR": {
@@ -1987,7 +2261,10 @@
       "cca3": "GBR",
       "name": "United Kingdom",
       "worldFactbookCountryKey": "UK",
-      "location": "Western Europe, islands between the North Atlantic Ocean and the North Sea, north of France"
+      "location": "Western Europe, islands between the North Atlantic Ocean and the North Sea, north of France",
+      "funFacts": [
+        "Its currency is the oldest in the world to be in continuous use since its inception"
+      ]
     }
   },
   "USA": {
@@ -1995,7 +2272,12 @@
       "cca3": "USA",
       "name": "United States",
       "worldFactbookCountryKey": "US",
-      "location": "North America, bordering both the North Atlantic Ocean and the North Pacific Ocean, between Canada and Mexico"
+      "location": "North America, bordering both the North Atlantic Ocean and the North Pacific Ocean, between Canada and Mexico",
+      "funFacts": [
+        "Has by far the most tornadoes of any country in the world",
+        "The only country to have sent people to the moon",
+        "Produces the most corn of any country"
+      ]
     }
   },
   "UMI": {
@@ -2039,7 +2321,10 @@
       "cca3": "VUT",
       "name": "Vanuatu",
       "worldFactbookCountryKey": "NH",
-      "location": "Oceania, group of islands in the South Pacific Ocean, about three-quarters of the way from Hawaii to Australia, west of Fiji"
+      "location": "Oceania, group of islands in the South Pacific Ocean, about three-quarters of the way from Hawaii to Australia, west of Fiji",
+      "funFacts": [
+        "Its ancient practice of tethered \"land diving\" inspired modern bungee jumping"
+      ]
     }
   },
   "VAT": {
@@ -2055,7 +2340,10 @@
       "cca3": "VEN",
       "name": "Venezuela",
       "worldFactbookCountryKey": "VE",
-      "location": "Northern South America, bordering the Caribbean Sea and the North Atlantic Ocean, between Colombia and Guyana"
+      "location": "Northern South America, bordering the Caribbean Sea and the North Atlantic Ocean, between Colombia and Guyana",
+      "funFacts": [
+        "Home to Angel Falls, the world's tallest uninterrupted waterfall"
+      ]
     }
   },
   "VNM": {
@@ -2063,7 +2351,11 @@
       "cca3": "VNM",
       "name": "Vietnam",
       "worldFactbookCountryKey": "VM",
-      "location": "Southeastern Asia, bordering the Gulf of Thailand, Gulf of Tonkin, and South China Sea, as well as China, Laos, and Cambodia"
+      "location": "Southeastern Asia, bordering the Gulf of Thailand, Gulf of Tonkin, and South China Sea, as well as China, Laos, and Cambodia",
+      "funFacts": [
+        "Home to Hang Sơn Đoòng, the world's largest natural cave",
+        "Over 30% of its people have the same surname"
+      ]
     }
   },
   "WLF": {

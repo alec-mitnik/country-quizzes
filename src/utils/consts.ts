@@ -42,6 +42,9 @@ export const QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL = 5;
 export const QUIZ_ROUNDS_PER_LEVEL = 5;
 export const QUIZ_MAX_LEVEL = 10;
 
+// Prevent match type quizzes from having all the same match values
+export const QUIZ_MAX_DUPLICATE_MATCH_VALUES = 2;
+
 export const SQUARE_KM_PER_SQUARE_MILE = 2.58998811;
 export const CUSTOM_DRAG_TYPE = 'application/country-code';
 

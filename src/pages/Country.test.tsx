@@ -112,8 +112,8 @@ describe('Country', () => {
     );
 
     // Location, Flag, Continent, Bordering Countries, Capital, Language,
-    // Currency, Independent, Parent Country (only when applicable),
-    // Size, Total Population, Population Density
+    // Currency, Independent, Parent Country (only when applicable)
+    // Size, Total Population, Population Density, Fun Facts (if any)
     expect(screen.getAllByRole('term')).toHaveLength(NUM_EXPECTED_DATA_TERMS);
     expect(screen.getAllByRole('definition')).toHaveLength(NUM_EXPECTED_DATA_TERMS);
   });
@@ -546,5 +546,85 @@ describe('Country rendered data', () => {
 
     const parentCountryDataTerm = screen.queryByText("Parent Country");
     expect(parentCountryDataTerm).not.toBeInTheDocument();
+  });
+
+  it('does not include fun facts when not provided', () => {
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the fun fact(s) data term
+    const funFactsDataTerm = screen.queryByText("Fun Fact", { exact: false });
+    expect(funFactsDataTerm).not.toBeInTheDocument();
+  });
+
+  it('includes a single fun fact not as a list when provided', () => {
+    const funFactText = "Test fun fact";
+    (testCountry as StoredCountry).funFacts = [funFactText];
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the fun fact data term
+    const funFactDataTerm = screen.getByText("Fun Fact");
+    expect(funFactDataTerm).toBeInTheDocument();
+    expect(funFactDataTerm).toHaveRole('term');
+
+    // Check for the fun fact data description
+    const funFactDataDescription = funFactDataTerm.nextElementSibling as HTMLElement;
+    expect(funFactDataDescription).toBeInTheDocument();
+    expect(funFactDataDescription).toHaveRole('definition');
+    expect(within(funFactDataDescription).getByText(funFactText)).toBeInTheDocument();
+
+    // Check that it is not a list item or in a list
+    expect(within(funFactDataDescription).queryByRole('list')).not.toBeInTheDocument();
+    expect(within(funFactDataDescription).queryByRole('listitem')).not.toBeInTheDocument();
+
+    // Check for the expected number of data terms
+    expect(screen.getAllByRole('term')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
+    expect(screen.getAllByRole('definition')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
+  });
+
+  it('includes a multiple fun facts as a list when provided', () => {
+    const funFact1Text = "Test fun fact 1";
+    const funFact2Text = "Test fun fact 2";
+    (testCountry as StoredCountry).funFacts = [funFact1Text, funFact2Text];
+
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Country />
+      </MemoryRouter>
+    );
+
+    // Check for the fun fact data term
+    const funFactsDataTerm = screen.getByText("Fun Facts");
+    expect(funFactsDataTerm).toBeInTheDocument();
+    expect(funFactsDataTerm).toHaveRole('term');
+
+    // Check for the fun fact data description
+    const funFactsDataDescription = funFactsDataTerm.nextElementSibling as HTMLElement;
+    expect(funFactsDataDescription).toBeInTheDocument();
+    expect(funFactsDataDescription).toHaveRole('definition');
+
+    // Check for the list
+    const funFactsList = within(funFactsDataDescription).getByRole('list');
+    expect(funFactsList).toBeInTheDocument();
+    expect(within(funFactsList).getAllByRole('listitem')).toHaveLength(2);
+
+    // Testing library doesn't see the accessible name of the list items...
+    expect(within(funFactsList).getByText(funFact1Text)).toBeInTheDocument();
+    expect(within(funFactsList).getByText(funFact2Text)).toBeInTheDocument();
+
+    // Check for the expected number of data terms
+    expect(screen.getAllByRole('term')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
+    expect(screen.getAllByRole('definition')).toHaveLength(NUM_EXPECTED_DATA_TERMS + 1);
   });
 });

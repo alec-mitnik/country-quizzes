@@ -10,6 +10,41 @@ import { getLocatorMapSrc } from "../utils/utils";
 import "./Country.css";
 import Page from "./Page";
 
+function renderCountryDataValue(key = "Unknown", value: React.ReactNode = "Unknown") {
+  return (
+    <div>
+      <dt>{key}</dt>
+      <dd>{value}</dd>
+    </div>
+  );
+}
+
+function renderCountryFunFacts(funFacts: string[]) {
+  if (funFacts.length === 0) {
+    return null;
+  }
+
+  if (funFacts.length > 1) {
+    return (
+      <div>
+        <dt>Fun Facts</dt>
+        <dd>
+          <ul>
+            {funFacts.map((funFact) => <li key={funFact}>{funFact}</li>)}
+          </ul>
+        </dd>
+      </div>
+    );
+  } else {
+    return (
+      <div>
+        <dt>Fun Fact</dt>
+        <dd>{funFacts[0]}</dd>
+      </div>
+    );
+  }
+}
+
 /**
  * Displays a country's details and a link to navigate back to the Countries page
  */
@@ -40,7 +75,7 @@ function Country() {
 
   const { name, worldFactbookCountryKey, location, independent, parentCountryCca3,
       borders, flag, flagDescription, currencies, capitals, languages,
-      area, population, populationDensity, continents } = country ?? {};
+      area, population, populationDensity, continents, funFacts } = country ?? {};
 
   const locatorMapSrc = worldFactbookCountryKey ? getLocatorMapSrc(worldFactbookCountryKey) : undefined;
 
@@ -58,15 +93,6 @@ function Country() {
   const combinedLoadingClassName = (!flagImgHasAttached || doneLoadingFlagClassName)
       && (!mapImgHasAttached || doneLoadingMapClassName) ?
       doneLoadingFlagClassName || doneLoadingMapClassName : "";
-
-  function renderCountryDataValue(key = "Unknown", value: React.ReactNode = "Unknown") {
-    return (
-      <div>
-        <dt>{key}</dt>
-        <dd>{value}</dd>
-      </div>
-    );
-  }
 
   return (
     <div className="country-component component-wrapper">
@@ -165,6 +191,7 @@ function Country() {
               {renderCountryDataValue("Population Density", independentOnly ?
                   populationDensity?.formattedValueForIndependentOnly
                   : populationDensity?.formattedValueForAll)}
+              {!!funFacts?.length && renderCountryFunFacts(funFacts)}
             </div>
           </dl>
         </RenderWithLoading>

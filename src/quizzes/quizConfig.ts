@@ -14,22 +14,22 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * TODO - ideas:
  *
  * Provide a more hands-on tutorial that introduces the mechanics one by one.
- * Add hint/reminder messaging.
  *
- * Adapt code to be data agnostic and work for other topics, like mushrooms.
+ * Adapt code to be data agnostic and work for other topics?
  *
- * Maybe there's an API for country fun facts that I could use to pepper in interesting trivia.
+ * More fun facts...
  *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),
- * or submit a country correctly for you, or reveal all info for locked-in ranked countries.
+ * or submit a country correctly for you.
  * Bonuses could be earned for feats like beating a round in one attempt or
  * getting countries with consecutive ranks correct in one try.
  *
  * Instead of random quiz types, could offer a choice of several random options.
  *
  * Might be fun to have special challenge rounds for all consecutive ranks or all similar flags.
- * Challenge rounds could take place at the end of each level, after which you earn a bonus.
+ * Challenge rounds could take place at the end of each level, after which you earn a bonus,
+ * though this would conflict with obscurity filtering...
  *
  * Possible bonuses:
  * +1 option to choose from when selecting bonuses
@@ -89,7 +89,7 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * maybe by granting a different number of additional submissions.
  */
 export type QuizType = "MATCH_TO_CURRENCIES" | "MATCH_TO_BORDERING_COUNTRIES"
-    | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS"
+    | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS" | "MATCH_TO_FUN_FACTS"
     | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY";
 
 export interface MatchingQuiz {
@@ -99,8 +99,9 @@ export interface MatchingQuiz {
   singleCapacity: boolean;
   matchTypeLabel: string;
   fieldToRequire?: keyof StoredCountry;
-  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => string;
-  labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => React.ReactNode;
+  valueArrayFunction?: (storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined;
+  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => string;
+  labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => React.ReactNode;
 };
 
 export interface RankingQuiz {
@@ -125,6 +126,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Currencies",
+    valueArrayFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.currencies?.rawValue,
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -136,13 +139,28 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     structure: "matching",
     singleCapacity: false,
     matchTypeLabel: "Bordering Countries",
-    // Comma separated list of bordering country codes or "None",
-    // gets parsed back into an array of country codes to turn into links, which isn't ideal...
+    valueArrayFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.borders,
+    // Comma separated list of bordering country codes or "None"
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         formatCountryDataArray(storedCountryData.countries[cca3]?.data?.borders),
     // Name of the country
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.name ?? cca3,
+  },
+  MATCH_TO_FUN_FACTS: {
+    type: "MATCH_TO_FUN_FACTS",
+    description: "Match the countries to their fun facts.",
+    structure: "matching",
+    singleCapacity: true,
+    matchTypeLabel: "Country Fun Facts",
+    fieldToRequire: "funFacts",
+    valueArrayFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.funFacts,
+    valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index = 0) =>
+        storedCountryData.countries[cca3]?.data?.funFacts?.[index] ?? "Error",
+    labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index = 0) =>
+        storedCountryData.countries[cca3]?.data?.funFacts?.[index] ?? "Error",
   },
   MATCH_TO_CAPITALS: {
     type: "MATCH_TO_CAPITALS",
@@ -150,6 +168,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Capitals",
+    valueArrayFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.capitals?.rawValue,
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -234,8 +254,8 @@ export interface MatchingQuizState {
   countryCodes: Cca3Code[];
   countryCodesOverride?: Cca3Code[]; // For bordering country quizzes
   // Have to match the structure of matchedCountryCodes
+  countryCodeSecondaryIndexes?: number[]; // For fun fact quizzes
   countryCodesLockedInAsCorrect: Partial<Record<number, Cca3Code[]>>;
-  countryCount: number;
   round: number;
   level: number;
   incorrectSubmissions: [string, Cca3Code[]][][];
@@ -251,7 +271,6 @@ export interface RankingQuizState {
   roundStartSubmissionsRemaining: number;
   countryCodes: Cca3Code[];
   countryCodesLockedInAsCorrect: Cca3Code[];
-  countryCount: number;
   round: number;
   level: number;
   incorrectSubmissions: Cca3Code[][];
