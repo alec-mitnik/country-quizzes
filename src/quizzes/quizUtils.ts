@@ -1,7 +1,8 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import confetti from "canvas-confetti";
 import type { CountryStorage, StoredCountry } from "../CountriesProvider";
 import { QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
-import { extractRandomArrayElement, getRandomArrayElement, removeElementFromArray } from "../utils/utils";
+import { extractRandomArrayElement, getRandomArrayElement, getRandomHue, hslToHex, removeElementFromArray } from "../utils/utils";
 import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } from "./quizConfig";
 
 /**
@@ -16,35 +17,6 @@ export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefin
       : quizTypes.filter(quizType => quizType !== currentType);
   const randomType = getRandomArrayElement<QuizType>(quizzes);
   return randomType;
-}
-
-/**
- * Determines the message to show when a quiz ends
- * @param quizState Quiz state data
- * @returns String message for the outcome of the quiz
- */
-export function renderQuizOutcomeMessage(quizState: QuizState) {
-  const quizCountryCodes = (quizState as MatchingQuizState)?.countryCodesOverride ??
-        quizState?.countryCodes ?? [];
-
-  if (quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL
-      && Object.values(quizState.countryCodesLockedInAsCorrect).flat().length >= quizCountryCodes.length) {
-    // Cleared all 10 levels
-    // TODO - add confetti/fireworks effect or something
-    return "You beat the quiz! You're a country whiz.";
-  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
-    // Cleared 8 levels
-    return "Amazing! You really know your stuff.";
-  }else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.6)) {
-    // Cleared 6 levels
-    return "Well done! You lasted a while.";
-  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.4)) {
-    // Cleared 4 levels
-    return "Not bad. Go again?";
-  } else {
-    // Default
-    return "Better luck next time.";
-  }
 }
 
 /**
@@ -67,6 +39,86 @@ export function isQuizActive(quizState: QuizState | null) {
           || quizState.round < QUIZ_ROUNDS_PER_LEVEL
           || numberOfLockedInCountryCodes < quizCountryCodes.length)
       && (nextRoundReadyToStart || quizState.submissionsRemaining > 0);
+}
+
+/**
+ * Function to check if the quiz has been beaten
+ * @param quizState The state of the quiz
+ * @returns Whether the quiz has been beaten
+ */
+export function isQuizBeaten(quizState: QuizState) {
+  const quizCountryCodes = (quizState as MatchingQuizState)?.countryCodesOverride ??
+        quizState?.countryCodes ?? [];
+
+  return quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL
+      && Object.values(quizState.countryCodesLockedInAsCorrect).flat().length >= quizCountryCodes.length;
+}
+
+/**
+ * Determines the message to show when a quiz ends
+ * @param quizState Quiz state data
+ * @returns String message for the outcome of the quiz
+ */
+export function renderQuizOutcomeMessage(quizState: QuizState) {
+  if (isQuizBeaten(quizState)) {
+    // Cleared all 10 levels
+    // TODO - add confetti/fireworks effect or something
+    return "You beat the quiz! You're a country whiz.";
+  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
+    // Cleared 8 levels
+    return "Amazing! You really know your stuff.";
+  }else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.6)) {
+    // Cleared 6 levels
+    return "Well done! You lasted a while.";
+  } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.4)) {
+    // Cleared 4 levels
+    return "Not bad. Go again?";
+  } else {
+    // Default
+    return "Better luck next time.";
+  }
+}
+
+/**
+ * Shows a random burst of confetti resembling a firework
+ */
+export function showConfettiFirework() {
+  const origin = {
+    // Keep to central region
+    x: Math.random() * 0.8 + 0.1,
+    // Keep to the upper section
+    y: Math.random() * 0.6 + 0.1,
+  };
+
+  const hue = getRandomHue();
+  const colorBase = hslToHex(hue, 100, 50);
+  const colorDarker = hslToHex(hue, 100, 40);
+  const colorLighter = hslToHex(hue, 100, 65);
+
+  const size = Math.floor(Math.random() * 21
+      * Math.min(window.innerWidth, window.innerHeight) / 700) + 10;
+
+  void confetti({
+    particleCount: 200,
+    startVelocity: size,
+    gravity: 0.25,
+    scalar: 0.75,
+    spread: 360,
+    colors: [colorBase, colorDarker, colorLighter],
+    origin,
+    disableForReducedMotion : true,
+  });
+
+  void confetti({
+    particleCount: 100,
+    startVelocity: size * 0.5,
+    gravity: 0.25,
+    scalar: 0.75,
+    spread: 360,
+    colors: [colorBase, colorDarker, colorLighter],
+    origin,
+    disableForReducedMotion : true,
+  });
 }
 
 /**

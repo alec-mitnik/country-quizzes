@@ -1,11 +1,13 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import confetti from "canvas-confetti";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Button from "../Button";
 import useCountries from "../hooks/useCountries";
 import {
   useLocalStorageStateBoolean, useLocalStorageStateNumber,
   useLocalStorageStateObject
 } from "../hooks/useLocalStorageState";
+import useStateRef from "../hooks/useStateRef";
 import {
   QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
   type QuizState, type QuizType, type RankingQuizState
@@ -14,7 +16,9 @@ import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import {
   getRandomCountryCodes, getRandomNewQuizType, isQuizActive,
-  renderQuizOutcomeMessage
+  isQuizBeaten,
+  renderQuizOutcomeMessage,
+  showConfettiFirework
 } from "../quizzes/quizUtils";
 import RenderWithLoading from "../RenderWithLoading";
 import {
@@ -61,6 +65,8 @@ function Quiz() {
       );
 
   const [countriesForQuizRoundRequested, setCountriesForQuizRoundRequested] = useState(false);
+  const [confettiTimeoutId, setConfettiTimeoutId, confettiTimeoutIdRef] = useStateRef<NodeJS.Timeout | number>(0);
+  const confettiLimitTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
   const { independentOnly, storedCountryData, error, fetchShallowDataForAllCountries,
       fetchCountries } = useCountries();
@@ -158,6 +164,51 @@ function Quiz() {
     }
   }, [quizActive, countriesForQuizRoundLoaded, countriesForQuizRoundRequested,
       quizState, setQuizState]);
+
+  const showConfettiFireworksContinuously = useCallback(() => {
+    showConfettiFirework();
+
+    setConfettiTimeoutId(setTimeout(() => {
+      showConfettiFireworksContinuously();
+    }, Math.random() * 2801 + 200));
+  }, [setConfettiTimeoutId]);
+
+  const startConfettiFireworks = useCallback(() => {
+    if (!confettiTimeoutId && !confettiLimitTimeoutIdRef.current) {
+      showConfettiFireworksContinuously();
+
+      // Stop confetti after 30 seconds
+      confettiLimitTimeoutIdRef.current = setTimeout(() => {
+        // Need to use the ref value here, as the state value won't reflect changes
+        // since the timeout was initially called
+        clearTimeout(confettiTimeoutIdRef.current);
+
+        // Don't reset these or the confetti will immediately restart
+        // while still in the quiz beaten state
+        // setConfettiTimeoutId(0);
+        // confettiLimitTimeoutIdRef.current = 0;
+      }, 30000);
+    }
+  }, [confettiTimeoutId, confettiTimeoutIdRef, confettiLimitTimeoutIdRef,
+      showConfettiFireworksContinuously]);
+
+  useEffect(() => {
+    if (!quizActive && quizState && countriesForQuizRoundLoaded && isQuizBeaten(quizState)) {
+      // If the quiz has been beaten, start the confetti fireworks,
+      // but only after any initial unmount triggers on load
+      setTimeout(startConfettiFireworks, 10);
+    }
+  }, [quizActive, quizState, countriesForQuizRoundLoaded, confettiTimeoutId, startConfettiFireworks]);
+
+  useEffect(() => {
+    // Stop and clean up the confetti on unmount
+    return () => {
+      confetti.reset();
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+      clearTimeout(confettiTimeoutIdRef.current);
+      clearTimeout(confettiLimitTimeoutIdRef.current);
+    };
+  }, [confettiTimeoutIdRef, confettiLimitTimeoutIdRef]);
 
   const updateQuizStateForNewRound = useCallback((newQuizState: Partial<QuizState>,
       countryCount = QUIZ_STARTING_COUNTRY_COUNT) => {

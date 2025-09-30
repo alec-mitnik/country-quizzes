@@ -27,7 +27,8 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Instead of random quiz types, could offer a choice of several random options.
  *
- * Might be fun to have special challenge rounds for all consecutive ranks or all similar flags.
+ * Might be fun to have special challenge rounds for all consecutive ranks, all similar flags,
+ * or touring locations throughout regions.
  * Challenge rounds could take place at the end of each level, after which you earn a bonus,
  * though this would conflict with obscurity filtering...
  *
