@@ -62,7 +62,6 @@ export function isQuizBeaten(quizState: QuizState) {
 export function renderQuizOutcomeMessage(quizState: QuizState) {
   if (isQuizBeaten(quizState)) {
     // Cleared all 10 levels
-    // TODO - add confetti/fireworks effect or something
     return "You beat the quiz! You're a country whiz.";
   } else if (quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.8)) {
     // Cleared 8 levels
@@ -106,7 +105,7 @@ export function showConfettiFirework() {
     spread: 360,
     colors: [colorBase, colorDarker, colorLighter],
     origin,
-    disableForReducedMotion : true,
+    disableForReducedMotion: true,
   });
 
   void confetti({
@@ -117,7 +116,7 @@ export function showConfettiFirework() {
     spread: 360,
     colors: [colorBase, colorDarker, colorLighter],
     origin,
-    disableForReducedMotion : true,
+    disableForReducedMotion: true,
   });
 }
 
