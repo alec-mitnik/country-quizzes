@@ -3,11 +3,18 @@ import { use, useCallback, useEffect, useState } from "react";
 import { CountriesContext } from "../CountriesContext";
 import useFetch from "./useFetch";
 
+// Increment whenever the API updates its data, to invalidate caches.
+// Use underscore parameter to force cache invalidation without conflicting with valid parameters.
+const SHALLOW_DATA_VERSION = 1;
+const FULL_DATA_VERSION = 1;
+
 // Include area and population to allow for displaying the overall rankings.
 // Include flags to be able to filter out countries with missing flag descriptions from flag quizzes.
 // Include borders to be able to filter out countries with no bordering countries from border quizzes.
 const SHALLOW_DATA_URL =
-    "https://restcountries.com/v3.1/all?fields=cca3,name,independent,area,population,flags,borders";
+    `https://restcountries.com/v3.1/all?_=${
+      SHALLOW_DATA_VERSION
+    }&fields=cca3,name,independent,area,population,flags,borders`;
 
 /**
  * Gives the full fetch URL to use for getting non-shallow data for specified countries
@@ -15,7 +22,7 @@ const SHALLOW_DATA_URL =
  * @returns The constructed URL
  */
 function getFullCountryFetchUrl(countryCodes: string[]) {
-  return `https://restcountries.com/v3.1/alpha?codes=${
+  return `https://restcountries.com/v3.1/alpha?_=${FULL_DATA_VERSION}&codes=${
     countryCodes.join(",")
   }&fields=cca3,name,capital,currencies,continents,languages`;
 }
