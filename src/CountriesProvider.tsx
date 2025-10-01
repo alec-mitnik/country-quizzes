@@ -173,7 +173,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             // name, code, independence status, flags, borders, areas, and populations only
 
             const independent = country.independent;
-            let borders = country.borders;
+            const borders = country.borders;
 
             const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
             const population = country.population != null && !isNaN(country.population) ?
