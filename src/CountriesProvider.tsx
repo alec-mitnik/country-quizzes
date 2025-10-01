@@ -175,12 +175,6 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             const independent = country.independent;
             let borders = country.borders;
 
-            // Sri Lanka erroneously has India as a bordering country
-            // (and India doesn't even have Sri Lanka as one)
-            if (cca3 === "LKA") {
-              borders = [];
-            }
-
             const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
             const population = country.population != null && !isNaN(country.population) ?
                 country.population : undefined;
