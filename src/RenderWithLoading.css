@@ -12,13 +12,16 @@
   that don't have non-component-wrapper parents.
   Use :where() to minimize the selector specificity. */
   :where(& > *,
-  & .component-wrapper:not(& :not(.component-wrapper) .component-wrapper) > *) {
+  & .component-wrapper:not(.render-with-loading-component :not(.component-wrapper) .component-wrapper) > *) {
     transition: opacity 0.3s ease-in-out;
   }
 
   &.ready-for-load {
-    & > *,
-    & .component-wrapper:not(& :not(.component-wrapper) .component-wrapper) > * {
+    /* Nested context is dropped for the whole selector from the build version when trying to use &
+    inside the :not(), even when explicitly adding & at the start of the whole selector
+    (which fixes the issue only locally) */
+    > *,
+    .component-wrapper:not(.render-with-loading-component :not(.component-wrapper) .component-wrapper) > * {
       opacity: 0;
       transition: none;
     }
