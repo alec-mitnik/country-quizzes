@@ -47,30 +47,6 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * Offer a way to practice specific quiz types, doing a single level at a time
  * (But how to set the difficulty level?).
  *
- * Groups of similar flags:
- * Palestine, Jordan, Sudan, South Sudan, Kuwait, UAE, Western Sahara, (Bahamas, Martinique, Zimbabwe)
- * Indonesia, Monaco, Poland, Singapore, Greenland, (Austria, Peru, Chile, Czechia, Latvia, Lebanon, Malta)
- * Ireland, Ivory Coast, India, Niger
- * Germany, Belgium, Uganda, (Zimbabwe, Zambia)
- * Armenia, Colombia, Ecuador, Mauritius, Venezuela (similar to below group)
- * Andorra, Moldova, Romania, Chad (similar to above group)
- * Italy, Mexico, (Ireland, similar to below group)
- * Bulgaria, Equatorial Guinea, Iran, Hungary, Kuwait, Tajikistan, (Madagascar, Oman, similar to above group)
- * Australia/Heard Island and McDonald Islands, New Zealand, Cook Islands, (Tuvalu, similar to below group)
- * Anguilla, British Virgin Islands, Cayman Islands, Falkland Islands, Montserrat, Pitcairn Islands,
- *     "Saint Helena, Ascension, and Tristan da Cunha", South Georgia, Turks and Caicos Islands, (Fiji, similar to above group)
- * Netherlands, Russia, Paraguay, Slovenia, Slovakia, (Croatia, Costa Rica, Luxembourg, France/Saint Martin)
- * Sint Maarten, Philippines, (Haiti, Lichtenstein)
- * Argentina, Nicaragua, Honduras, El Salvador, (Guatemala)
- * Mali, Guinea, Senegal, Cameroon, (Myanmar, Ghana, Burkina Faso, Lithuania),
- *     [French Guiana, Guinea-Bissau], [Bolivia, Ethiopia, Mauritius, Republic of the Congo, Togo]
- * Vietnam, Morocco, Hong Kong, Isle of Man, Tunisia, Turkey, China, Kyrgyzstan, (Albania, Montenegro)
- * Saint Kitts and Nevis, Namibia, DR Congo, Trinidad and Tobago, Tanzania, (Republic of the Congo)
- * Iceland, Norway/Bouvet Island/Svalbard and Jan Mayen, Iceland, Finland, Denmark, Åland Islands, Sweden, Faroe Islands
- * United States/United States Minor Outlying Islands, Liberia, Malaysia, (Puerto Rico), [Cuba]
- * Yemen, Iraq, Syria, Egypt, (Sudan)
- * Taiwan, Samoa, Tonga, Lichtenstein, (Haiti, Wallis and Futuna)
- *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
  */

@@ -1,4 +1,8 @@
 .countries-component {
+  #reset-filters-button {
+    margin-bottom: 16px;
+  }
+
   label {
     margin-block: 16px;
     display: inline flex;
@@ -18,7 +22,31 @@
       font-weight: bold;
       padding-inline: 8px;
     }
+  }
 
+  details {
+    margin-bottom: 16px;
+    max-width: min(100%, var(--layout-max-width));
+
+    summary {
+      font-weight: bold;
+      max-width: 100%;
+    }
+
+    legend {
+      max-width: 85%;
+    }
+
+    @media (width <= 500px) {
+      text-align: left;
+
+      summary {
+        text-align: center;
+      }
+    }
+  }
+
+  fieldSet, details {
     label {
       font-weight: 500;
       margin: 0;

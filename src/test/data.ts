@@ -152,16 +152,16 @@ export const testShallowStoredCountryData = {
   shallowDataRequested: true,
   rankings: {
     independentOnly: {
-      byArea: [],
-      byPopulation: [],
-      byPopulationDensity: [],
-      byFamiliarity: [],
+      byArea: [testCountry.cca3, "TCB"],
+      byPopulation: [testCountry.cca3, "TCB"],
+      byPopulationDensity: [testCountry.cca3, "TCB"],
+      byFamiliarity: [testCountry.cca3, "TCB"],
     },
     all: {
-      byArea: [],
-      byPopulation: [],
-      byPopulationDensity: [],
-      byFamiliarity: [],
+      byArea: [testCountry.cca3, "TCB", "TCA"],
+      byPopulation: [testCountry.cca3, "TCB", "TCA"],
+      byPopulationDensity: [testCountry.cca3, "TCA", "TCB"],
+      byFamiliarity: [testCountry.cca3, "TCA", "TCB"],
     },
   },
 };

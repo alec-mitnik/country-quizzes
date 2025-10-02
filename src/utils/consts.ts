@@ -23,6 +23,8 @@ export const PORTFOLIO_URL = "https://alec-mitnik.github.io/";
 
 export const COUNTRIES_SORT_BY_ACCESSIBLE_NAME = "Sort countries by";
 export const COUNTRIES_SEARCH_ACCESSIBLE_NAME = "Filter countries by name";
+export const COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY = "Filter countries by flag design";
+export const COUNTRIES_FLAG_DESIGN_FILTER_NONE = "No Design Filter";
 
 export const LOADING_MESSAGE = "Loading...";
 export const LOADING_IMAGE_MESSAGE = "Loading Image...";
