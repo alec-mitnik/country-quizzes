@@ -2313,7 +2313,10 @@
       "cca3": "UZB",
       "name": "Uzbekistan",
       "worldFactbookCountryKey": "UZ",
-      "location": "Central Asia, north of Turkmenistan, south of Kazakhstan"
+      "location": "Central Asia, north of Turkmenistan, south of Kazakhstan",
+      "funFacts": [
+        "Home of gymnast Oksana Chusovitina, who has competed in eight Olympic Games, the most of any gymnast in history"
+      ]
     }
   },
   "VUT": {
