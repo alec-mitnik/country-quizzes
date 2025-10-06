@@ -132,7 +132,7 @@ export const FLAG_DESIGN_GROUPS: (FlagDesignGroup | FlagDesignGroupSet)[] = [
     ],
   },
   {
-    name: "Red Fields",
+    name: "Red Field",
     flagDesignGroups: [
       {
         name: "Symbol on a Red Field",
