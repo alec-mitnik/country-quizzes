@@ -170,10 +170,11 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
 
           if (shallowData) {
             // Update of all country shallow data:
-            // name, code, independence status, flags, borders, areas, and populations only
+            // name, code, independence status, flags, borders, continents, areas, and populations only
 
             const independent = country.independent;
             const borders = country.borders;
+            const continents = extractAlphabeticalStringArray(country.continents);
 
             const area = country.area != null && !isNaN(country.area) ? country.area : undefined;
             const population = country.population != null && !isNaN(country.population) ?
@@ -190,6 +191,11 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               name: countryName,
               independent,
               borders,
+              continents: {
+                label: continents?.length === 1 ? "Continent" : "Continents",
+                rawValue: continents,
+                formattedValue: formatCountryDataArray(continents),
+              },
               area: {
                 ...newData.countries[cca3]?.data?.area,
                 rawValue: area,
@@ -216,13 +222,12 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             }
           } else {
             // Update of a single country's non-shallow data that will be used:
-            // name, code, currencies, capital, languages, continents
+            // name, code, currencies, capital, languages
 
             const currencies = extractCurrencies(country);
             const formattedCurrencies = Object.keys(currencies);
             const capitals = extractAlphabeticalStringArray(country.capital);
             const languages = extractLanguages(country);
-            const continents = extractAlphabeticalStringArray(country.continents);
 
             // Shallow data may not have been fetched yet
             newData.countries[cca3] = {
@@ -246,11 +251,6 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                   label: languages.length === 1 ? "Language" : "Languages",
                   rawValue: languages,
                   formattedValue: formatCountryDataArray(languages),
-                },
-                continents: {
-                  label: continents?.length === 1 ? "Continent" : "Continents",
-                  rawValue: continents,
-                  formattedValue: formatCountryDataArray(continents),
                 },
               },
               fullyLoaded: true,

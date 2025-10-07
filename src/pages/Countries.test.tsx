@@ -4,7 +4,7 @@ import { MemoryRouter } from 'react-router-dom';
 import useCountries from '../hooks/useCountries';
 import { testCountry, testShallowStoredCountryData } from '../test/data';
 import { expectNotToBeVisibleInDocument } from '../test/testUtils';
-import { COUNTRIES_FLAG_DESIGN_FILTER_NONE, COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY, COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../utils/consts';
+import { COUNTRIES_CONTINENT_FILTER_ALL, COUNTRIES_CONTINENT_FILTER_SUMMARY, COUNTRIES_FLAG_DESIGN_FILTER_NONE, COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY, COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, DEFAULT_COUNTRY_STORAGE, NO_COUNTRIES_LOADED_MESSAGE, NO_COUNTRIES_MATCHED_MESSAGE } from '../utils/consts';
 import Countries from './Countries';
 
 // Mock the hooks
@@ -114,6 +114,31 @@ describe('Countries', () => {
         .toBeInTheDocument();
   });
 
+  it('renders the continent filter inputs', () => {
+    render(
+      // MemoryRouter required when possibly rendering Link components
+      <MemoryRouter>
+        <Countries />
+      </MemoryRouter>
+    );
+
+    // Check for the fieldset
+    const fieldset = screen.getByRole('group', { name: COUNTRIES_CONTINENT_FILTER_SUMMARY });
+    expect(fieldset).toBeInTheDocument();
+
+    // Check for the radio buttons ("All" + each continent, determined from data set)
+    expect(within(fieldset).getAllByRole('radio')).toHaveLength(4);
+
+    expect(within(fieldset).getByRole('radio', { name: COUNTRIES_CONTINENT_FILTER_ALL,
+        checked: true })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: testCountry.continents.rawValue[0],
+        checked: false })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: testShallowStoredCountryData.countries.TCA
+        .data.continents.rawValue[1], checked: false })).toBeInTheDocument();
+    expect(within(fieldset).getByRole('radio', { name: testShallowStoredCountryData.countries.TCB
+        .data.continents.rawValue[0], checked: false })).toBeInTheDocument();
+  });
+
   it('renders the flag design filter, collapsed by default', async () => {
     const user = userEvent.setup();
 
@@ -180,17 +205,27 @@ describe('Countries', () => {
       </MemoryRouter>
     );
 
-    // Check for the fieldset
+    // Check for the sort fieldset
     const fieldset = screen.getByRole('group', { name: COUNTRIES_SORT_BY_ACCESSIBLE_NAME });
     expect(fieldset).toBeInTheDocument();
 
-    // Check for the radio buttons
+    // Check for the sort radio buttons
     const nameRadio = within(fieldset).getByRole('radio', { name: "Name", checked: true });
     expect(nameRadio).toBeInTheDocument();
-    expect(nameRadio).toBeChecked();
     const sizeRadio = within(fieldset).getByRole('radio', { name: "Size", checked: false });
     expect(sizeRadio).toBeInTheDocument();
-    expect(sizeRadio).not.toBeChecked();
+
+    // Check for the continent filter fieldset
+    const continentFilterFieldset = screen.getByRole('group', { name: COUNTRIES_CONTINENT_FILTER_SUMMARY });
+    expect(continentFilterFieldset).toBeInTheDocument();
+
+    // Check for the continent filter radio buttons
+    const allRadio = within(continentFilterFieldset).getByRole('radio',
+        { name: COUNTRIES_CONTINENT_FILTER_ALL, checked: true });
+    expect(allRadio).toBeInTheDocument();
+    const northAmericaRadio = within(continentFilterFieldset).getByRole('radio',
+        { name: testCountry.continents.rawValue[0], checked: false });
+    expect(northAmericaRadio).toBeInTheDocument();
 
     // Check for the Reversed sorting checkbox
     const reversedCheckbox = within(fieldset).getByRole('checkbox', { name: "Reversed", checked: false });
@@ -233,11 +268,16 @@ describe('Countries', () => {
     expect(sizeRadio).toBeChecked();
     expect(nameRadio).not.toBeChecked();
 
-    // Simulate filter input
+    // Simulate name filter input
     const searchInput = screen.getByRole('searchbox', { name: COUNTRIES_SEARCH_ACCESSIBLE_NAME });
     expect(searchInput).toBeInTheDocument();
     await user.type(searchInput, 'b');
     expect(searchInput).toHaveValue('b');
+
+    // Simulate continent filter input
+    await user.click(northAmericaRadio);
+    expect(northAmericaRadio).toBeChecked();
+    expect(allRadio).not.toBeChecked();
 
     // Reset filters
     const resetButton = screen.getByRole('button', { name: "Reset Filters" });
@@ -249,6 +289,8 @@ describe('Countries', () => {
     expect(reversedCheckbox).not.toBeChecked();
     expect(sizeRadio).not.toBeChecked();
     expect(nameRadio).toBeChecked();
+    expect(allRadio).toBeChecked();
+    expect(northAmericaRadio).not.toBeChecked();
 
     // Check that sort order is no longer reversed
     countryLinks = within(nav).getAllByRole('link');

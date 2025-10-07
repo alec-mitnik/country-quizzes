@@ -23,8 +23,14 @@ export const PORTFOLIO_URL = "https://alec-mitnik.github.io/";
 
 export const COUNTRIES_SORT_BY_ACCESSIBLE_NAME = "Sort countries by";
 export const COUNTRIES_SEARCH_ACCESSIBLE_NAME = "Filter countries by name";
+export const COUNTRIES_CONTINENT_FILTER_SUMMARY = "Filter countries by continent";
+export const COUNTRIES_CONTINENT_FILTER_ALL = "All";
 export const COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY = "Filter countries by flag design";
 export const COUNTRIES_FLAG_DESIGN_FILTER_NONE = "No Design Filter";
+
+// Reverse the order so that unidentified continents with index -1 are listed last
+export const CONTINENTS_REVERSE_ORDER = ["Antarctica", "Oceania", "Africa", "Asia",
+    "Europe", "South America", "North America"];
 
 export const LOADING_MESSAGE = "Loading...";
 export const LOADING_IMAGE_MESSAGE = "Loading Image...";

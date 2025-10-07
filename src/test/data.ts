@@ -114,7 +114,15 @@ export const testShallowStoredCountryData = {
           rawValue: 30,
           formattedValueForIndependentOnly: "Test population density A for independent only",
           formattedValueForAll: "Test population density A for all",
-        }
+        },
+        continents: {
+          label: "Continents",
+          rawValue: [
+            "North America",
+            "South America",
+          ],
+          formattedValue: "North America, South America",
+        },
       },
       fullyLoaded: false,
       requested: false,
@@ -142,7 +150,14 @@ export const testShallowStoredCountryData = {
           rawValue: 50,
           formattedValueForIndependentOnly: "Test population density B for independent only",
           formattedValueForAll: "Test population density B for all",
-        }
+        },
+        continents: {
+          label: "Continent",
+          rawValue: [
+            "Test Continent",
+          ],
+          formattedValue: "Test Continent",
+        },
       },
       fullyLoaded: false,
       requested: false,

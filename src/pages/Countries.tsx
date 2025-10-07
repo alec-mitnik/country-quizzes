@@ -7,6 +7,9 @@ import useCountries from "../hooks/useCountries";
 import { useLocalStorageStateBoolean, useLocalStorageStateString } from "../hooks/useLocalStorageState";
 import RenderWithLoading from "../RenderWithLoading";
 import {
+  CONTINENTS_REVERSE_ORDER,
+  COUNTRIES_CONTINENT_FILTER_ALL,
+  COUNTRIES_CONTINENT_FILTER_SUMMARY,
   COUNTRIES_FLAG_DESIGN_FILTER_NONE,
   COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY,
   COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
@@ -25,9 +28,10 @@ type SortBy = "name" | "size" | "population" | "populationDensity";
  */
 function Countries() {
   const [searchTerm, setSearchTerm] = useState("");
-  const [selectedFlagDesignGroup, setSelectedFlagDesignGroup] = useState("");
   const [useStricterFlagDesignFiltering, setUseStricterFlagDesignFiltering] = useState(false);
+  const [selectedContinent, setSelectedContinent] = useState("");
   const [flagDesignFiltersOpen, setFlagDesignFiltersOpen] = useState(false);
+  const [selectedFlagDesignGroup, setSelectedFlagDesignGroup] = useState("");
 
   const { independentOnly, storedCountryData, error,
       fetchShallowDataForAllCountries } = useCountries();
@@ -42,6 +46,24 @@ function Countries() {
       fetchShallowDataForAllCountries();
     }
   }, [error, storedCountryData.shallowDataRequested, fetchShallowDataForAllCountries]);
+
+  const allContinents = useMemo(() => {
+    const continents = new Set<string>();
+
+    if (storedCountryData.countries) {
+      for (const country of Object.values(storedCountryData.countries)) {
+        if (country?.data?.continents?.rawValue) {
+          for (const continent of country.data.continents.rawValue) {
+            continents.add(continent);
+          }
+        }
+      }
+    }
+
+    return Array.from(continents).sort((a, b) =>
+        CONTINENTS_REVERSE_ORDER.indexOf(b) - CONTINENTS_REVERSE_ORDER.indexOf(a));
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [storedCountryData.shallowDataLoaded, storedCountryData.countries]);
 
   // Sort countries
   const countryCodesFilteredByIndependence: Cca3Code[] = useMemo(() => {
@@ -98,6 +120,14 @@ function Countries() {
           });
     });
 
+    // Filter by continent
+    if (selectedContinent) {
+      filteredCountryCodes = filteredCountryCodes.filter(countryCode => {
+        return storedCountryData.countries[countryCode]?.data
+            ?.continents?.rawValue?.includes(selectedContinent);
+      });
+    }
+
     // Filter by flag design
     if (selectedFlagDesignGroup) {
       const flagDesignGroupOrSet = FLAG_DESIGN_GROUPS_BY_NAME.get(selectedFlagDesignGroup);
@@ -123,12 +153,13 @@ function Countries() {
 
     return filteredCountryCodes;
   }, [countryCodesFilteredByIndependence, searchTerm, storedCountryData,
-      useStricterFlagDesignFiltering, selectedFlagDesignGroup]);
+      useStricterFlagDesignFiltering, selectedContinent, selectedFlagDesignGroup]);
 
   function resetFilters() {
     setSortCountriesBy("name");
     setSortCountriesReversed(false);
     setSearchTerm("");
+    setSelectedContinent("");
     setSelectedFlagDesignGroup("");
   }
 
@@ -186,8 +217,29 @@ function Countries() {
                 value={searchTerm} onChange={(e) => setSearchTerm(e.currentTarget.value)} />
           </label>
 
-          <details open={flagDesignFiltersOpen} onToggle={(e) => setFlagDesignFiltersOpen(e.currentTarget.open)}>
-            <summary>
+          <fieldset>
+            <legend>{COUNTRIES_CONTINENT_FILTER_SUMMARY}</legend>
+
+            <label>
+              <input type="radio" name={COUNTRIES_CONTINENT_FILTER_ALL} value=""
+                  checked={!selectedContinent}
+                  onChange={(e) => setSelectedContinent(e.currentTarget.value)} />
+              {COUNTRIES_CONTINENT_FILTER_ALL}
+            </label>
+
+            {allContinents.map(continent => (
+              <label key={continent}>
+                <input type="radio" name={continent} value={continent}
+                    checked={selectedContinent === continent}
+                    onChange={(e) => setSelectedContinent(e.currentTarget.value)} />
+                {continent}
+              </label>
+            ))}
+          </fieldset>
+
+          <details aria-labelledby="flag-design-filters-summary" open={flagDesignFiltersOpen}
+              onToggle={(e) => setFlagDesignFiltersOpen(e.currentTarget.open)}>
+            <summary id="flag-design-filters-summary">
               {COUNTRIES_FLAG_DESIGN_FILTER_SUMMARY}{selectedFlagDesignGroup
                   && !flagDesignFiltersOpen ? `: ${selectedFlagDesignGroup}` : ""}
             </summary>

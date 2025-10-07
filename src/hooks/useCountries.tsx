@@ -9,12 +9,13 @@ const SHALLOW_DATA_VERSION = 1;
 const FULL_DATA_VERSION = 1;
 
 // Include area and population to allow for displaying the overall rankings.
-// Include flags to be able to filter out countries with missing flag descriptions from flag quizzes.
-// Include borders to be able to filter out countries with no bordering countries from border quizzes.
+// Include flags to be able to show them and filter by their designs in the directory.
+// Include borders to be able to filter on bordering countries for border quizzes.
+// Include continents to be able to filter on them in the directory and do content-spanning quizzes.
 const SHALLOW_DATA_URL =
     `https://restcountries.com/v3.1/all?_=${
       SHALLOW_DATA_VERSION
-    }&fields=cca3,name,independent,area,population,flags,borders`;
+    }&fields=cca3,name,independent,area,population,flags,borders,continents`;
 
 /**
  * Gives the full fetch URL to use for getting non-shallow data for specified countries
@@ -24,7 +25,7 @@ const SHALLOW_DATA_URL =
 function getFullCountryFetchUrl(countryCodes: string[]) {
   return `https://restcountries.com/v3.1/alpha?_=${FULL_DATA_VERSION}&codes=${
     countryCodes.join(",")
-  }&fields=cca3,name,capital,currencies,continents,languages`;
+  }&fields=cca3,name,capital,currencies,languages`;
 }
 
 /**
