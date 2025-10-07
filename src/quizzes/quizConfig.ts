@@ -15,7 +15,7 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Provide a more hands-on tutorial that introduces the mechanics one by one.
  *
- * Adapt code to be data agnostic and work for other topics?
+ * Adapt code to be data agnostic and work for non-country quiz topics?
  *
  * More fun facts...
  *
@@ -28,9 +28,9 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * Instead of random quiz types, could offer a choice of several random options.
  *
  * Might be fun to have special challenge rounds for all consecutive ranks, all similar flags,
- * or touring locations throughout regions.
+ * or touring locations throughout regions.  Maybe all countries that end in "stan" and the like.
  * Challenge rounds could take place at the end of each level, after which you earn a bonus,
- * though this would conflict with obscurity filtering...
+ * though this would conflict with obscurity filtering, and independence filtering would affect it too...
  *
  * Possible bonuses:
  * +1 option to choose from when selecting bonuses
@@ -46,6 +46,9 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Offer a way to practice specific quiz types, doing a single level at a time
  * (But how to set the difficulty level?).
+ *
+ * Challenge rounds could just be one-off quizzes, maybe with a daily rotation
+ * to encourage daily play.  Would need to be playable without interrupting a main run, though.
  *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
