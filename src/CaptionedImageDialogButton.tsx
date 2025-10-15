@@ -1,4 +1,5 @@
 import { useRef } from "react"
+import { createPortal } from "react-dom"
 import Button from "./Button"
 import "./CaptionedImageDialogButton.css"
 import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef"
@@ -28,7 +29,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
-    <dialog ref={dialogRef} className="captioned-image-dialog">
+    {createPortal(<dialog ref={dialogRef} className="captioned-image-dialog">
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
             onClick={() => dialogRef.current?.close()}></div>
@@ -60,7 +61,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           </figure>
         </div>
       </div>
-    </dialog>
+    </dialog>, document.body)}
 
     <Button type="button" className="image-dialog-button small"
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
@@ -69,8 +70,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
           // onToggle for the dialog doesn't seem to get triggered for iOS,
           // TalkBack won't recognize focus on the close button without a delay
-          closeButtonRef.current?.focus();
-          setTimeout(() => closeButtonRef.current?.focus(), 1000);
+          setTimeout(() => closeButtonRef.current?.focus(), 10);
         }}>
       {children}
     </Button>

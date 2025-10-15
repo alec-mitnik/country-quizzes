@@ -278,6 +278,73 @@ dialog {
   }
 }
 
+/* Can't go in the component stylesheet because it's moved to the body through a portal,
+which is to prevent screen readers from treating the dialog as part of a parent figure or data list */
+dialog.captioned-image-dialog {
+  .loading-image {
+    display: inline flow-root;
+
+    @media not (prefers-reduced-motion: reduce) {
+      animation: animateScale 3s ease-in-out infinite;
+    }
+  }
+
+  .dialog-foreground {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+
+    /* Move bottom padding to a child to prevent it from being lost to overflow */
+    padding-bottom: 0;
+  }
+
+  figure {
+    flex: 1;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: safe center;
+    align-items: center;
+
+    > div {
+      max-width: 800px;
+
+      &.with-max-height {
+        max-width: 816px;
+        transition: opacity 0.3s ease-in-out, max-height 1s ease-in-out,
+            overflow 0.3s allow-discrete step-end;
+      }
+
+      img.flag {
+        max-width: 100%;
+        width: auto;
+        display: block;
+        margin: auto;
+
+        /* Leave space for the drop-shadow */
+        padding-block: 8px;
+
+        &.svg {
+          /* Try to make the flag vector images consistently fill the dialog */
+          width: 100%;
+        }
+      }
+    }
+
+    figcaption {
+      margin: auto;
+      max-width: 800px;
+      padding-top: 8px;
+      font-weight: 500;
+
+      /* Prevent bottom padding from being lost to overflow by putting it
+      on this textual child instead (none of the parents preserve it) */
+      padding-bottom: 16px;
+    }
+  }
+}
+
 details {
   summary {
     /* Nicer presentation of focus outline */
