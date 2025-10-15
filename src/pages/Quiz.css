@@ -271,14 +271,20 @@
       box-shadow: 0 0 3px 1px var(--background-color-accent);
       text-align: left;
 
-      > h2, > h3, > h4, > h5, > h6, > div > p {
+      > h2, > h3, > h4, > h5, > h6, > div > p, div > figure {
         margin: auto;
-        text-align: center;
         width: 100%;
         max-width: 315px;
 
+        &:not(figure) {
+          text-align: center;
+        }
+
         &:not(.draggable-country-pool:has(.draggable-country-pool) > &) {
-          max-width: var(--drag-width);
+          /* Make sure that the pool width is maintained
+          even if the round ends with no flag/location matches */
+          width: var(--drag-width);
+          max-width: 100%;
         }
       }
 
@@ -445,12 +451,20 @@
       padding: 8px;
       max-width: var(--drag-width);
 
+      /* This ensures that the figure content area always extends
+      to contain the floating button image */
+      &::after {
+        content: '';
+        display: block;
+        clear: both;
+      }
+
       button.image-dialog-button {
         /* Ensure that a hovered details summary doesn't show on top */
         position: relative;
         z-index: 1;
         float: left;
-        margin: 0 16px 8px 0;
+        margin: 0 16px 2px 0;
 
         img.flag {
           width: 100px;

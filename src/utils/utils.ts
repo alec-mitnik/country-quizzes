@@ -219,3 +219,16 @@ export function hslToHex(h: number, s: number, l: number): string {
   };
   return `#${f(0)}${f(8)}${f(4)}`;
 }
+
+// 0 gives '0️⃣' (&#x30;&#xfe0f;&#x20e3;),
+// 12 gives '1️⃣2️⃣' (&#x31;&#xfe0f;&#x20e3;&#x32;&#xfe0f;&#x20e3;), etc.
+export function getEmojisForNumber(num: number): string {
+  // Split the number into its digits
+  const digits = num.toString().split('');
+
+  // Convert each digit to an emoji
+  const emojis = digits.map((digit) => String.fromCodePoint(0x30 + parseInt(digit))
+      + String.fromCodePoint(0xfe0f) + String.fromCodePoint(0x20e3));
+
+  return emojis.join('');
+}

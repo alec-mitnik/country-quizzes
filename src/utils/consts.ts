@@ -4,6 +4,8 @@ import supplementalCountryData from "../supplementalData/supplementalCountryData
 export const SETTINGS_BAR_ACCESSIBLE_NAME = "Settings Bar";
 export const INDEPENDENT_COUNTRIES_CHECKBOX_LABEL = "Independent Countries Only";
 
+export const APP_URL = "https://alec-mitnik-country-quizzes.netlify.app/";
+
 export const APP_TITLE = "Country Quizzes";
 export const COUNTRIES_TITLE = "Countries";
 export const QUIZ_TITLE = "Quiz!"

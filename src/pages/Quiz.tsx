@@ -22,6 +22,8 @@ import {
 } from "../quizzes/quizUtils";
 import RenderWithLoading from "../RenderWithLoading";
 import {
+  APP_TITLE,
+  APP_URL,
   INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
   QUIZ_COUNTRY_COUNT_INCREASE,
   QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL, QUIZ_STARTING_COUNTRY_COUNT,
@@ -29,6 +31,7 @@ import {
   QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND, QUIZ_TITLE
 } from "../utils/consts";
 import { sortCountryCodesByName } from "../utils/countryUtils";
+import { getEmojisForNumber } from "../utils/utils";
 import Page from "./Page";
 import "./Quiz.css";
 
@@ -413,7 +416,7 @@ function Quiz() {
                 {quizState?.quiz.structure === "matching" && !quizState.quiz.singleCapacity && <div>
                   <dt>Note About Matching</dt>
                   <dd>
-                    For this round, each value can match to zero, one, or multiple countries.
+                    For this round, each value can match to zero, one, or multiple draggable countries.
                   </dd>
                 </div>}
               </dl>}
@@ -433,10 +436,34 @@ function Quiz() {
           </RenderWithLoading>
 
           {/* TODO - show more messages, like encouragement for getting everything right in one go,
-          or a fun fact about one of the countries locked in */}
-          {!quizActive && !!quizState && <p className="quiz-outcome-message" aria-live="polite">
-            {renderQuizOutcomeMessage(quizState)}
-          </p>}
+          or a fun fact about one of the countries locked in? */}
+          {!quizActive && !!quizState && <>
+            <p className="quiz-outcome-message" aria-live="polite">
+              {renderQuizOutcomeMessage(quizState)}
+            </p>
+            {navigator.share != null && quizState.level > Math.floor(QUIZ_MAX_LEVEL * 0.4)
+                && <Button type="button" className="quiz-action-button small" onClick={() => {
+              const message = isQuizBeaten(quizState) ?
+                  `I beat all ${QUIZ_MAX_LEVEL} levels of ${APP_TITLE} with ${quizState.submissionsRemaining
+                  } submission${quizState.submissionsRemaining === 1 ? "" : "s"} remaining!
+🗺️ 🔹 ${getEmojisForNumber(quizState.submissionsRemaining)} 🔹 🏆
+Think you can top that?
+
+${APP_URL}`
+                  : `I made it to level ${quizState.level}, round ${
+                    quizState.round} in ${APP_TITLE}!
+🗺️ 🔹 ${getEmojisForNumber(quizState.level)}▶️${getEmojisForNumber(quizState.round)} 🔹 🧠
+How far can you go?
+
+${APP_URL}`;
+
+              navigator.share({
+                text: message,
+              });
+            }}>
+              Share
+            </Button>}
+          </>}
 
           {/* TODO - sound effect? */}
           {/* Start Next Round Button */}
