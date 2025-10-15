@@ -70,7 +70,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           // onToggle for the dialog doesn't seem to get triggered for iOS,
           // TalkBack won't recognize focus on the close button without a delay
           closeButtonRef.current?.focus();
-          setTimeout(() => closeButtonRef.current?.focus(), 100);
+          setTimeout(() => closeButtonRef.current?.focus(), 1000);
         }}>
       {children}
     </Button>
