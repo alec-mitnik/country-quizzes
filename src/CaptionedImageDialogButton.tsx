@@ -29,7 +29,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
   return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog"
-        onToggle={() => { if (dialogRef.current?.open) { setTimeout(() => closeButtonRef.current?.focus(), 10) } }}>
+        onToggle={() => { if (dialogRef.current?.open) { setTimeout(() => {closeButtonRef.current?.focus(); alert(closeButtonRef.current + " " + document.activeElement)}, 1000) } }}>
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
             onClick={() => dialogRef.current?.close()}></div>
