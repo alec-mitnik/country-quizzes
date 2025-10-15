@@ -457,7 +457,7 @@ How far can you go?
 
 ${APP_URL}`;
 
-              navigator.share({
+              void navigator.share({
                 text: message,
               });
             }}>

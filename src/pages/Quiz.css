@@ -140,6 +140,13 @@
     border-radius: 8px;
     background: var(--background-color-primary);
 
+    /* Shown when revealing location/map answers for unmatched countries.
+    Repeating the selector to increase specificity. */
+    figure:not(dialog figure):not(dialog figure):not(dialog figure) {
+      padding-inline: 0;
+      padding-bottom: 0;
+    }
+
     &.being-dragged-over {
       &:not(li:has(.dragged) + li &) {
         /* Center the border between the two elements but keep the hit box stable */
