@@ -66,8 +66,9 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
         onClick={() => {
           dialogRef.current?.showModal();
-          closeButtonRef.current?.focus();
-          console.log(closeButtonRef.current + " " + document.activeElement);
+
+          // onToggle for the dialog doesn't seem to get triggered for iOS
+          setTimeout(() => closeButtonRef.current?.focus(), 1000);
         }}>
       {children}
     </Button>
