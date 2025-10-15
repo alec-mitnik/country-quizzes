@@ -29,6 +29,8 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
+    {/* Put in the body so that screen readers don't treat the dialog
+    as part of a parent figure or data list */}
     {createPortal(<dialog ref={dialogRef} className="captioned-image-dialog">
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
@@ -70,7 +72,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
           // onToggle for the dialog doesn't seem to get triggered for iOS,
           // TalkBack won't recognize focus on the close button without a delay
-          setTimeout(() => closeButtonRef.current?.focus(), 10);
+          setTimeout(() => closeButtonRef.current?.focus());
         }}>
       {children}
     </Button>
