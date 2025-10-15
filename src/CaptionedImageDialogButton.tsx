@@ -29,7 +29,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
   return <div className="captioned-image-dialog-wrapper">
     <dialog ref={dialogRef} className="captioned-image-dialog"
-        onToggle={() => { if (dialogRef.current?.open) { closeButtonRef.current?.focus() } }}>
+        onToggle={() => { if (dialogRef.current?.open) { setTimeout(() => closeButtonRef.current?.focus(), 10) } }}>
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
             onClick={() => dialogRef.current?.close()}></div>
@@ -37,7 +37,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
         <div className="dialog-foreground" tabIndex={-1}>
           {/* Note that autoFocus on this doesn't work, though it does when
           not faking the dialog container, I guess because of how React works. */}
-          <Button autoFocus ref={closeButtonRef} type="button" aria-label={`Close ${imageDescription} Dialog`}
+          <Button ref={closeButtonRef} type="button" aria-label={`Close ${imageDescription} Dialog`}
               className="dialog-close-button small" onClick={() => dialogRef.current?.close()}>
             Close [X]
           </Button>
