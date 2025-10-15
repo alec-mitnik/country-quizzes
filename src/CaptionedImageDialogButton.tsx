@@ -35,9 +35,9 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
             onClick={() => dialogRef.current?.close()}></div>
 
         <div className="dialog-foreground" tabIndex={-1}>
-          {/* Note that autofocus on this doesn't work, though it does when
+          {/* Note that autoFocus on this doesn't work, though it does when
           not faking the dialog container, I guess because of how React works. */}
-          <Button ref={closeButtonRef} type="button" aria-label={`Close ${imageDescription} Dialog`}
+          <Button autoFocus ref={closeButtonRef} type="button" aria-label={`Close ${imageDescription} Dialog`}
               className="dialog-close-button small" onClick={() => dialogRef.current?.close()}>
             Close [X]
           </Button>
