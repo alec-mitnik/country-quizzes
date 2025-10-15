@@ -24,28 +24,43 @@ interface CaptionedImageDialogButtonProps {
 function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src,
     caption, children }: CaptionedImageDialogButtonProps) {
   const dialogRef = useRef<HTMLDialogElement>(null);
+  const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
-    <dialog ref={dialogRef} className="captioned-image-dialog">
-      <Button type="button" aria-label={`Close ${imageDescription} Dialog`}
-          autoFocus className="dialog-close-button small"
-          onClick={() => dialogRef.current?.close()}>Close [X]</Button>
+    <dialog ref={dialogRef} className="captioned-image-dialog"
+        onToggle={() => { if (dialogRef.current?.open) { closeButtonRef.current?.focus() } }}>
+      <div className="dialog-inner-wrapper">
+        <div className="dialog-backdrop" aria-hidden="true"
+            onClick={() => dialogRef.current?.close()}></div>
 
-      <h1>
-        {imageDescription}
-      </h1>
+        <div className="dialog-foreground" tabIndex={-1}>
+          {/* Note that autofocus on this doesn't work, though it does when
+          not faking the dialog container, I guess because of how React works. */}
+          <Button ref={closeButtonRef} type="button" aria-label={`Close ${imageDescription} Dialog`}
+              className="dialog-close-button small" onClick={() => dialogRef.current?.close()}>
+            Close [X]
+          </Button>
 
-      {!doneLoadingClassName && <span className="loading-image">{LOADING_IMAGE_MESSAGE}</span>}
-      <figure>
-        <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
-          <img ref={imgCallbackRef} src={src} className="flag" alt="" loading="lazy" />
+          <h1>
+            {imageDescription}
+          </h1>
+
+          {!doneLoadingClassName && <span className="loading-image">{LOADING_IMAGE_MESSAGE}</span>}
+          <figure>
+            <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
+              <div className="scroll-container with-height">
+                <img ref={imgCallbackRef} src={src} alt="" loading="lazy"
+                    className={`flag${src?.toLowerCase().endsWith('.svg') ? ' svg' : ''}`} />
+              </div>
+            </div>
+
+            <figcaption>
+              {caption}
+            </figcaption>
+          </figure>
         </div>
-
-        <figcaption>
-          {caption}
-        </figcaption>
-      </figure>
+      </div>
     </dialog>
 
     <Button type="button" className="image-dialog-button small"

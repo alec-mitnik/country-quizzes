@@ -278,12 +278,12 @@
       box-shadow: 0 0 3px 1px var(--background-color-accent);
       text-align: left;
 
-      > h2, > h3, > h4, > h5, > h6, > div > p, div > figure {
+      > h2, > h3, > h4, > h5, > h6, > div > p, > div > figure {
         margin: auto;
         width: 100%;
         max-width: 315px;
 
-        &:not(figure) {
+        &:not(figure):not(p) {
           text-align: center;
         }
 

@@ -5,7 +5,8 @@ import './Button.css';
  * to ensure consistent extra structure that allows for shrinking the visual button
  * in the active state without affecting the actual hitbox
  */
-function Button({ children, type, ...htmlButtonProps }: React.ButtonHTMLAttributes<HTMLButtonElement>) {
+function Button({ children, type, ...htmlButtonProps
+    }: React.DetailedHTMLProps<React.ButtonHTMLAttributes<HTMLButtonElement>, HTMLButtonElement>) {
   return (
     <div className="button-component component-wrapper">
       <button type={type} {...htmlButtonProps}>

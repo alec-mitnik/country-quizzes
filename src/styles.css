@@ -211,7 +211,71 @@ a {
 }
 
 dialog {
-  box-shadow: 0 3px 8px 1px var(--shadow-color);
+  width: 100%;
+  height: 100%;
+  max-width: unset;
+  max-height: unset;
+  margin: 0;
+  padding: 19px;
+  border: none;
+  background: transparent;
+
+  .dialog-inner-wrapper {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .dialog-backdrop {
+      background-color: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(3px);
+      position: absolute;
+      inset: 0;
+    }
+
+    .dialog-foreground {
+      max-height: 100%;
+      max-width: 100%;
+      box-shadow: 0 3px 8px 1px var(--shadow-color);
+      background-color: var(--background-color-primary);
+      border: 2px solid var(--background-color-primary-foreground-primary);
+      border-radius: 16px;
+      text-align: center;
+      position: relative;
+      overflow: auto;
+      padding: 16px;
+
+      button.dialog-close-button {
+        margin-bottom: 8px;
+        align-self: flex-end;
+        position: absolute;
+        right: 16px;
+        z-index: 1;
+      }
+
+      h1 {
+        /* Keep below the close button */
+        padding-top: 1rem;
+        padding-bottom: 16px;
+        margin-bottom: 0;
+        font-size: 1.5rem;
+      }
+
+      .scroll-container {
+        flex: 1;
+        width: calc(100% + 32px);
+        overflow: auto;
+        margin: 0 -16px;
+        padding: 0 16px;
+
+        &.with-height {
+          height: 100%;
+        }
+      }
+    }
+  }
 }
 
 details {
@@ -345,6 +409,9 @@ dl {
     padding: 8px;
     margin: -8px;
     width: calc(100% + 16px);
+
+    /* Allow for internal scrolling */
+    flex: 1;
     overflow: hidden;
     max-height: 0;
     transition: opacity 0.3s ease-in-out, max-height 3s ease-in-out,
