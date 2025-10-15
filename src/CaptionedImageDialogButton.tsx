@@ -28,8 +28,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
-    <dialog ref={dialogRef} className="captioned-image-dialog"
-        onToggle={() => { if (dialogRef.current?.open) { setTimeout(() => {closeButtonRef.current?.focus(); alert(closeButtonRef.current + " " + document.activeElement)}, 1000) } }}>
+    <dialog ref={dialogRef} className="captioned-image-dialog">
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
             onClick={() => dialogRef.current?.close()}></div>
@@ -65,7 +64,11 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
     <Button type="button" className="image-dialog-button small"
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
-        onClick={() => dialogRef.current?.showModal()}>
+        onClick={() => {
+          dialogRef.current?.showModal();
+          closeButtonRef.current?.focus();
+          console.log(closeButtonRef.current + " " + document.activeElement);
+        }}>
       {children}
     </Button>
   </div>;
