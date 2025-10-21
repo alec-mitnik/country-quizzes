@@ -364,6 +364,7 @@ function Quiz() {
               </ul>
               <li><h3>Other Things to Note</h3></li>
               <ul>
+                <li>Feel free to work together with a partner or group!  It can be fun to collaborate that way.</li>
                 <li>Mechanics may be updated or new features may be added in the future. <a href="mailto:alecmitnik@gmail.com">Feedback is welcome!</a></li>
                 <li><strong>You can toggle displaying these instructions by clicking or tapping "{QUIZ_INSTRUCTIONS_SUBHEADER}."</strong></li>
               </ul>

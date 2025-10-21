@@ -1,6 +1,60 @@
 import { useCallback, useState } from "react";
 
 /**
+ * Tests whether local storage is available
+ * @returns Whether a test of local storage access succeeded
+ */
+function isLocalStorageAvailable() {
+  let storage;
+
+  try {
+    storage = window["localStorage"];
+    const x = "__storage_test__";
+    storage.setItem(x, x);
+    storage.removeItem(x);
+    return true;
+  } catch (e) {
+    return (
+      e instanceof DOMException &&
+      e.name === "QuotaExceededError" &&
+      // acknowledge QuotaExceededError only if there's something already stored
+      storage &&
+      storage.length !== 0
+    );
+  }
+}
+
+/**
+ * Safely try to save to local storage
+ * @param key {string} local storage key
+ * @param data {string} data to save
+ */
+function saveData(key: string, data: string) {
+  try {
+    localStorage.setItem(key, data);
+  } catch (e) {
+    // console.warn(`Unable to save '${key}' to local storage:`, e);
+    console.warn("Unable to save to local storage:", e);
+  }
+}
+
+/**
+ * Safely try to load from local storage
+ * @param key {string} local storage key
+ * @param fallback optional fallback value if data could not be loaded
+ * @returns The loaded data or the fallback value
+ */
+function loadData(key: string, fallback = "") {
+  try {
+    return localStorage.getItem(key) ?? fallback;
+  } catch (e) {
+    // console.warn(`Unable to load '${key}' from local storage:`, e);
+    console.warn("Unable to load from local storage:", e);
+    return fallback;
+  }
+}
+
+/**
  * Creates a state and setState function that are kept in sync
  * with a localStorage boolean value
  * @param {string} propertyName Name of the localStorage key
@@ -8,12 +62,11 @@ import { useCallback, useState } from "react";
  */
 function useLocalStorageStateBoolean(propertyName: string) {
   // Load from and save to local storage
-  const [state, setStateInternal] = useState(
-      localStorage.getItem(propertyName) === "true");
+  const [state, setStateInternal] = useState(loadData(propertyName, "false") === "true");
 
   const setState = useCallback((state: boolean) => {
     setStateInternal(state);
-    localStorage.setItem(propertyName, state.toString());
+    saveData(propertyName, String(state));
   }, [setStateInternal, propertyName]);
 
   // Use `as const` to strongly type each array element individually
@@ -31,11 +84,11 @@ function useLocalStorageStateBoolean(propertyName: string) {
 function useLocalStorageStateNumber(propertyName: string, defaultValue: number) {
   // Load from and save to local storage
   const [state, setStateInternal] = useState(
-      parseFloat(localStorage.getItem(propertyName) ?? String(defaultValue)));
+      parseFloat(loadData(propertyName, String(defaultValue))));
 
   const setState = useCallback((state: number) => {
     setStateInternal(state);
-    localStorage.setItem(propertyName, String(state));
+    saveData(propertyName, String(state));
   }, [setStateInternal, propertyName]);
 
   // Use `as const` to strongly type each array element individually
@@ -52,12 +105,11 @@ function useLocalStorageStateNumber(propertyName: string, defaultValue: number) 
  */
 function useLocalStorageStateString(propertyName: string, defaultValue: string) {
   // Load from and save to local storage
-  const [state, setStateInternal] = useState(
-      localStorage.getItem(propertyName) ?? defaultValue);
+  const [state, setStateInternal] = useState(loadData(propertyName, defaultValue));
 
   const setState = useCallback((state: string) => {
     setStateInternal(state);
-    localStorage.setItem(propertyName, state);
+    saveData(propertyName, state);
   }, [setStateInternal, propertyName]);
 
   // Use `as const` to strongly type each array element individually
@@ -80,7 +132,7 @@ function useLocalStorageStateObject<T>(propertyName: string, defaultValue: T,
     reviverFunction?: (key: string, value: unknown) => unknown) {
   // Load from and save to local storage
   const [state, setStateInternal] = useState<T>(() => {
-    const value = localStorage.getItem(propertyName);
+    const value = loadData(propertyName);
 
     if (value) {
       return JSON.parse(value, reviverFunction) as T;
@@ -91,7 +143,7 @@ function useLocalStorageStateObject<T>(propertyName: string, defaultValue: T,
 
   const setState = useCallback((state: T) => {
     setStateInternal(state);
-    localStorage.setItem(propertyName, JSON.stringify(state, replacerFunction));
+    saveData(propertyName, JSON.stringify(state, replacerFunction));
   }, [setStateInternal, propertyName, replacerFunction]);
 
   // Use `as const` to strongly type each array element individually
@@ -100,6 +152,6 @@ function useLocalStorageStateObject<T>(propertyName: string, defaultValue: T,
 }
 
 export {
-  useLocalStorageStateBoolean, useLocalStorageStateNumber,
+  isLocalStorageAvailable, useLocalStorageStateBoolean, useLocalStorageStateNumber,
   useLocalStorageStateObject, useLocalStorageStateString
 };

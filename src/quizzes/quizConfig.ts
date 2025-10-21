@@ -11,7 +11,13 @@ export const QUIZ_BREAKING_VERSION = 1;
 export const QUIZ_ROUND_BREAKING_VERSION = 1;
 
 /*
- * TODO - ideas:
+ * TODO:
+ *
+ * Sound effects, with special (wow) wound effect for Leveling up
+ * Add demonyms for countries
+ *
+ *
+ * Ideas:
  *
  * Provide a more hands-on tutorial that introduces the mechanics one by one.
  *

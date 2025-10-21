@@ -38,7 +38,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
         <div className="dialog-foreground" tabIndex={-1}>
           {/* Note that autoFocus on this doesn't work, though it does when
-          not faking the dialog container, I guess because of how React works. */}
+          not faking the dialog container, I guess having to do with how React works. */}
           <Button ref={closeButtonRef} type="button" aria-label={`Close Dialog`}
               className="dialog-close-button small" onClick={() => dialogRef.current?.close()}>
             Close [X]
@@ -71,7 +71,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           dialogRef.current?.showModal();
 
           // onToggle for the dialog doesn't seem to get triggered for iOS,
-          // TalkBack won't recognize focus on the close button without a delay
+          // and TalkBack won't recognize focus on the close button without a delay
           setTimeout(() => closeButtonRef.current?.focus());
         }}>
       {children}

@@ -16,6 +16,42 @@
         transform: translateY(20%);
       }
     }
+
+    .local-storage-warning {
+      background-color: var(--danger-color);
+      color: var(--background-color-primary);
+
+      > div {
+        margin: auto;
+        max-width: var(--layout-max-width);
+        padding: 6px 8px;
+        font-weight: bold;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        gap: 8px;
+
+        > p {
+          flex: 1;
+
+          /* Match the dismiss button height */
+          padding: 5px 8px;
+        }
+
+        button {
+          /* Match the warning height */
+          line-height: inherit;
+
+          .button-shell {
+            color: inherit;
+            padding-inline: 12px;
+            background: transparent;
+            border-color: currentColor;
+          }
+        }
+      }
+    }
   }
 
   main {
