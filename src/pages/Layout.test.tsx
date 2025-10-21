@@ -46,3 +46,5 @@ describe('Layout', () => {
     expect(within(nav).getByRole('link', { name: QUIZ_NAV_TEXT })).toBeInTheDocument();
   });
 });
+
+// TODO - Test the local storage warning

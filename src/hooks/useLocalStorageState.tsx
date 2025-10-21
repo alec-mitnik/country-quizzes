@@ -5,10 +5,10 @@ import { useCallback, useState } from "react";
  * @returns Whether a test of local storage access succeeded
  */
 function isLocalStorageAvailable() {
-  let storage;
+  let storage: Storage | null = null;
 
   try {
-    storage = window["localStorage"];
+    storage = window.localStorage;
     const x = "__storage_test__";
     storage.setItem(x, x);
     storage.removeItem(x);
