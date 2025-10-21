@@ -1,5 +1,6 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import type { CountryStorage, StoredCountry } from "../CountriesProvider";
+import type { StoredCountry } from "../../types/commonTypes";
+import type { CountryStorage } from "../CountriesProvider";
 import { formatCountryDataArray } from "../utils/countryUtils";
 
 // Increment this any time a breaking change is introduce to quiz data

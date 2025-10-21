@@ -1,5 +1,6 @@
-import type { Capital, Cca3Code, Country } from "@yusifaliyevpro/countries/types";
+import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import React, { useCallback, useMemo, useState } from "react";
+import type { StoredCountry, StoredCountryWrapper } from "../types/commonTypes";
 import { CountriesContext } from "./CountriesContext";
 import { useLocalStorageStateBoolean } from "./hooks/useLocalStorageState";
 import countryPageviews from "./supplementalData/countryPageviews.json";
@@ -16,49 +17,6 @@ interface CountryPageviewData {
   pageviews: number;
   name: string;
   rank: number;
-}
-
-interface FormattedCountryField<T> {
-  label: string,
-  rawValue?: T,
-  formattedValue?: string,
-  markupValue?: React.ReactNode,
-}
-
-interface IndependenceDependentFormattedCountryField<T> {
-  rawValue?: T,
-  formattedValueForAll?: string,
-  formattedValueForIndependentOnly?: string,
-}
-
-/**
- * Restructured country data for use in quizzes and display
- */
-export interface StoredCountry {
-  cca3: Cca3Code;
-  name: string;
-  funFacts?: string[];
-  worldFactbookCountryKey?: string;             // For identifying the locator map
-  location?: string;
-  independent?: boolean;
-  parentCountryCca3?: Cca3Code;
-  flag?: string;                                // SVG URL
-  flagDescription?: string;                     // Descriptive for accessibility,
-                                                // but obfuscating the country name for quizzing
-  borders?: Cca3Code[];                         // Might reference non-independent countries
-  continents?: FormattedCountryField<string[]>;
-  capitals?: FormattedCountryField<Capital[]>;
-  languages?: FormattedCountryField<string[]>;
-  currencies?: FormattedCountryField<string[]>;
-  area?: Partial<IndependenceDependentFormattedCountryField<number>>;         // Includes calculated rank
-  population?: Partial<IndependenceDependentFormattedCountryField<number>>;   // Includes calculated rank
-  populationDensity?: Partial<IndependenceDependentFormattedCountryField<number>>; // Derived from above
-}
-
-export interface StoredCountryWrapper {
-  data?: StoredCountry,
-  requested?: boolean,
-  fullyLoaded?: boolean,
 }
 
 export interface CountryStorage {

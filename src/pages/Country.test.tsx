@@ -1,7 +1,7 @@
 import { render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter, useParams } from 'react-router-dom';
-import type { StoredCountry } from '../CountriesProvider';
+import type { StoredCountry } from '../../types/commonTypes';
 import useCountries from '../hooks/useCountries';
 import { testCountry, testStoredCountryData } from '../test/data';
 import { copyObjectWithoutReassignment } from '../test/testUtils';

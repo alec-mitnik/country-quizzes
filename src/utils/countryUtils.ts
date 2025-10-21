@@ -1,5 +1,5 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
-import type { StoredCountry, StoredCountryWrapper } from "../CountriesProvider";
+import type { StoredCountry, StoredCountryWrapper } from "../../types/commonTypes";
 import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
 import { convertToOrdinal, roundToPrecision, toPreciseLocaleString } from "./utils";
 

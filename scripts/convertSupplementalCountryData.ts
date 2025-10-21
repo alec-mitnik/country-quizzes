@@ -1,7 +1,7 @@
 import type { Cca3Code } from '@yusifaliyevpro/countries/types';
 import { promises as fs } from 'fs';
 import { dirname } from 'path';
-import type { StoredCountryWrapper } from '../src/CountriesProvider';
+import type { StoredCountryWrapper } from '../types/commonTypes';
 import { convertCsvTextToObjectArray } from './csvToJson';
 
 /**

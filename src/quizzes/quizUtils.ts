@@ -1,6 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import confetti from "canvas-confetti";
-import type { CountryStorage, StoredCountry } from "../CountriesProvider";
+import type { StoredCountry } from "../../types/commonTypes";
+import type { CountryStorage } from "../CountriesProvider";
 import { QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
 import { extractRandomArrayElement, getRandomArrayElement, getRandomHue, hslToHex, removeElementFromArray } from "../utils/utils";
 import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } from "./quizConfig";

@@ -1,7 +1,7 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import fs from 'fs/promises';
 import path from 'path';
-import type { StoredCountry } from "../src/CountriesProvider";
+import type { StoredCountry } from "../types/commonTypes";
 
 /* eslint-disable @typescript-eslint/no-unsafe-member-access */
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
