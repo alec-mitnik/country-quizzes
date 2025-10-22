@@ -351,6 +351,7 @@ details {
     padding-inline: 16px;
     border-radius: 8px;
     width: max-content;
+    max-width: 100%;
     margin-inline: auto;
     cursor: pointer;
     background: var(--background-color-primary);
@@ -369,8 +370,11 @@ details {
 
 figure {
   margin: auto;
+  max-width: 100%;
 
   figcaption {
+    max-width: 100%;
+
     p {
       padding-top: 10px;
       font-size: 0.875rem;

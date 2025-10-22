@@ -22,6 +22,7 @@
     font-size: inherit;
     font-family: inherit;
     font-weight: bold;
+    max-width: 100%;
 
     .button-shell {
       /* The transforms need to be on a non-inline container,
