@@ -236,6 +236,8 @@ dialog {
     }
 
     .dialog-foreground {
+      --dialog-padding: 16px;
+
       max-height: 100%;
       max-width: 100%;
       box-shadow: 0 3px 8px 1px var(--shadow-color);
@@ -245,14 +247,19 @@ dialog {
       text-align: center;
       position: relative;
       overflow: auto;
-      padding: 16px;
+      padding: var(--dialog-padding);
 
       button.dialog-close-button {
         margin-bottom: 8px;
         align-self: flex-end;
         position: absolute;
-        right: 16px;
+        right: var(--dialog-padding);
         z-index: 1;
+        line-height: inherit;
+
+        .button-shell {
+          padding-inline: 12px;
+        }
       }
 
       h1 {
@@ -267,8 +274,8 @@ dialog {
         flex: 1;
         width: calc(100% + 32px);
         overflow: auto;
-        margin: 0 -16px;
-        padding: 0 16px;
+        margin: 0 calc(-1 * var(--dialog-padding));
+        padding: 0 var(--dialog-padding);
 
         &.with-height {
           height: 100%;
@@ -294,6 +301,7 @@ dialog.captioned-image-dialog {
     flex-direction: column;
     justify-content: flex-start;
     align-items: center;
+    max-width: calc(2 * var(--dialog-padding) + 800px);
 
     /* Move bottom padding to a child to prevent it from being lost to overflow */
     padding-bottom: 0;
@@ -308,10 +316,7 @@ dialog.captioned-image-dialog {
     align-items: center;
 
     > div {
-      max-width: 800px;
-
       &.with-max-height {
-        max-width: 816px;
         transition: opacity 0.3s ease-in-out, max-height 1s ease-in-out,
             overflow 0.3s allow-discrete step-end;
       }
@@ -334,7 +339,6 @@ dialog.captioned-image-dialog {
 
     figcaption {
       margin: auto;
-      max-width: 800px;
       padding-top: 8px;
       font-weight: 500;
 

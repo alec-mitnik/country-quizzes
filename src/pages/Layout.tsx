@@ -48,7 +48,7 @@ function Layout() {
         {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
           <div>
             <p>Warning: local storage unavailable.  Data will not be saved!</p>
-            <Button type="button" aria-label="Dismiss Warning" className="small"
+            <Button type="button" aria-label="Dismiss Warning" className="small outlined"
                 onClick={() => setLocalStorageWarningDismissed(true)}>
               X
             </Button>

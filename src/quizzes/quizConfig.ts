@@ -14,8 +14,7 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
 /*
  * TODO:
  *
- * Sound effects, with special (wow) wound effect for Leveling up
- * Add demonyms for countries
+ * Sound effects?
  *
  *
  * Ideas:

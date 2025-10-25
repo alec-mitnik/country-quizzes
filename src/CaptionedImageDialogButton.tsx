@@ -31,7 +31,8 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
   return <div className="captioned-image-dialog-wrapper">
     {/* Put in the body so that screen readers don't treat the dialog
     as part of a parent figure or data list */}
-    {createPortal(<dialog ref={dialogRef} className="captioned-image-dialog">
+    {createPortal(<dialog ref={dialogRef} className="captioned-image-dialog"
+        aria-label={imageDescription} aria-description={caption}>
       <div className="dialog-inner-wrapper">
         <div className="dialog-backdrop" aria-hidden="true"
             onClick={() => dialogRef.current?.close()}></div>
@@ -41,7 +42,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           not faking the dialog container, I guess having to do with how React works. */}
           <Button ref={closeButtonRef} type="button" aria-label={`Close Dialog`}
               className="dialog-close-button small" onClick={() => dialogRef.current?.close()}>
-            Close [X]
+            X
           </Button>
 
           <h1>
@@ -71,7 +72,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           dialogRef.current?.showModal();
 
           // onToggle for the dialog doesn't seem to get triggered for iOS,
-          // and TalkBack won't recognize focus on the close button without a delay
+          // and VoiceOver won't recognize focus on the close button without a delay
           setTimeout(() => closeButtonRef.current?.focus());
         }}>
       {children}

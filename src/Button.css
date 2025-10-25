@@ -88,6 +88,14 @@
       }
     }
 
+    &.outlined {
+      .button-shell {
+        color: inherit;
+        background: transparent;
+        border-color: currentColor;
+      }
+    }
+
     &.small {
       outline-offset: -3px;
 

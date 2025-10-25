@@ -44,10 +44,7 @@
           line-height: inherit;
 
           .button-shell {
-            color: inherit;
             padding-inline: 12px;
-            background: transparent;
-            border-color: currentColor;
           }
         }
       }
