@@ -56,6 +56,45 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * Challenge rounds could just be one-off quizzes, maybe with a daily rotation
  * to encourage daily play.  Would need to be playable without interrupting a main run, though.
  *
+ * Interesting country pairs/groups for challenge rounds:
+ * - All countries that end in "stan"
+ * - All countries that start with "saint"
+ * - Central America
+ * - South America
+ * - Caribbean
+ * - Certain flag groups like Nordic countries
+ * - Baltics (Estonia/Latvia/Lithuania)
+ * - South Asia (Myanmar/Cambodia/Thailand/Vietnam)
+ * - Southeast Asia (Indonesia/Malaysia/Philippines/Singapore/Timor-Leste/Brunei/Papua New Guinea/etc.)
+ * - Thailand/Taiwan
+ * - Paraguay/Uruguay
+ * - Slovakia/Slovenia
+ * - British/US Virgin Islands
+ * - Samoa/American Samoa or American Samoa/Guam
+ * - Equatorial Guinea/Guinea/Guinea-Bissau and maybe Papua New Guinea
+ * - Mauritania/Mauritius
+ * - Niger/Nigeria
+ * - North/South Korea
+ * - South Sudan/Sudan
+ * - DR Congo/Republic of the Congo
+ * - Saint Martin/Sint Maarten
+ * - Hong Kong/Macau
+ * - Tuvalu/Vanuatu
+ * - Dominica/Dominican Republic or Dominican Republic/Haiti
+ * - Yemen/Oman
+ * - Guernsey/Jersey
+ * - Luxembourg/Liechtenstein
+ * - San Marino/Vatican City
+ * - Iraq/Iran
+ * - Seychelles/Maldives
+ * - Austria/Australia
+ * - Guyana/French Guiana
+ * - Gambia/Zambia or Zambia/Zimbabwe
+ * - Greenland/Iceland or maybe Iceland/Ireland
+ * - Armenia/Azerbaijan
+ *
+ * New quiz type for country pairs, to assign all their values correctly
+ *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
  */

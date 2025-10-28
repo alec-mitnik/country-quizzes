@@ -99,13 +99,13 @@
 
       @media (hover: hover) and (pointer: fine) {
         &:hover:not(:disabled) {
-          &:not(:active) {
-            transform: scale(var(--button-hover-scale));
-          }
+          .button-shell {
+            filter: none;
 
-          .button-shell::after {
-            filter: brightness(var(--light-hover-brightness));
-            background-color: rgba(0 0 0 / 0.4);
+            &::after {
+              filter: brightness(var(--light-hover-brightness));
+              background-color: rgba(0 0 0 / 0.4);
+            }
           }
         }
       }

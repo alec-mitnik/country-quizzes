@@ -41,38 +41,53 @@
       box-shadow: 0 2px 4px 0 var(--shadow-color);
     }
 
-    @media (hover: hover) and (pointer: fine) {
-      &:hover:not(:disabled):not(.level-up) {
-        &:not(:active) {
+    &:not(:disabled) {
+      cursor: pointer;
+
+      /* Shrink the active button's shell only so long as it would activate upon release */
+      &:active:hover {
+        .button-shell {
+          /* Apply to a separate element so that transition to/from active state
+          can be isolated and to prevent the button hitbox from shrinking */
+          transform: scale(var(--button-active-scale));
+        }
+      }
+
+      /* If hover styles are in the mix */
+      @media (hover: hover) and (pointer: fine) {
+        &:hover {
+          .button-shell {
+            /* Use brightness to indicate hover */
+            filter: brightness(var(--light-hover-brightness));
+          }
+        }
+
+        &:hover, &:active {
+          /* Grow the button a little to indicate hover while not active,
+          and also to indicate active while not hovered, and keep it scaled
+          this way even when active hovered for stability and consistency */
           transform: scale(var(--button-hover-scale));
         }
 
-        .button-shell {
-          filter: brightness(var(--light-hover-brightness));
+        &:active:hover {
+          /* Shrink the button shell to indicate active hover,
+          also compensating for the scale applied to the button itself,
+          while keeping the actual button hitbox stable */
+          .button-shell {
+            transform: scale(calc(var(--button-active-scale) / var(--button-hover-scale)));
+          }
         }
       }
-    }
 
-    &:active:not(:disabled) {
-      .button-shell {
-        /* Apply to a separate element so that transition to/from active state
-        can be isolated and to prevent the button hitbox from shrinking */
-        transform: scale(var(--button-active-scale));
+      &:not(:active:hover) {
+        .button-shell {
+          /* Bounce transition for exiting the active state */
+          transition: all 0.1s ease-in-out,
+              transform 0.4s cubic-bezier(0.54, 2.06, 0.23, 0.39),
+              opacity 0.3s ease-in-out,
+              visibility 0s;
+        }
       }
-    }
-
-    &:not(:active) {
-      .button-shell {
-        /* Bounce transition for exiting the active state */
-        transition: all 0.1s ease-in-out,
-            transform 0.4s cubic-bezier(0.54, 2.06, 0.23, 0.39),
-            opacity 0.3s ease-in-out,
-            visibility 0s;
-      }
-    }
-
-    &:not(:disabled) {
-      cursor: pointer;
     }
 
     &:disabled {
@@ -123,7 +138,7 @@
       }
 
       @media (hover: hover) and (pointer: fine) {
-        &:hover {
+        &:hover:not(:disabled) {
           .button-shell {
             text-decoration-style: solid;
             text-decoration-thickness: 0.15em;
