@@ -44,7 +44,9 @@
     &:not(:disabled) {
       cursor: pointer;
 
-      /* Shrink the active button's shell only so long as it would activate upon release */
+      /* Shrink the active button's shell only so long as it would activate upon release.
+      Note that this intent doesn't work on mobile, where :hover is applied even after dragging out
+      of the element (and since any scrolling causes a pressed button not to activate regardless). */
       &:active:hover {
         .button-shell {
           /* Apply to a separate element so that transition to/from active state
