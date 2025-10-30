@@ -50,6 +50,9 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * When you get 3 incorrect submissions in a row, +1 country reveals its value
  * Decrease the obscurity of countries used by +1 level
  *
+ * Could make some match type quizzes extra challenging by including
+ * additional countries that don't match to anything.
+ *
  * Offer a way to practice specific quiz types, doing a single level at a time
  * (But how to set the difficulty level?).
  *

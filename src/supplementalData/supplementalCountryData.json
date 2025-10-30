@@ -210,7 +210,10 @@
       "cca3": "BEL",
       "name": "Belgium",
       "worldFactbookCountryKey": "BE",
-      "location": "Western Europe, bordering the North Sea, between France and the Netherlands"
+      "location": "Western Europe, bordering the North Sea, between France and the Netherlands",
+      "funFacts": [
+        "The birthplace of actor Jean-Claude Van Damme"
+      ]
     }
   },
   "BLZ": {
@@ -480,7 +483,9 @@
       "worldFactbookCountryKey": "CO",
       "location": "Northern South America, bordering the Caribbean Sea, between Panama and Venezuela, and bordering the North Pacific Ocean, between Ecuador and Panama",
       "funFacts": [
-        "Supplies the most emeralds internationally of any country"
+        "Supplies the most emeralds internationally of any country",
+        "The birthplace of singer Shakira",
+        "The birthplace of actress Sofía Vergara"
       ]
     }
   },
@@ -941,7 +946,10 @@
       "worldFactbookCountryKey": "HK",
       "location": "Eastern Asia, bordering the South China Sea and China, east of Macau",
       "parentCountryCca3": "CHN",
-      "flagDescription": "The flag of this country is red with a stylized, five-petal, white Bauhinia flower in the center. Each petal has a small, five-pointed red star."
+      "flagDescription": "The flag of this country is red with a stylized, five-petal, white Bauhinia flower in the center. Each petal has a small, five-pointed red star.",
+      "funFacts": [
+        "The birthplace of actor Jackie Chan"
+      ]
     }
   },
   "HUN": {
@@ -1136,7 +1144,10 @@
       "name": "Kosovo",
       "worldFactbookCountryKey": "KV",
       "location": "Southeastern Europe, between Serbia and North Macedonia",
-      "flagDescription": "The flag of this country has a dark blue field with a gold-colored silhouette of the country in the center, with six five-pointed white stars in a slight arc over it."
+      "flagDescription": "The flag of this country has a dark blue field with a gold-colored silhouette of the country in the center, with six five-pointed white stars in a slight arc over it.",
+      "funFacts": [
+        "Home to the birthplace of singer Rita Ora"
+      ]
     }
   },
   "KWT": {
@@ -2030,7 +2041,8 @@
       "worldFactbookCountryKey": "SP",
       "location": "Southwestern Europe, southwest of France, bordering the Mediterranean Sea, North Atlantic Ocean, and Bay of Biscay",
       "funFacts": [
-        "Its national anthem has no official lyrics"
+        "Its national anthem has no official lyrics",
+        "The birthplace of actor Antonio Banderas"
       ]
     }
   },
@@ -2243,7 +2255,10 @@
       "cca3": "UKR",
       "name": "Ukraine",
       "worldFactbookCountryKey": "UP",
-      "location": "Eastern Europe, bordering the Black Sea, between Romania in the southwest and Russia in the east"
+      "location": "Eastern Europe, bordering the Black Sea, between Romania in the southwest and Russia in the east",
+      "funFacts": [
+        "The birthplace of actress Mila Kunis"
+      ]
     }
   },
   "ARE": {
