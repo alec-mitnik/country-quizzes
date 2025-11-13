@@ -1,7 +1,8 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
-import { QUIZ_ONE_GO_TIP } from "../utils/consts";
+import { QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
+import { getCountryNameFromCode, sortCountryCodesByName } from "../utils/countryUtils";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
@@ -20,10 +21,6 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   const [selectedCountryCode, setSelectedCountryCode] = useState<Cca3Code | null>(null);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
   const dragTestTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
-
-  // TODO - change how drop works to be more intuitive so that top half of item goes above,
-  // bottom half goes below, above top item is first, below last item is last,
-  // and to the sides of items is not valid
   const [countryCodeBeingDraggedOver, setCountryCodeBeingDraggedOver] =
       useState<Cca3Code | null>(null);
 
@@ -72,10 +69,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
       (countryCode) => !quizState.rankedCountryCodes.includes(countryCode));
 
     // Sort alphabetically by country name
-    unrankedCodes.sort((a, b) => {
-      return storedCountryData.countries[a]?.data?.name
-          .localeCompare(storedCountryData.countries[b]?.data?.name ?? "") ?? 0;
-    });
+    sortCountryCodesByName(unrankedCodes, storedCountryData.countries);
 
     return unrankedCodes;
   }, [quizState.rankedCountryCodes, storedCountryData.countries, quizState.countryCodes]);
@@ -231,7 +225,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
         setTimeout(() => rankedListElement.classList.remove('shake'), 500);
       }
 
-      // TODO - sound effect
+      // Sound effect..
 
       screenReaderMessage = "Submission incorrect.";
     } else {
@@ -243,9 +237,13 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
           submissionsRemaining === 1 ? "" : "s"} remaining.`;
 
     if (quizState.countryCodes.length === newRankedCountryCodes.length) {
-      screenReaderMessage += " All countries correctly ranked. Ready for the next round.";
+      if (quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL) {
+        screenReaderMessage += " All countries correctly ranked. You beat the quiz!";
+      } else {
+        screenReaderMessage += " All countries correctly ranked. Ready for the next round.";
+      }
     } else if (submissionsRemaining <= 0) {
-      screenReaderMessage += ` The quiz has ended on round ${quizState.round}.`;
+      screenReaderMessage += ` The quiz has ended on level ${quizState.level}, round ${quizState.round}.`;
     }
 
     announceForScreenReaders(screenReaderMessage);
@@ -261,7 +259,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
 
   function onRemove(countryCode: Cca3Code) {
     setRankedCountryCodes(quizState.rankedCountryCodes.filter(code => code !== countryCode));
-    announceForScreenReaders(`${storedCountryData.countries[countryCode]?.data?.name ?? countryCode} removed`);
+    announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)} removed`);
   }
 
   function onAdd(countryCode: Cca3Code, rankIndex = -1) {
@@ -277,7 +275,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
     newRankedCountryCodes.splice(updatedEffectiveIndex, 0, countryCode);
 
     setRankedCountryCodes(newRankedCountryCodes);
-    announceForScreenReaders(`${storedCountryData.countries[countryCode]?.data?.name ?? countryCode
+    announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)
         } ${moved ? "moved to" : "added at"} rank ${updatedEffectiveIndex + 1}.`);
   }
 

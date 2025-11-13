@@ -135,7 +135,11 @@ function useLocalStorageStateObject<T>(propertyName: string, defaultValue: T,
     const value = loadData(propertyName);
 
     if (value) {
-      return JSON.parse(value, reviverFunction) as T;
+      try {
+        return JSON.parse(value, reviverFunction) as T;
+      } catch (_e) {
+        // Just use default value
+      }
     }
 
     return defaultValue;

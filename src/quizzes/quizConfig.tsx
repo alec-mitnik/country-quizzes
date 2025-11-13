@@ -1,7 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { StoredCountry } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
-import { formatCountryDataArray } from "../utils/countryUtils";
+import { formatCountryDataArray, getCountryNameFromCode } from "../utils/countryUtils";
 
 // Increment this any time a breaking change is introduce to quiz data
 // so that preexisting data will be completely discarded rather than cause an error
@@ -14,10 +14,27 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
 /*
  * TODO:
  *
- * Sound effects?
+ * Edit location descriptions to try to avoid referencing countries in the same group
+ *
+ * Refactor ranking and matching quiz types to use new utilities for value/label/markup
+ *
+ * Mark up foreign language phrases in flag descriptions appropriately?  Or just edit them out?
+ *
+ * Change how drop works to be more intuitive so that top half of item goes above,
+ * bottom half goes below, above top item is first, below last item is last,
+ * and to the sides of items is not valid
+ *
+ * Data testing
+ *
+ * More unit/integration testing
  *
  *
  * Ideas:
+ *
+ * Sound effects?
+ *
+ * Show more messages, like encouragement for getting everything right in one go,
+ * or a fun fact about one of the countries locked in?
  *
  * Provide a more hands-on tutorial that introduces the mechanics one by one.
  *
@@ -33,10 +50,13 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Instead of random quiz types, could offer a choice of several random options.
  *
- * Might be fun to have special challenge rounds for all consecutive ranks, all similar flags,
- * or touring locations throughout regions.  Maybe all countries that end in "stan" and the like.
- * Challenge rounds could take place at the end of each level, after which you earn a bonus,
- * though this would conflict with obscurity filtering, and independence filtering would affect it too...
+ * Might be fun to have special challenge rounds for all consecutive ranks, flag design groups,
+ * or touring locations throughout regions. Challenge rounds could take place at the end of each level,
+ * after which you earn a bonus, though this would conflict with obscurity filtering,
+ * and independence filtering would affect it too...
+ *
+ * Challenge rounds could just be one-off quizzes, maybe with a daily rotation
+ * to encourage daily play.  Would need to be playable without interrupting a main run, though.
  *
  * Possible bonuses:
  * +1 option to choose from when selecting bonuses
@@ -56,51 +76,16 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  * Offer a way to practice specific quiz types, doing a single level at a time
  * (But how to set the difficulty level?).
  *
- * Challenge rounds could just be one-off quizzes, maybe with a daily rotation
- * to encourage daily play.  Would need to be playable without interrupting a main run, though.
- *
- * Interesting country pairs/groups for challenge rounds:
- * - All countries that end in "stan"
- * - All countries that start with "saint"
- * - Central America
- * - South America
- * - Caribbean
- * - Certain flag groups like Nordic countries
- * - Baltics (Estonia/Latvia/Lithuania)
- * - South Asia (Myanmar/Cambodia/Thailand/Vietnam)
- * - Southeast Asia (Indonesia/Malaysia/Philippines/Singapore/Timor-Leste/Brunei/Papua New Guinea/etc.)
- * - Thailand/Taiwan
- * - Paraguay/Uruguay
- * - Slovakia/Slovenia
- * - British/US Virgin Islands
- * - Samoa/American Samoa or American Samoa/Guam
- * - Equatorial Guinea/Guinea/Guinea-Bissau and maybe Papua New Guinea
- * - Mauritania/Mauritius
- * - Niger/Nigeria
- * - North/South Korea
- * - South Sudan/Sudan
- * - DR Congo/Republic of the Congo
- * - Saint Martin/Sint Maarten
- * - Hong Kong/Macau
- * - Tuvalu/Vanuatu
- * - Dominica/Dominican Republic or Dominican Republic/Haiti
- * - Yemen/Oman
- * - Guernsey/Jersey
- * - Luxembourg/Liechtenstein
- * - San Marino/Vatican City
- * - Iraq/Iran
- * - Seychelles/Maldives
- * - Austria/Australia
- * - Guyana/French Guiana
- * - Gambia/Zambia or Zambia/Zimbabwe
- * - Greenland/Iceland or maybe Iceland/Ireland
- * - Armenia/Azerbaijan
- *
- * New quiz type for country pairs, to assign all their values correctly
- *
  * Could track correct/incorrect submissions per country in local storage,
  * and show stats on how well you know each country.
+ * Could also track stats on best quiz score, times beaten, and win streaks.
+ * Maybe the first win could unlock the stats feature.
  */
+
+export interface CountryGroup {
+    nameOverride?: string;
+    countryCodes: Cca3Code[];
+}
 
 /*
  * More types can be added in the future, like ranking by number of bordering countries,
@@ -118,39 +103,17 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  */
 export type QuizType = "MATCH_TO_CURRENCIES" | "MATCH_TO_BORDERING_COUNTRIES"
     | "MATCH_TO_CAPITALS" | "MATCH_TO_FLAGS" | "MATCH_TO_LOCATIONS" | "MATCH_TO_FUN_FACTS"
-    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY";
+    | "ORDER_BY_SIZE" | "ORDER_BY_POPULATION" | "ORDER_BY_POPULATION_DENSITY"
+    | "SORT_OUT_VALUES";
 
-export interface MatchingQuiz {
-  type: QuizType;
-  description: string;
-  structure: "matching";
-  singleCapacity: boolean;
-  matchTypeLabel: string;
-  fieldToRequire?: keyof StoredCountry;
-  valueArrayFunction?: (storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined;
-  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => string;
-  labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => React.ReactNode;
-};
-
-export interface RankingQuiz {
-  type: QuizType;
-  description: string;
-  structure: "ranking";
-  rankingTypeLabel: string;
-  fieldToRequire?: keyof StoredCountry;
-  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => number;
-  labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean,
-      cca3: Cca3Code) => React.ReactNode;
-};
-
-export type CountryQuiz = MatchingQuiz | RankingQuiz;
-
-// Note that fieldToRequire must be part of the shallow data expected to already be loaded
+// This file needs to be .tsx so that the descriptions can include markup.
+// Note that fieldToRequire must be part of the shallow data expected to already be loaded.
+// Default frequency is 3.
 export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   // Use formatted value for match value functions for easy string comparison
   MATCH_TO_CURRENCIES: {
     type: "MATCH_TO_CURRENCIES",
-    description: "Match the countries to their currency.",
+    description: <><strong>Match</strong> the countries to their <strong>currencies</strong>.</>,
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Currencies",
@@ -163,7 +126,7 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   MATCH_TO_BORDERING_COUNTRIES: {
     type: "MATCH_TO_BORDERING_COUNTRIES",
-    description: "Match the countries to their bordering countries.",
+    description: <><strong>Match</strong> the countries to their <strong>bordering countries</strong>.</>,
     structure: "matching",
     singleCapacity: false,
     matchTypeLabel: "Bordering Countries",
@@ -174,11 +137,11 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
         formatCountryDataArray(storedCountryData.countries[cca3]?.data?.borders),
     // Name of the country
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
-        storedCountryData.countries[cca3]?.data?.name ?? cca3,
+        getCountryNameFromCode(cca3, storedCountryData.countries),
   },
   MATCH_TO_FUN_FACTS: {
     type: "MATCH_TO_FUN_FACTS",
-    description: "Match the countries to their fun facts.",
+    description: <><strong>Match</strong> the countries to their <strong>fun facts</strong>.</>,
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Fun Facts",
@@ -192,7 +155,7 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   MATCH_TO_CAPITALS: {
     type: "MATCH_TO_CAPITALS",
-    description: "Match the countries to their capitals.",
+    description: <><strong>Match</strong> the countries to their <strong>capitals</strong>.</>,
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Capitals",
@@ -205,7 +168,7 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   MATCH_TO_FLAGS: {
     type: "MATCH_TO_FLAGS",
-    description: "Match the countries to their flags.",
+    description: <><strong>Match</strong> the countries to their <strong>flags</strong>.</>,
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Flags",
@@ -219,7 +182,7 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   MATCH_TO_LOCATIONS: {
     type: "MATCH_TO_LOCATIONS",
-    description: "Match the countries to their locations.",
+    description: <><strong>Match</strong> the countries to their <strong>locations</strong>.</>,
     structure: "matching",
     singleCapacity: true,
     matchTypeLabel: "Country Locations",
@@ -230,7 +193,7 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   ORDER_BY_SIZE: {
     type: "ORDER_BY_SIZE",
-    description: "Order the countries by size, largest first.",
+    description: <><strong>Order</strong> the countries by <strong>size</strong>, largest first.</>,
     structure: "ranking",
     rankingTypeLabel: "Size",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -245,7 +208,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   ORDER_BY_POPULATION: {
     type: "ORDER_BY_POPULATION",
-    description: "Order the countries by total population, largest first.",
+    frequency: 2,
+    description: <><strong>Order</strong> the countries by <strong>total population</strong>, largest first.</>,
     structure: "ranking",
     rankingTypeLabel: "Total Population",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -260,7 +224,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
   },
   ORDER_BY_POPULATION_DENSITY: {
     type: "ORDER_BY_POPULATION_DENSITY",
-    description: "Order the countries by population density, largest first.",
+    frequency: 1,
+    description: <><strong>Order</strong> the countries by <strong>population density</strong>, largest first.</>,
     structure: "ranking",
     rankingTypeLabel: "Population Density",
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
@@ -273,19 +238,59 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
       }
     },
   },
+  SORT_OUT_VALUES: {
+    type: "SORT_OUT_VALUES",
+    frequency: 9,
+    description: <><strong>Sort out</strong> the correct</>,
+    structure: "sortingOut",
+  },
 };
+
+export interface MatchingQuiz {
+  type: QuizType;
+  frequency?: number;
+  description: React.ReactNode;
+  structure: "matching";
+  singleCapacity: boolean;
+  matchTypeLabel: string;
+  fieldToRequire?: keyof StoredCountry;
+  valueArrayFunction?: (storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined;
+  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => string;
+  labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => React.ReactNode;
+};
+
+export interface RankingQuiz {
+  type: QuizType;
+  frequency?: number;
+  description: React.ReactNode;
+  structure: "ranking";
+  rankingTypeLabel: string;
+  fieldToRequire?: keyof StoredCountry;
+  valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) => number;
+  labelFunction: (storedCountryData: CountryStorage, independentOnly: boolean,
+      cca3: Cca3Code) => React.ReactNode;
+};
+
+export interface SortingOutQuiz {
+  type: QuizType;
+  frequency?: number;
+  description: React.ReactNode;
+  structure: "sortingOut";
+}
+
+export type CountryQuiz = MatchingQuiz | RankingQuiz | SortingOutQuiz;
 
 export interface MatchingQuizState {
   quiz: MatchingQuiz;
   submissionsRemaining: number;
   roundStartSubmissionsRemaining: number;
+  round: number;
+  level: number;
   countryCodes: Cca3Code[];
   countryCodesOverride?: Cca3Code[]; // For bordering country quizzes
   // Have to match the structure of matchedCountryCodes
   countryCodeSecondaryIndexes?: number[]; // For fun fact quizzes
   countryCodesLockedInAsCorrect: Partial<Record<number, Cca3Code[]>>;
-  round: number;
-  level: number;
   incorrectSubmissions: [string, Cca3Code[]][][];
 
   // Use sorted match value index as the key to allow for duplicate values.
@@ -297,12 +302,182 @@ export interface RankingQuizState {
   quiz: RankingQuiz;
   submissionsRemaining: number;
   roundStartSubmissionsRemaining: number;
-  countryCodes: Cca3Code[];
-  countryCodesLockedInAsCorrect: Cca3Code[];
   round: number;
   level: number;
+  countryCodes: Cca3Code[];
+  countryCodesLockedInAsCorrect: Cca3Code[];
   incorrectSubmissions: Cca3Code[][];
   rankedCountryCodes: Cca3Code[];
 };
 
-export type QuizState = MatchingQuizState | RankingQuizState;
+export interface SortingOutQuizState {
+  quiz: SortingOutQuiz;
+  submissionsRemaining: number;
+  roundStartSubmissionsRemaining: number;
+  round: number;
+  level: number;
+
+  // For easy integration with other quiz type handling
+  countryCodes: Cca3Code[];
+  countryCodesLockedInAsCorrect: Cca3Code[];
+
+  // Copy over the country group values rather than referencing them directly,
+  // so that country group edits don't disrupt in-progress quizzes
+  countryGroupNameOverride?: string;
+  countryFields: (keyof StoredCountry)[];
+  countryFieldsLockedInAsCorrect: Partial<Record<Cca3Code, (keyof StoredCountry)[]>>;
+
+  // I'm not sure why I used Object.entries to store incorrectSubmissions for other quiz types,
+  // but this seems to work...
+  incorrectSubmissions: Partial<Record<Cca3Code, Partial<Record<keyof StoredCountry, Cca3Code>>>>[];
+
+  // For each country code key, you have an object for the country's fields,
+  // whose value is the matched country code rather than the actual field value
+  matchedCountryFields: Partial<Record<Cca3Code, Partial<Record<keyof StoredCountry, Cca3Code>>>>;
+}
+
+export type QuizState = MatchingQuizState | RankingQuizState | SortingOutQuizState;
+
+// For quizzing on related or often confused countries.
+// Best to stick to sizes of 2, 3, or 7.  Try to keep a relatively even ratio of 2s and 3s.
+// NI = not independent.
+export const COUNTRY_GROUPS: CountryGroup[] = [
+  {
+    // Thailand/Taiwan (NI)
+    countryCodes: ["THA", "TWN"],
+  }, {
+    // Paraguay/Uruguay
+    countryCodes: ["PRY", "URY"],
+  }, {
+    // British/US Virgin Islands (NI)
+    countryCodes: ["VGB", "VIR"],
+  }, {
+    // Yemen/Oman
+    countryCodes: ["YEM", "OMN"],
+  }, {
+    // Mauritania/Mauritius
+    countryCodes: ["MRT", "MUS"],
+  }, {
+    // Niger/Nigeria
+    countryCodes: ["NER", "NGA"],
+  }, {
+    // North/South Korea
+    countryCodes: ["PRK", "KOR"],
+  }, {
+    // South Sudan/Sudan
+    countryCodes: ["SSD", "SDN"],
+  }, {
+    // DR Congo/Republic of the Congo
+    countryCodes: ["COD", "COG"],
+  }, {
+    // Saint Martin/Sint Maarten (NI)
+    countryCodes: ["MAF", "SXM"],
+  }, {
+    // Hong Kong/Macau (NI)
+    countryCodes: ["HKG", "MAC"],
+  }, {
+    // Tuvalu/Vanuatu
+    countryCodes: ["TUV", "VUT"],
+  }, {
+    // Guernsey/Jersey (NI)
+    countryCodes: ["GGY", "JEY"],
+  }, {
+    // Luxembourg/Liechtenstein
+    countryCodes: ["LUX", "LIE"],
+  }, {
+    // San Marino/Vatican City
+    countryCodes: ["SMR", "VAT"],
+  }, {
+    // Andorra/Monaco
+    countryCodes: ["AND", "MCO"],
+  }, {
+    // Seychelles/Maldives
+    countryCodes: ["SYC", "MDV"],
+  }, {
+    // Austria/Australia
+    countryCodes: ["AUT", "AUS"],
+  }, {
+    // Mali/Malawi
+    countryCodes: ["MLI", "MWI"],
+  }, {
+    // Bangladesh/Bhutan
+    countryCodes: ["BGD", "BTN"],
+  }, {
+    // Burundi/Bahrain/Brunei
+    countryCodes: ["BDI", "BHR", "BRN"],
+  }, {
+    // Guyana/Suriname/French Guiana (NI)
+    countryCodes: ["GUY", "SUR", "GUF"],
+  }, {
+    // Lebanon/Libya/Liberia
+    countryCodes: ["LBN", "LBY", "LBR"],
+  }, {
+    // Iraq/Iran/Afghanistan
+    countryCodes: ["IRQ", "IRN", "AFG"],
+  }, {
+    // Slovakia/Slovenia/Serbia
+    countryCodes: ["SVK", "SVN", "SRB"],
+  }, {
+    //Bolivia/Botswana/Bosnia and Herzegovina
+    countryCodes: ["BOL", "BWA", "BIH"],
+  }, {
+    // Georgia/Armenia/Azerbaijan
+    countryCodes: ["GEO", "ARM", "AZE"],
+  }, {
+    // Estonia/Latvia/Lithuania
+    nameOverride: "The Baltics",
+    countryCodes: ["EST", "LVA", "LTU"],
+  }, {
+    // Greenland/Iceland/Ireland (NI)
+    countryCodes: ["GRL", "ISL", "IRL"],
+  }, {
+    // Gambia/Zambia/Zimbabwe
+    countryCodes: ["GMB", "ZMB", "ZWE"],
+  }, {
+    // Dominica/Dominican Republic/Haiti
+    countryCodes: ["DMA", "DOM", "HTI"],
+  }, {
+    // Samoa/American Samoa/Guam (NI)
+    countryCodes: ["WSM", "ASM", "GUM"],
+  }, {
+    // Equatorial Guinea/Guinea/Guinea-Bissau
+    nameOverride: 'The African "Guineas"',
+    countryCodes: ["GNQ", "GIN", "GNB"],
+  }, {
+    // Myanmar/Thailand/Laos/Cambodia/Vietnam/Singapore/Malaysia
+    nameOverride: "Mainland Southeast Asia",
+    countryCodes: ["MMR", "THA", "LAO", "KHM", "VNM", "SGP", "MYS"],
+  }, {
+    // Belize/Costa Rica/El Salvador/Guatemala/Honduras/Nicaragua/Panama
+    nameOverride: "Central America",
+    countryCodes: ["BLZ", "CRI", "SLV", "GTM", "HND", "NIC", "PAN"],
+  }, {
+    // Afghanistan/Kazakhstan/Kyrgyzstan/Pakistan/Tajikistan/Turkmenistan/Uzbekistan
+    nameOverride: 'The "Stans"',
+    countryCodes: ["AFG", "KAZ", "KGZ", "PAK", "TJK", "TKM", "UZB"],
+  }, {
+    // Saint Barthélemy/Saint Helena, Ascension and Tristan da Cunha/Saint Kitts and Nevis
+    // /Saint Lucia/Saint Martin/Saint Pierre and Miquelon/Saint Vincent and the Grenadines (NI)
+    nameOverride: 'The "Saints"',
+    countryCodes: ["BLM", "SHN", "KNA", "LCA", "MAF", "SPM", "VCT"],
+  }, {
+    // Aland Islands/Denmark/Faroe Islands/Finland/Iceland/Sweden/Norway (NI)
+    nameOverride: "The Nordic Crosses",
+    countryCodes: ["ALA", "DNK", "FRO", "FIN", "ISL", "SWE", "NOR"],
+  },
+];
+
+// Prioritize these fields, but allow any of them to be used
+export const SORTING_OUT_QUIZ_PRIORITY_FIELDS: (keyof StoredCountry)[] = [
+  "location",
+  "flagDescription",
+  "capitals",
+];
+
+// Unused with current settings
+export const SORTING_OUT_QUIZ_EXTRA_FIELDS: (keyof StoredCountry)[] = [
+  "currencies",
+  /* "area",
+  "population",
+  "populationDensity", */
+];

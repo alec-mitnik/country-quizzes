@@ -443,9 +443,14 @@
         }
       }
 
+      /* Avoid selecting the hidden copy on the left side used for balancing */
       > .button-component > .target-for-add-button {
         float: right;
         margin: 0 0 2px 8px;
+
+        /* Ensure that a hovered details summary doesn't show on top */
+        position: relative;
+        z-index: 1;
       }
 
       &.target-for-add {
@@ -455,6 +460,8 @@
     }
 
     figure:not(dialog figure) {
+      --flag-width: 100px;
+
       padding: 8px;
       max-width: var(--drag-width);
 
@@ -474,17 +481,24 @@
         margin: 0 16px 2px 0;
 
         img.flag {
-          width: 100px;
+          width: var(--flag-width);
         }
       }
 
       details {
         margin: 0;
 
-        /* I like the overlapping layout with floated elements I have now,
-        but this requires the summary to wrap even when not necessary */
         summary {
-          padding: 0 4px 8px;
+          /* I like the overlapping layout with floated elements I have now,
+          but this causes the summary to wrap even when not necessary
+          unless I give it a left-padding or margin matching the floated content width
+          and remove the inline auto margin (which prevents wrapped lines from ever
+          reaching the leftmost edge), or just set its width to 100% (which makes
+          the hitbox and hover effect larger than necessary) */
+          margin: 0 0 8px var(--flag-width);
+          max-width: calc(100% - var(--flag-width));
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
         }
       }
     }

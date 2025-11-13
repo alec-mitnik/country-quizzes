@@ -2,6 +2,7 @@ import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React from "react";
 import { Link } from "react-router-dom";
 import useCountries from "./hooks/useCountries";
+import { getCountryNameFromCode } from "./utils/countryUtils";
 
 /**
  * Renders an array of country codes as links
@@ -17,7 +18,7 @@ function CountryLinksValue({value}: {value: Cca3Code[] | undefined}) {
         <React.Fragment key={code}>
           {index > 0 ? ", " : ""}
           <Link to={`/countries/${code}`}>
-            {storedCountryData.countries[code]?.data?.name ?? code}
+            {getCountryNameFromCode(code, storedCountryData.countries)}
           </Link>
         </React.Fragment>
       ))}

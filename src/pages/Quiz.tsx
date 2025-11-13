@@ -1,6 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import confetti from "canvas-confetti";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import type { StoredCountry } from "../../types/commonTypes";
 import Button from "../Button";
 import useCountries from "../hooks/useCountries";
 import {
@@ -9,12 +10,17 @@ import {
 } from "../hooks/useLocalStorageState";
 import useStateRef from "../hooks/useStateRef";
 import {
-  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
-  type QuizState, type QuizType, type RankingQuizState
+  COUNTRY_GROUPS,
+  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, SORTING_OUT_QUIZ_EXTRA_FIELDS,
+  SORTING_OUT_QUIZ_PRIORITY_FIELDS, type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
+  type QuizState, type QuizType, type RankingQuizState,
+  type SortingOutQuizState
 } from "../quizzes/quizConfig";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
+import QuizControlsForSortingOut from "../quizzes/QuizControlsForSortingOut";
 import {
+  getCountryCodesFilteredForQuizLevel,
   getRandomCountryCodes, getRandomNewQuizType, isQuizActive,
   isQuizBeaten,
   renderQuizOutcomeMessage,
@@ -26,12 +32,23 @@ import {
   APP_URL,
   INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
   QUIZ_COUNTRY_COUNT_INCREASE,
-  QUIZ_INSTRUCTIONS_SUBHEADER, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL, QUIZ_STARTING_COUNTRY_COUNT,
-  QUIZ_STARTING_SUBMISSIONS_COUNT, QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL,
-  QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND, QUIZ_TITLE
+  QUIZ_INSTRUCTIONS_SUBHEADER,
+  QUIZ_MAX_LEVEL,
+  QUIZ_ONE_GO_TIP,
+  QUIZ_ROUNDS_PER_LEVEL,
+  QUIZ_STARTING_COUNTRY_COUNT,
+  QUIZ_STARTING_SUBMISSIONS_COUNT,
+  QUIZ_SUBMISSION_COUNT_INCREASE_PER_LEVEL,
+  QUIZ_SUBMISSION_COUNT_INCREASE_PER_ROUND,
+  QUIZ_TITLE
 } from "../utils/consts";
-import { sortCountryCodesByName } from "../utils/countryUtils";
-import { getEmojisForNumber } from "../utils/utils";
+import {
+  getCountryNameFromCode, getPluralFieldLabel, sortCountryCodesByName
+} from "../utils/countryUtils";
+import {
+  extractRandomArrayElement, formatArrayAsCommaSeparatedString,
+  getEmojisForNumber, getRandomArrayElement
+} from "../utils/utils";
 import Page from "./Page";
 import "./Quiz.css";
 
@@ -168,12 +185,24 @@ function Quiz() {
   }, [quizActive, countriesForQuizRoundLoaded, countriesForQuizRoundRequested,
       quizState, setQuizState]);
 
+  const stopConfettiFireworks = useCallback(() => {
+    // Need to use the ref value here, as the state value won't reflect changes
+    // since the timeout was initially called
+    clearTimeout(confettiTimeoutIdRef.current);
+    clearTimeout(confettiLimitTimeoutIdRef.current);
+
+    // Don't reset these or the confetti will immediately restart
+    // while still in the quiz beaten state
+    // setConfettiTimeoutId(0);
+    // confettiLimitTimeoutIdRef.current = 0;
+  }, [confettiTimeoutIdRef, confettiLimitTimeoutIdRef]);
+
   const showConfettiFireworksContinuously = useCallback(() => {
     showConfettiFirework();
 
     setConfettiTimeoutId(setTimeout(() => {
       showConfettiFireworksContinuously();
-    }, Math.random() * 2801 + 200));
+    }, Math.floor(Math.random() * 2801) + 200));
   }, [setConfettiTimeoutId]);
 
   const startConfettiFireworks = useCallback(() => {
@@ -182,14 +211,7 @@ function Quiz() {
 
       // Stop confetti after 30 seconds
       confettiLimitTimeoutIdRef.current = setTimeout(() => {
-        // Need to use the ref value here, as the state value won't reflect changes
-        // since the timeout was initially called
-        clearTimeout(confettiTimeoutIdRef.current);
-
-        // Don't reset these or the confetti will immediately restart
-        // while still in the quiz beaten state
-        // setConfettiTimeoutId(0);
-        // confettiLimitTimeoutIdRef.current = 0;
+        stopConfettiFireworks();
       }, 30000);
     }
   }, [confettiTimeoutId, confettiTimeoutIdRef, confettiLimitTimeoutIdRef,
@@ -222,14 +244,128 @@ function Quiz() {
       return;
     }
 
+    const availableCountryCodes = getCountryCodesFilteredForQuizLevel(independentOnly,
+        storedCountryData, newQuizState.level ?? 1);
+
     const randomQuiz = QUIZ_TYPES[randomQuizType];
     newQuizState.quiz = randomQuiz;
+
+    if (randomQuiz.structure === "sortingOut") {
+      let randomCountryGroup;
+
+      // Always pick a group of size 7 when eligible, since it's only eligible on the last round.
+      // 2x2 is easier than 3x1 because it's two 50-50 choices rather than a 33-66 choice and a 50-50 choice.
+      // Progression should be:
+      // - Round 1 (country count 3): 2 countries, 2 fields
+      // - Round 2 (country count 4): 3 countries, 1 field
+      // - Round 3 (country count 5): 2 countries, 3 fields
+      // - Round 4 (country count 6): 3 countries, 2 fields
+      // - Round 5 (country count 7): 7 countries, 1 field
+
+      let fieldCount = 1;
+
+      if (countryCount % 3 === 0) {
+        fieldCount = 2;
+      } else if (countryCount === 5) {
+        fieldCount = 3;
+      }
+
+      if (countryCount >= 7) {
+        randomCountryGroup = getRandomArrayElement(COUNTRY_GROUPS.filter(group => {
+          if (group.countryCodes.length !== 7 || !group.countryCodes.every(cca3 => {
+            return !independentOnly || storedCountryData.countries[cca3]?.data?.independent
+          })) {
+            return false;
+          }
+
+          // Require only that at least one of the countries is available obscurity-wise
+          return group.countryCodes.some(cca3 =>
+            availableCountryCodes.includes(cca3)
+          );
+        }));
+      } else if (countryCount % 2 === 0) {
+        randomCountryGroup = getRandomArrayElement(COUNTRY_GROUPS.filter(group => {
+          if (group.countryCodes.length !== 3 || !group.countryCodes.every(cca3 => {
+            return !independentOnly || storedCountryData.countries[cca3]?.data?.independent
+          })) {
+            return false;
+          }
+
+          // Require only that at least one of the countries is available obscurity-wise
+          return group.countryCodes.some(cca3 =>
+            availableCountryCodes.includes(cca3)
+          );
+        }));
+      } else if (countryCount % 2 === 1) {
+        randomCountryGroup = getRandomArrayElement(COUNTRY_GROUPS.filter(group => {
+          // Require only that at least one of the countries is available obscurity-wise
+          return group.countryCodes.length === 2 && group.countryCodes.every(cca3 => {
+            return !independentOnly || storedCountryData.countries[cca3]?.data?.independent
+          }) && group.countryCodes.some(cca3 => availableCountryCodes.includes(cca3));
+        }));
+      }
+
+      if (!randomCountryGroup) {
+        console.warn("Unable to get a random sorting-out quiz country group");
+
+        // Try starting over and selecting a quiz type again
+        updateQuizStateForNewRound(newQuizState, countryCount);
+        return;
+      }
+
+      const newSortingOutQuizState: SortingOutQuizState = newQuizState as SortingOutQuizState;
+      newSortingOutQuizState.matchedCountryFields ??= {};
+      newSortingOutQuizState.countryFieldsLockedInAsCorrect ??= {};
+      newSortingOutQuizState.countryCodes = [...randomCountryGroup.countryCodes];
+      sortCountryCodesByName(newSortingOutQuizState.countryCodes, storedCountryData.countries);
+      newSortingOutQuizState.countryGroupNameOverride = randomCountryGroup.nameOverride;
+
+      if (fieldCount === SORTING_OUT_QUIZ_PRIORITY_FIELDS.length) {
+        newSortingOutQuizState.countryFields = [...SORTING_OUT_QUIZ_PRIORITY_FIELDS];
+      } else if (fieldCount < SORTING_OUT_QUIZ_PRIORITY_FIELDS.length) {
+        const countryFields: (keyof StoredCountry)[] = [];
+        const priorityFields = [...SORTING_OUT_QUIZ_PRIORITY_FIELDS];
+
+        for (let i = 0; i < fieldCount; i++) {
+          const field = extractRandomArrayElement(priorityFields);
+
+          if (!field) {
+            console.error("Unable to extract a sorting-out quiz priority field");
+
+            // Try starting over and selecting a quiz type again
+            updateQuizStateForNewRound(newQuizState, countryCount);
+            return;
+          }
+
+          countryFields.push(field);
+        }
+
+        newSortingOutQuizState.countryFields = countryFields;
+      } else {
+        newSortingOutQuizState.countryFields = [...SORTING_OUT_QUIZ_PRIORITY_FIELDS,
+            ...SORTING_OUT_QUIZ_EXTRA_FIELDS.slice(0,
+                fieldCount - SORTING_OUT_QUIZ_PRIORITY_FIELDS.length)];
+      }
+
+      // Sort the fields so that unmatched ones get displayed in alphabetical order
+      // by field label if there are multiple fields and thus field labels are shown
+      newSortingOutQuizState.countryFields.sort((a, b) => {
+        return getPluralFieldLabel(a).localeCompare(getPluralFieldLabel(b));
+      });
+
+      setQuizState(newSortingOutQuizState as QuizState);
+
+      // Load the new quiz country data
+      loadCountriesForQuizRound(newSortingOutQuizState.countryCodes);
+      return;
+    }
+
     let countryCodes: Cca3Code[] = [];
     let countryCodeSecondaryIndexes: number[] | undefined = undefined;
 
     while (countryCodes.length < countryCount) {
-      [countryCodes, countryCodeSecondaryIndexes] = getRandomCountryCodes(independentOnly,
-          storedCountryData, countryCount, newQuizState.level ?? 1, randomQuiz.type,
+      [countryCodes, countryCodeSecondaryIndexes] = getRandomCountryCodes(availableCountryCodes,
+          storedCountryData, countryCount, randomQuiz.type,
           randomQuiz.fieldToRequire, (randomQuiz as MatchingQuiz)?.valueArrayFunction,
           randomQuiz.valueFunction);
     }
@@ -272,6 +408,8 @@ function Quiz() {
     if (countriesForQuizRoundRequested) {
       return;
     };
+
+    stopConfettiFireworks();
 
     const newQuizState = {
       submissionsRemaining: QUIZ_STARTING_SUBMISSIONS_COUNT,
@@ -318,6 +456,25 @@ function Quiz() {
     updateQuizStateForNewRound(newQuizState, countryCount);
   }, [quizState, countriesForQuizRoundRequested, updateQuizStateForNewRound]);
 
+  const quizTypeDescriptionToUse = useMemo(() => {
+    let description = quizState?.quiz.description;
+
+    if (quizState?.quiz.structure === "sortingOut") {
+      const sortingOutQuizState = quizState as SortingOutQuizState;
+      let descriptionFieldLabel: React.ReactNode = <>information</>;
+
+      if (sortingOutQuizState.countryFields.length === 1) {
+        descriptionFieldLabel = <strong>{
+          getPluralFieldLabel(sortingOutQuizState.countryFields[0], true)
+        }</strong>;
+      }
+
+      description = <>{description} {descriptionFieldLabel} for special country grouping:</>;
+    }
+
+    return description;
+  }, [quizState]);
+
   return (
     <Page pageTitle={QUIZ_TITLE}>
       <RenderWithLoading
@@ -357,7 +514,7 @@ function Quiz() {
               <li><h3>How to Progress</h3></li>
               <ul>
                 <li>There are {QUIZ_MAX_LEVEL} levels to beat in total and {QUIZ_ROUNDS_PER_LEVEL} rounds per level.</li>
-                <li>The number of countries involved starts small and increases with each round.</li>
+                <li>The number of countries involved starts small and increases with each round (though it may be depend on the quiz type as well).</li>
                 <li>When you level up, a new set of rounds begins, and the obscurity of the countries involved increases.</li>
                 <li>Keep going for as long as you can! It's not about winning, but about lasting a little longer each time.</li>
                 <li>Progress is automatically saved through the browser's local storage, so feel free to take breaks.</li>
@@ -400,9 +557,20 @@ function Quiz() {
                 <div>
                   <dt>Quiz Type</dt>
                   <dd id="quiz-type-description" tabIndex={-1}>
-                    {quizState?.quiz.description}
-                    {quizState?.quiz.type === "ORDER_BY_POPULATION_DENSITY"
-                        && <><br />This refers to total population compared to size (i.e. how crowded it is on average).</>}
+                    {/* The dd has a flex display, so wrap in a p for standard text formatting */}
+                    <p>
+                      {quizTypeDescriptionToUse}{quizState?.quiz.structure === "sortingOut"
+                          && <> {
+                            (quizState as SortingOutQuizState)?.countryGroupNameOverride
+                                ?? formatArrayAsCommaSeparatedString(
+                              (quizState as SortingOutQuizState)?.countryCodes.map(cca3 => {
+                                return getCountryNameFromCode(cca3, storedCountryData.countries);
+                              })
+                            )
+                          }.</>}
+                      {quizState?.quiz.type === "ORDER_BY_POPULATION_DENSITY"
+                          && <><br />This refers to total population compared to size (i.e. how crowded it is on average).</>}
+                    </p>
                   </dd>
                 </div>
 
@@ -433,11 +601,14 @@ function Quiz() {
                   && <QuizControlsForMatching quizState={quizState as MatchingQuizState}
                 setQuizState={setQuizState} />
               }
+              {quizState && countriesForQuizRoundLoaded
+                  && quizState.quiz.structure === "sortingOut"
+                  && <QuizControlsForSortingOut quizState={quizState as SortingOutQuizState}
+                setQuizState={setQuizState} />
+              }
             </>
           </RenderWithLoading>
 
-          {/* TODO - show more messages, like encouragement for getting everything right in one go,
-          or a fun fact about one of the countries locked in? */}
           {!quizActive && !!quizState && <>
             <p className="quiz-outcome-message" aria-live="polite">
               {renderQuizOutcomeMessage(quizState)}
@@ -466,7 +637,7 @@ ${APP_URL}`;
             </Button>}
           </>}
 
-          {/* TODO - sound effect? */}
+          {/* Sound effect... */}
           {/* Start Next Round Button */}
           {quizActive && nextRoundReadyToStart && <Button type="button"
               disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}

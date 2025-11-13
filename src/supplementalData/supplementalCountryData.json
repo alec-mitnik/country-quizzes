@@ -24,7 +24,7 @@
       "worldFactbookCountryKey": "AL",
       "location": "Southeastern Europe, bordering the Adriatic Sea and Ionian Sea, between Greece to the south and Montenegro and Kosovo to the north",
       "funFacts": [
-        "Home to over 173,000 concrete bunkers, which is about 15 per sq mi (6 per sq km) on average, and only a fraction of the over 750,000 it once had"
+        "Has over 173,000 concrete bunkers, which is about 15 per sq mi (6 per sq km) on average, and only a fraction of the over 750,000 it once had"
       ]
     }
   },
@@ -108,7 +108,7 @@
       "cca3": "ARM",
       "name": "Armenia",
       "worldFactbookCountryKey": "AM",
-      "location": "Southwestern Asia, between Turkey (to the west) and Azerbaijan",
+      "location": "Southwestern Asia, north of the border between Turkey and Iran",
       "funFacts": [
         "Made chess a mandatory part of its school curriculum"
       ]
@@ -132,7 +132,7 @@
       "location": "Oceania, continent between the Indian Ocean and the South Pacific Ocean",
       "funFacts": [
         "Slightly wider than the diameter of the Moon",
-        "Home to the Great Barrier Reef, the largest coral reef system in the world"
+        "Home of the Great Barrier Reef, the largest coral reef system in the world"
       ]
     }
   },
@@ -165,7 +165,7 @@
       "worldFactbookCountryKey": "BF",
       "location": "Chain of islands in the North Atlantic Ocean, southeast of Florida, northeast of Cuba",
       "funFacts": [
-        "Home to Pig Beach, part of an island inhabited not by humans but by feral pigs",
+        "Home of Pig Beach, part of an island inhabited not by humans but by feral pigs",
         "Has experienced snow only once in recorded history"
       ]
     }
@@ -210,10 +210,7 @@
       "cca3": "BEL",
       "name": "Belgium",
       "worldFactbookCountryKey": "BE",
-      "location": "Western Europe, bordering the North Sea, between France and the Netherlands",
-      "funFacts": [
-        "The birthplace of actor Jean-Claude Van Damme"
-      ]
+      "location": "Western Europe, bordering the North Sea, between France and the Netherlands"
     }
   },
   "BLZ": {
@@ -223,7 +220,7 @@
       "worldFactbookCountryKey": "BH",
       "location": "Central America, bordering the Caribbean Sea, between Guatemala and Mexico",
       "funFacts": [
-        "Home to the Cockscomb Basin Wildlife Sanctuary, the world's first nature reserve for jaguars"
+        "Home of the Cockscomb Basin Wildlife Sanctuary, the world's first nature reserve for jaguars"
       ]
     }
   },
@@ -404,7 +401,7 @@
       "cca3": "BES",
       "name": "Caribbean Netherlands",
       "worldFactbookCountryKey": "BES",
-      "location": "Caribbean, islands in the Caribbean Sea, east of Curacao and northwest of Saint Kitts and Nevis",
+      "location": "Caribbean, islands in the Caribbean Sea, east of Curaçao and northwest of Saint Kitts and Nevis",
       "parentCountryCca3": "NLD",
       "flagDescription": "The flag of this country features a large blue triangle at the lower fly-side corner, spanning half the flag, and a smaller yellow triangle at the opposite corner, separated by a white strip containing a black compass surrounding a red six-pointed star."
     }
@@ -948,7 +945,7 @@
       "parentCountryCca3": "CHN",
       "flagDescription": "The flag of this country is red with a stylized, five-petal, white Bauhinia flower in the center. Each petal has a small, five-pointed red star.",
       "funFacts": [
-        "The birthplace of actor Jackie Chan"
+        "Home of actor and martial artist Jackie Chan"
       ]
     }
   },
@@ -1104,7 +1101,7 @@
       "worldFactbookCountryKey": "JO",
       "location": "Middle East, northwest of Saudi Arabia, between Israel (to the west) and Iraq",
       "funFacts": [
-        "Home to the ancient city of Petra, known for its architecture carved from solid sandstone"
+        "Home of the ancient city of Petra, known for its architecture carved from solid sandstone"
       ]
     }
   },
@@ -1146,7 +1143,7 @@
       "location": "Southeastern Europe, between Serbia and North Macedonia",
       "flagDescription": "The flag of this country has a dark blue field with a gold-colored silhouette of the country in the center, with six five-pointed white stars in a slight arc over it.",
       "funFacts": [
-        "Home to the birthplace of singer Rita Ora"
+        "Home of the birthplace of singer Rita Ora"
       ]
     }
   },
@@ -1354,7 +1351,7 @@
       "worldFactbookCountryKey": "MP",
       "location": "Southern Africa, island in the Indian Ocean, east of Madagascar and Réunion",
       "funFacts": [
-        "The only home of the now-extinct dodo bird"
+        "The only ever home of the now-extinct dodo bird"
       ]
     }
   },
@@ -1416,7 +1413,7 @@
       "worldFactbookCountryKey": "MG",
       "location": "Northern Asia, between China and Russia",
       "funFacts": [
-        "Home to the only remaining species of wild horse"
+        "Home of the only remaining species of wild horse"
       ]
     }
   },
@@ -1443,7 +1440,10 @@
       "cca3": "MAR",
       "name": "Morocco",
       "worldFactbookCountryKey": "MAR",
-      "location": "Northern Africa, bordering the North Atlantic Ocean and the Mediterranean Sea, west of Algeria"
+      "location": "Northern Africa, bordering the North Atlantic Ocean and the Mediterranean Sea, west of Algeria",
+      "funFacts": [
+        "The birthplace of singer Faouzia"
+      ]
     }
   },
   "MOZ": {
@@ -1522,7 +1522,7 @@
       "funFacts": [
         "First nation in the world to grant all women the right to vote",
         "Where instant coffee was invented",
-        "Home to Frying Pan Lake, the world's largest hot spring"
+        "Home of Frying Pan Lake, the world's largest hot spring"
       ]
     }
   },
@@ -1585,7 +1585,7 @@
       "worldFactbookCountryKey": "MK",
       "location": "Southeastern Europe, north of Greece, southwest of Bulgaria",
       "funFacts": [
-        "Home to the birthplace of Catholic saint Mother Teresa"
+        "Home of the birthplace of Catholic saint Mother Teresa"
       ]
     }
   },
@@ -1649,7 +1649,7 @@
       "location": "Middle East, bordering the Mediterranean Sea, between Egypt and Israel, and west of Jordan, east of Israel",
       "flagDescription": "The flag of this country has three equal horizontal stripes of black, white, and green overlaid by a red triangle issuing from the hoist.",
       "funFacts": [
-        "Home to the city of Bethlehem, where different denominations gather to celebrate Christmas on three different dates each year"
+        "Home of the city of Bethlehem, where different denominations gather to celebrate Christmas on three different dates each year"
       ]
     }
   },
@@ -1706,7 +1706,7 @@
       "worldFactbookCountryKey": "RP",
       "location": "Southeastern Asia, archipelago bordering the South China Sea, east of Vietnam",
       "funFacts": [
-        "Home to Vulcan Point, an island in a lake on an island in a lake on an island",
+        "Home of Vulcan Point, an island in a lake on an island in a lake on an island",
         "Has the highest concentration of nurses of any nationality, many of whom work abroad"
       ]
     }
@@ -1799,7 +1799,7 @@
       "location": "North Asia bordering the Arctic Ocean, extending from Eastern Europe to the North Pacific Ocean",
       "funFacts": [
         "Has over a fifth of all trees",
-        "Home to Lake Baikal, the world's deepest and largest freshwater lake by volume"
+        "Home of Lake Baikal, the world's deepest and largest freshwater lake by volume"
       ]
     }
   },
@@ -1928,7 +1928,7 @@
       "cca3": "SRB",
       "name": "Serbia",
       "worldFactbookCountryKey": "RI",
-      "location": "Southeastern Europe, between Macedonia and Hungary"
+      "location": "Southeastern Europe, between North Macedonia and Hungary"
     }
   },
   "SYC": {
@@ -2268,7 +2268,7 @@
       "worldFactbookCountryKey": "AE",
       "location": "Middle East, bordering the Gulf of Oman and the Persian Gulf, between Oman and Saudi Arabia",
       "funFacts": [
-        "Home to the Burj Khalifa, the tallest building in the world"
+        "Home of the Burj Khalifa, the tallest building in the world"
       ]
     }
   },
@@ -2361,7 +2361,7 @@
       "worldFactbookCountryKey": "VE",
       "location": "Northern South America, bordering the Caribbean Sea and the North Atlantic Ocean, between Colombia and Guyana",
       "funFacts": [
-        "Home to Angel Falls, the world's tallest uninterrupted waterfall"
+        "Home of Angel Falls, the world's tallest uninterrupted waterfall"
       ]
     }
   },
@@ -2372,7 +2372,7 @@
       "worldFactbookCountryKey": "VM",
       "location": "Southeastern Asia, bordering the Gulf of Thailand, Gulf of Tonkin, and South China Sea, as well as China, Laos, and Cambodia",
       "funFacts": [
-        "Home to Hang Sơn Đoòng, the world's largest natural cave",
+        "Home of Hang Sơn Đoòng, the world's largest natural cave",
         "Over 30% of its people have the same surname"
       ]
     }

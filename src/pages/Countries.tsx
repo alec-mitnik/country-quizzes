@@ -15,7 +15,7 @@ import {
   COUNTRIES_SEARCH_ACCESSIBLE_NAME, COUNTRIES_SORT_BY_ACCESSIBLE_NAME, COUNTRIES_TITLE, NO_COUNTRIES_LOADED_MESSAGE,
   NO_COUNTRIES_MATCHED_MESSAGE
 } from "../utils/consts";
-import { sortCountryCodesByName } from "../utils/countryUtils";
+import { getCountryNameFromCode, sortCountryCodesByName } from "../utils/countryUtils";
 import { FLAG_DESIGN_GROUPS, FLAG_DESIGN_GROUPS_BY_NAME } from "../utils/flagDesignGroups";
 import "./Countries.css";
 import Page from "./Page";
@@ -113,7 +113,7 @@ function Countries() {
     // Filter by name
     let filteredCountryCodes = countryCodesFilteredByIndependence.filter(countryCode => {
       return !searchTerm
-          || localeIncludes(storedCountryData.countries[countryCode]?.data?.name ?? "",
+          || localeIncludes(getCountryNameFromCode(countryCode, storedCountryData.countries),
           searchTerm, {
             usage: "search",    // Optimize for filtering
             sensitivity: "base" // Ignore case and diacritics
@@ -303,7 +303,7 @@ function Countries() {
           {!!countryCodesFilteredBySearch.length && <nav className="directory" aria-labelledby="page-title">
             <ul>
               {countryCodesFilteredBySearch.map((countryCode) => {
-                const countryName = storedCountryData.countries[countryCode]?.data?.name ?? "ERROR";
+                const countryName = getCountryNameFromCode(countryCode, storedCountryData.countries);
                 const flag = storedCountryData.countries[countryCode]?.data?.flag;
 
                 return (

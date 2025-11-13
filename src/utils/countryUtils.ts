@@ -1,5 +1,6 @@
 import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
-import type { StoredCountry, StoredCountryWrapper } from "../../types/commonTypes";
+import type { FormattedCountryField, StoredCountry, StoredCountryWrapper } from "../../types/commonTypes";
+import type { CountryStorage } from "../CountriesProvider";
 import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
 import { convertToOrdinal, roundToPrecision, toPreciseLocaleString } from "./utils";
 
@@ -138,14 +139,25 @@ export function extractAlphabeticalStringArray(values: string[] | undefined) {
 }
 
 /**
+ * Gets the country name for the given country code
+ * @param cca3 Country code to get the name for
+ * @param storedCountries Stored country data containing the country names
+ * @returns The country name
+ */
+export function getCountryNameFromCode(cca3: Cca3Code,
+    storedCountries: Partial<Record<Cca3Code, StoredCountryWrapper>>) {
+  return storedCountries[cca3]?.data?.name ?? cca3;
+}
+
+/**
  * Sorts the given country codes by name
  * @param countryCodes Country codes to sort
  * @param storedCountries Stored country data containing the country names
  */
 export function sortCountryCodesByName(countryCodes: Cca3Code[],
     storedCountries: Partial<Record<Cca3Code, StoredCountryWrapper>>) {
-  countryCodes.sort((a, b) => storedCountries[a]?.data?.name
-      ?.localeCompare(storedCountries[b]?.data?.name ?? "") ?? 0);
+  countryCodes.sort((a, b) => getCountryNameFromCode(a, storedCountries)
+      ?.localeCompare(getCountryNameFromCode(b, storedCountries)));
 }
 
 /**
@@ -379,4 +391,135 @@ export function getPopulationDensityValue(population: number | undefined, area: 
 
   const rawValue = population / area;
   return roundToPrecision(rawValue, rawValue < 1 ? 6 : 3);
+}
+
+export function getFieldReadableValue(storedCountryData: CountryStorage,
+    cca3: Cca3Code, field: keyof StoredCountry, includeFieldLabel = false) {
+  const prefix = includeFieldLabel ? `${getFieldLabel(storedCountryData, cca3, field)}: ` : "";
+
+  let value = storedCountryData.countries[cca3]?.data?.[field];
+
+  if (typeof value === "string") {
+    return `${prefix}${value}`;
+  }
+
+  value = (value as FormattedCountryField<string[]>)?.formattedValue;
+
+  if (!value || typeof value !== "string") {
+    /* console.error(`Getting readable value for field that isn't a string and \
+isn't a FormattedCountryField:`, field, value); */
+
+    switch (field) {
+      // Would depend on the independentOnly flag...
+      /* case "area": {
+        value = "";
+        break;
+      }
+      case "population": {
+        value = "";
+        break;
+      }
+      case "populationDensity": {
+        value = "";
+        break;
+      } */
+      default: {
+        console.error("Getting readable value for unsupported field:", field);
+      }
+    }
+  }
+
+  return `${prefix}${value}`;
+}
+
+/**
+ * Gets the display label for a country field.  Note that when not in a pluralized context,
+ * the label should still sometimes be pluralized based on the value,
+ * so defers to the formattedLabel property when possible
+ * @param field Country field to get the label for
+ * @param storedCountryData Country storage data
+ * @param cca3 Country code whose field is being displayed
+ * @param lowercase Whether the label should be lowercase instead of title case
+ * @returns The label string to display for the field
+ */
+export function getFieldLabel(storedCountryData: CountryStorage,
+    cca3: Cca3Code, field: keyof StoredCountry, lowercase = false) {
+  const value = storedCountryData.countries[cca3]?.data?.[field];
+  let label = (value as FormattedCountryField<string[]>)?.label;
+
+  if (!label) {
+    switch (field) {
+      case "location": {
+        label = "Location";
+        break;
+      }
+      case "flagDescription": {
+        label = "Flag";
+        break;
+      }
+      /* case "area": {
+        label = "Size";
+        break;
+      }
+      case "population": {
+        label = "Total Population";
+        break;
+      }
+      case "populationDensity": {
+        label = "Population Density";
+        break;
+      } */
+      default: {
+        console.error("Getting non-pluralized label for unsupported field:", field);
+      }
+    }
+  }
+
+  return lowercase ? label.toLowerCase() : label;
+}
+
+/**
+ * Gets the pluralized display label for a country field
+ * @param field Country field to get the label for
+ * @param lowercase Whether the label should be lowercase instead of title case
+ * @returns The label string to display for the field
+ */
+export function getPluralFieldLabel(field: keyof StoredCountry, lowercase = false) {
+  let label: string = field;
+
+  switch (field) {
+    case "location": {
+      label = "Locations";
+      break;
+    }
+    case "flagDescription": {
+      label = "Flags";
+      break;
+    }
+    case "capitals": {
+      label = "Capitals";
+      break;
+    }
+    case "currencies": {
+      label = "Currencies";
+      break;
+    }
+    /* case "area": {
+      label = "Sizes";
+      break;
+    }
+    case "population": {
+      label = "Total Populations";
+      break;
+    }
+    case "populationDensity": {
+      label = "Population Densities";
+      break;
+    } */
+    default: {
+      console.error("Getting pluralized label for unsupported field:", field);
+    }
+  }
+
+  return lowercase ? label.toLowerCase() : label;
 }

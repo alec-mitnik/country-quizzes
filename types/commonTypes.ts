@@ -3,7 +3,7 @@
 
 import type { Capital, Cca3Code } from "@yusifaliyevpro/countries/types";
 
-interface FormattedCountryField<T> {
+export interface FormattedCountryField<T> {
   label: string,
   rawValue?: T,
   formattedValue?: string,

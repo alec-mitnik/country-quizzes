@@ -1,14 +1,19 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
-import { useRef, type DragEvent } from "react";
+import { useMemo, useRef, type DragEvent } from "react";
 import { Link } from "react-router-dom";
+import type { StoredCountry } from "../../types/commonTypes";
 import Button from "../Button";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
+import { getCountryNameFromCode, getFieldLabel, getFieldReadableValue } from "../utils/countryUtils";
 import { getLocatorMapSrc } from "../utils/utils";
+import CountryFieldDisplayValue from "./CountryFieldDisplayValue";
 import type { QuizType } from "./quizConfig";
 
 interface DraggableCountryProps {
   cca3: Cca3Code;
+  countryField?: keyof StoredCountry;
+  showCountryFieldInLabel?: boolean;
   rankIndex?: number;
   revealedValueLabel?: React.ReactNode;
   isSelected: boolean;
@@ -18,13 +23,14 @@ interface DraggableCountryProps {
   quizActive: boolean;
   quizType: QuizType;
   countryCodeBeingDraggedOver?: Cca3Code | null;
-  onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code) => void;
+  countryFieldBeingDraggedOver?: keyof StoredCountry | null;
+  onDragStart: (event: DragEvent<HTMLDivElement>, cca3: Cca3Code, countryField? : keyof StoredCountry) => void;
   onDragEnd: () => void;
   onDrag?: (event: DragEvent<HTMLDivElement>) => void;
   onDragEnter?: (event: DragEvent) => void;
   onDragOver?: (event: DragEvent) => void;
   onDragLeave?: (event: DragEvent) => void;
-  onDrop?: (event: DragEvent, itemCountryCode: Cca3Code) => void;
+  onDrop?: (event: DragEvent, itemCountryCode: Cca3Code, countryField?: keyof StoredCountry) => void;
   onRemove?: () => void;
   onAdd?: () => void;
   onMoveUp?: () => void;
@@ -34,6 +40,8 @@ interface DraggableCountryProps {
 /**
  * Draggable element with alternative controls representing a country to be matched or ranked
  * @param {Cca3Code} [props.cca3] The country code of the country being represented
+ * @param {string} [props.countryField] The field of the country being represented, if applicable
+ * @param {boolean} [props.showCountryFieldInLabel] Whether to show the country field in the label
  * @param {number} [props.rankIndex] The current rank of the country if in a ranked list
  * @param {React.ReactNode} [props.revealedValueLabel] What to display when the correct value is to be revealed
  * @param {boolean} [props.isSelected] Whether the country is currently selected
@@ -43,6 +51,7 @@ interface DraggableCountryProps {
  * @param {boolean} [props.quizActive] Whether the quiz is currently active
  * @param {QuizType} [props.quizType] The type of the quiz
  * @param {Cca3Code} [props.countryCodeBeingDraggedOver] The country code of the country being dragged over, if any
+ * @param {string} [props.countryFieldBeingDraggedOver] The field of the country being dragged over, if any
  * @param {function} [props.onDragStart] Function to call when the country is dragged
  * @param {function} [props.onDragEnd] Function to call when the country is dropped
  * @param {function} [props.onDrag] Function to call when the country is dragged
@@ -55,10 +64,11 @@ interface DraggableCountryProps {
  * @param {function} [props.onMoveUp] Function to call when the move up control is activated
  * @param {function} [props.onMoveDown] Function to call when the move down control is activated
  */
-function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
-    isDragged, isLockedIn = false, roundActive, quizActive, quizType, countryCodeBeingDraggedOver,
-    onDragStart, onDragEnd, onDrag, onDragEnter, onDragOver, onDragLeave,
-    onDrop, onRemove, onAdd, onMoveUp, onMoveDown}: DraggableCountryProps) {
+function DraggableCountry({cca3, countryField, showCountryFieldInLabel = false, rankIndex,
+    revealedValueLabel, isSelected, isDragged, isLockedIn = false, roundActive, quizActive,
+    quizType, countryCodeBeingDraggedOver, countryFieldBeingDraggedOver, onDragStart, onDragEnd,
+    onDrag, onDragEnter, onDragOver, onDragLeave, onDrop, onRemove, onAdd, onMoveUp, onMoveDown
+    }: DraggableCountryProps) {
   const elementRef = useRef<HTMLDivElement>(null);
   const { storedCountryData } = useCountries();
 
@@ -67,7 +77,25 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
   // quizActive = false;
 
   const showRank = rankIndex != null && !isNaN(rankIndex);
-  const countryName = storedCountryData.countries[cca3]?.data?.name ?? cca3;
+  const countryName = getCountryNameFromCode(cca3, storedCountryData.countries);
+
+  const countryReadableValue = useMemo(() => {
+    if (countryField) {
+      return `${showCountryFieldInLabel ? `${getFieldLabel(storedCountryData, cca3, countryField)}: ` : ''
+        }${getFieldReadableValue(storedCountryData, cca3, countryField)}`;
+    }
+
+    return countryName;
+  }, [countryField, countryName, showCountryFieldInLabel, storedCountryData, cca3]);
+
+  const countryDisplayValue: React.ReactNode = useMemo(() => {
+    if (countryField) {
+      return <>{showCountryFieldInLabel && <>{getFieldLabel(storedCountryData, cca3, countryField)}: </>
+          }<CountryFieldDisplayValue cca3={cca3} field={countryField} /></>;
+    }
+
+    return countryName;
+  }, [countryField, countryName, showCountryFieldInLabel, storedCountryData, cca3]);
 
   function handleDrag(event: DragEvent<HTMLDivElement>) {
     if (onDrag) {
@@ -98,40 +126,43 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
         isDragged ? " dragged" : ""}${isLockedIn ? " locked-in" : ""}${
-        countryCodeBeingDraggedOver === cca3 && !isDragged ? " being-dragged-over" : ""}`}
+          countryCodeBeingDraggedOver === cca3
+          && (!countryFieldBeingDraggedOver || countryFieldBeingDraggedOver === countryField)
+          && !isDragged ? " being-dragged-over" : ""
+        }`}
         draggable={roundActive && !isLockedIn} onDragEnd={onDragEnd}
-        onDragStart={(event) => onDragStart(event, cca3)}
+        onDragStart={(event) => onDragStart(event, cca3, countryField)}
         onDrag={handleDrag}
         onDragEnter={onDrop ? handleDragEnter : undefined}
         onDragLeave={onDrop ? handleDragLeave : undefined}
         onDragOver={onDrop ? handleDragOver : undefined}
-        onDrop={onDrop ? event => onDrop(event, cca3) : undefined}>
+        onDrop={onDrop ? event => onDrop(event, cca3, countryField) : undefined}>
       <div aria-description={isLockedIn ? "Locked in." : ""}>
         {/* Cannot go after the text content or wrapped text will push it down */}
         <span className="button-controls">
           {/* Putting the symbol font on a span rather than the button directly
           preserves height better, so do it for all the buttons, for consistency */}
           {roundActive && onMoveUp && !isLockedIn && <Button type="button"
-              className="move-up-button" aria-label={`Move ${countryName} up.`}
+              className="move-up-button" aria-label={`Move ${countryReadableValue} up.`}
               onClick={onMoveUp}>
             <span aria-hidden="true" className="symbol-font">🠝</span>
           </Button>}
 
           {roundActive && onMoveDown && !isLockedIn && <Button type="button"
-              className="move-down-button" aria-label={`Move ${countryName} down.`}
+              className="move-down-button" aria-label={`Move ${countryReadableValue} down.`}
               onClick={onMoveDown}>
             <span aria-hidden="true" className="symbol-font">🠟</span>
           </Button>}
 
           {roundActive && onRemove && !isLockedIn && <Button type="button"
-              className="remove-button" aria-label={`Remove ${countryName}.`} onClick={onRemove}>
+              className="remove-button" aria-label={`Remove ${countryReadableValue}.`} onClick={onRemove}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
           </Button>}
 
           {/* The period at the end of the aria-label adds a helpful pause
           before the word "button" is spoken */}
           {roundActive && onAdd && <Button type="button" className="add-button"
-              aria-label={`Add ${countryName}.`} onClick={onAdd}>
+              aria-label={`Add ${countryReadableValue}.`} onClick={onAdd}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
           </Button>}
         </span>
@@ -142,14 +173,17 @@ function DraggableCountry({cca3, rankIndex, revealedValueLabel, isSelected,
         </span>
 
         {showRank && `${rankIndex + 1}. `}{
-          quizActive || quizType === "MATCH_TO_BORDERING_COUNTRIES" ?
-              countryName : <Link to={`/countries/${cca3}`}>{countryName}</Link>
-        }{!roundActive && quizType !== "MATCH_TO_BORDERING_COUNTRIES" && <> ({
+          quizActive || quizType === "MATCH_TO_BORDERING_COUNTRIES" || countryField ?
+              countryDisplayValue : <Link to={`/countries/${cca3}`}>{countryName}</Link>
+        }{!roundActive && quizType !== "MATCH_TO_BORDERING_COUNTRIES" && !countryField && <> ({
           storedCountryData.countries[cca3]?.data?.continents?.formattedValue ?? "Continents Unavailable"
-        })</>}{(!roundActive || isLockedIn) && !!revealedValueLabel && <>: {revealedValueLabel}</>}
+        })</>}{(!roundActive || isLockedIn) && !!revealedValueLabel
+            // NVDA screen reader doesn't read or pause on the arrow...
+            && <> <span className="symbol-font">🡒</span> {revealedValueLabel}</>}
 
         {!roundActive && quizType !== "MATCH_TO_LOCATIONS"
             && quizType !== "MATCH_TO_BORDERING_COUNTRIES"
+            && !countryField
             && <div><CaptionedImageDialogButton
                 imageDescription="Country Location"
                 buttonLabelOverride="View Country Location"

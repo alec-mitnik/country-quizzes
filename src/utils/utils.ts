@@ -57,6 +57,23 @@ export function extractRandomArrayElement<T>(array: T[]) {
 }
 
 /**
+ * Formats the given string array as a standard list with "and" and an Oxford comma
+ * @param array The string array to format
+ * @returns The array formatted as a comma-separated list
+ */
+export function formatArrayAsCommaSeparatedString(array: string[]) {
+  // Standard list formatting, so example outputs are
+  // "apple" or "apple and banana" or "apple, banana, and orange".
+  if (array.length < 2) {
+    return array.join("");
+  } else if (array.length === 2) {
+    return array.join(" and ");
+  } else {
+    return array.slice(0, array.length - 1).join(", ") + ", and " + array[array.length - 1];
+  }
+}
+
+/**
  * Converts the given cardinal number (e.g. 1, 2, 3)
  * into its ordinal string (e.g. 1st, 2nd, 3rd)
  * @param n The cardinal number to convert
@@ -181,6 +198,7 @@ export function getReactNodeString(node: React.ReactNode, fallback = 'unknown'):
  *     Wake Island, and United States Pacific Island Wildlife Refuges)
  * Svalbard and Jan Mayen (separated, so I combined them)
  * Edited the map for Israel to give it a callout box for clarity.
+ * Edited the maps for Jersey and Guernsey to improve clarity.
  *
  * For reference, the full URL for the locator map on the World Factbook website
  * would be the same filename prefixed with:

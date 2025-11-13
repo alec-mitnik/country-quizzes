@@ -154,7 +154,6 @@ function Country() {
                   {flag || flagDescription ?
                     <>
                       {!combinedLoadingClassName && LOADING_IMAGE_MESSAGE}
-                      {/* TODO - mark up foreign language phrases in flag banners appropriately? */}
                       <figure>
                         <div className={`smooth-loading with-max-height${combinedLoadingClassName}${loadFlagFailedClassName}`}>
                           <CaptionedImageDialogButton imageDescription="Country Flag"

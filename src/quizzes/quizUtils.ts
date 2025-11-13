@@ -12,9 +12,18 @@ import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } fro
  * @returns A random new quiz type
  */
 export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
-  // return "MATCH_TO_FUN_FACTS"; // For easy testing
-  const quizTypes = Object.keys(QUIZ_TYPES) as QuizType[];
-  const quizzes = quizTypes.length < 2 ? quizTypes
+  // return "MATCH_TO_LOCATIONS"; // For easy testing
+  const quizConfigs = Object.values(QUIZ_TYPES);
+  const quizTypes: QuizType[] = [];
+
+  for (const quizConfig of quizConfigs) {
+    // Default frequency is 3
+    for (let i = 0; i < (quizConfig.frequency ?? 3); i++) {
+      quizTypes.push(quizConfig.type);
+    }
+  }
+
+  const quizzes = quizConfigs.length < 2 ? quizTypes
       : quizTypes.filter(quizType => quizType !== currentType);
   const randomType = getRandomArrayElement<QuizType>(quizzes);
   return randomType;
@@ -122,26 +131,14 @@ export function showConfettiFirework() {
 }
 
 /**
- * Randomly selects country codes for a quiz.
+ * Gets the list of available country codes to quiz on for the given level
  * @param independentOnly Whether to only select from independent countries
  * @param storedCountryData The country data to select from
- * @param count The number of countries to select
  * @param level The quiz level which determines the obscurity of countries to select
- * @param quizType Type of the quiz, which may require special handling
- * @param fieldToRequire Optional field to require selected countries to have a value for.
- * Must be part of the shallow data expected to already be loaded.
- * @param valueArrayFunction Optional function to get the raw value array, if any
- * @param valueFunctionForPreventingDuplicates Optional function to get the value to use
- * for preventing duplicates.  Must be part of the shallow data expected to already be loaded,
- * and only applies if fieldToRequire is specified.
- * @returns The randomly selected country codes and secondary indexes if any
+ * @returns The filtered list of country codes
  */
-export function getRandomCountryCodes(independentOnly: boolean, storedCountryData: CountryStorage,
-    count: number, level: number, quizType: QuizType, fieldToRequire?: keyof StoredCountry,
-    valueArrayFunction?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined),
-    valueFunctionForPreventingDuplicates?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string)
-        | ((storedCountryData: CountryStorage, cca3: Cca3Code) => number)): [Cca3Code[], number[] | undefined] {
-  const countriesData = storedCountryData.countries;
+export function getCountryCodesFilteredForQuizLevel(independentOnly: boolean,
+    storedCountryData: CountryStorage, level: number) {
   const familiarityRankings = independentOnly ? storedCountryData.rankings.independentOnly.byFamiliarity
       : storedCountryData.rankings.all.byFamiliarity;
 
@@ -162,6 +159,31 @@ export function getRandomCountryCodes(independentOnly: boolean, storedCountryDat
         familiarityRankings.length * (level - halfMaxLevel - 1) / halfMaxLevel);
     countryCodes = familiarityRankings.slice(familiarityThreshold);
   }
+
+  return countryCodes;
+}
+
+/**
+ * Randomly selects country codes for a quiz.
+ * @param availableCountryCodes The country codes to select from
+ * @param storedCountryData The country data to select from
+ * @param count The number of countries to select
+ * @param quizType Type of the quiz, which may require special handling
+ * @param fieldToRequire Optional field to require selected countries to have a value for.
+ * Must be part of the shallow data expected to already be loaded.
+ * @param valueArrayFunction Optional function to get the raw value array, if any
+ * @param valueFunctionForPreventingDuplicates Optional function to get the value to use
+ * for preventing duplicates.  Must be part of the shallow data expected to already be loaded,
+ * and only applies if fieldToRequire is specified.
+ * @returns The randomly selected country codes and secondary indexes if any
+ */
+export function getRandomCountryCodes(availableCountryCodes: Cca3Code[], storedCountryData: CountryStorage,
+    count: number, quizType: QuizType, fieldToRequire?: keyof StoredCountry,
+    valueArrayFunction?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined),
+    valueFunctionForPreventingDuplicates?: ((storedCountryData: CountryStorage, cca3: Cca3Code) => string)
+        | ((storedCountryData: CountryStorage, cca3: Cca3Code) => number)): [Cca3Code[], number[] | undefined] {
+  const countriesData = storedCountryData.countries;
+  let countryCodes: Cca3Code[] = [...availableCountryCodes];
 
   if (fieldToRequire) {
     countryCodes = countryCodes.filter(cca3 => countriesData[cca3]?.data?.[fieldToRequire]);
