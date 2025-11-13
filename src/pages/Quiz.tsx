@@ -214,8 +214,8 @@ function Quiz() {
         stopConfettiFireworks();
       }, 30000);
     }
-  }, [confettiTimeoutId, confettiTimeoutIdRef, confettiLimitTimeoutIdRef,
-      showConfettiFireworksContinuously]);
+  }, [confettiTimeoutId, confettiLimitTimeoutIdRef,
+      showConfettiFireworksContinuously, stopConfettiFireworks]);
 
   useEffect(() => {
     if (!quizActive && quizState && countriesForQuizRoundLoaded && isQuizBeaten(quizState)) {
@@ -421,7 +421,7 @@ function Quiz() {
     } as Partial<QuizState>;
 
     updateQuizStateForNewRound(newQuizState);
-  }, [countriesForQuizRoundRequested, updateQuizStateForNewRound]);
+  }, [countriesForQuizRoundRequested, updateQuizStateForNewRound, stopConfettiFireworks]);
 
   const startNextRound = useCallback(() => {
     if (!quizState || countriesForQuizRoundRequested) {
