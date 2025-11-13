@@ -371,10 +371,11 @@ details {
         having a background color set though, so use the primary background. */
         filter: brightness(var(--light-dark-hover-brightness));
       }
-    }
 
-    &:active:not(:disabled) {
-      filter: brightness(var(--light-dark-active-brightness));
+      /* Renders in front of the figure drop-shadow if visible on mobile */
+      &:active:not(:disabled) {
+        filter: brightness(var(--light-dark-active-brightness));
+      }
     }
   }
 }
