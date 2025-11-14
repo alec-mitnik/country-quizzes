@@ -1,4 +1,4 @@
-import { useRef } from "react"
+import { useRef, useState } from "react"
 import { createPortal } from "react-dom"
 import Button from "./Button"
 import "./CaptionedImageDialogButton.css"
@@ -24,6 +24,7 @@ interface CaptionedImageDialogButtonProps {
  */
 function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src,
     caption, children }: CaptionedImageDialogButtonProps) {
+  const [imageLoadingAttribute, setImageLoadingAttribute] = useState<"eager" | "lazy">("lazy");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
@@ -53,7 +54,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           <figure>
             <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
               <div className="scroll-container with-height">
-                <img ref={imgCallbackRef} src={src} alt=""
+                <img ref={imgCallbackRef} src={src} alt="" loading={imageLoadingAttribute}
                     className={`flag${src?.toLowerCase().endsWith('.svg') ? ' svg' : ''}`} />
               </div>
             </div>
@@ -70,6 +71,9 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
         aria-label={buttonLabelOverride ?? `${imageDescription}, click to show larger`}
         onClick={() => {
           dialogRef.current?.showModal();
+
+          // Workaround for mobile Safari that doesn't load the lazy image if not already cached
+          setImageLoadingAttribute("eager");
 
           // onToggle for the dialog doesn't seem to get triggered for iOS,
           // and VoiceOver won't recognize focus on the close button without a delay

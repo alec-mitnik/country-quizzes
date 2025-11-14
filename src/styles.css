@@ -58,8 +58,8 @@
 
   /* Standard reset to prevent mobile browsers from inconsistently
   enlarging some text in landscape mode */
-  -webkit-text-size-adjust: 100%;
-  text-size-adjust: 100%;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
 }
 
 html, body {
