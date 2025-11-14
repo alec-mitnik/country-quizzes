@@ -24,7 +24,8 @@ interface CaptionedImageDialogButtonProps {
  */
 function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src,
     caption, children }: CaptionedImageDialogButtonProps) {
-  const [imageLoadingAttribute, setImageLoadingAttribute] = useState<"eager" | "lazy">("lazy");
+  const [imageLoadingAttribute, setImageLoadingAttribute] =
+      useState<React.ComponentProps<'img'>['loading']>("lazy");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
   const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
