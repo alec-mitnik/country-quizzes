@@ -55,6 +55,11 @@
 
   font-family: system-ui, Arial, sans-serif;
   line-height: 1.5;
+
+  /* Standard reset to prevent mobile browsers from inconsistently
+  enlarging some text in landscape mode */
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
 html, body {
@@ -231,6 +236,11 @@ dialog {
     justify-content: center;
     align-items: center;
 
+    /* The closedby attribute would allow the dialog to natively close when clicking the backdrop,
+    but it's not supported by Safari, and even if it was, it doesn't seem to work for clicks just
+    outside rounded corners of the dialog (at least in Chrome).  Making that work requires a
+    manual event handler anyway. Just need to make sure to restrict the trigger to clicks that
+    both start and end on the backdrop.*/
     .dialog-backdrop {
       background-color: rgba(0, 0, 0, 0.4);
       backdrop-filter: blur(3px);

@@ -53,7 +53,7 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
           <figure>
             <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
               <div className="scroll-container with-height">
-                <img ref={imgCallbackRef} src={src} alt="" loading="lazy"
+                <img ref={imgCallbackRef} src={src} alt=""
                     className={`flag${src?.toLowerCase().endsWith('.svg') ? ' svg' : ''}`} />
               </div>
             </div>
