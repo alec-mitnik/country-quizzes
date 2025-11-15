@@ -14,8 +14,6 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
 /*
  * TODO:
  *
- * Edit location descriptions to try to avoid referencing countries in the same group
- *
  * Refactor ranking and matching quiz types to use new utilities for value/label/markup
  *
  * Mark up foreign language phrases in flag descriptions appropriately?  Or just edit them out?
@@ -339,6 +337,7 @@ export interface SortingOutQuizState {
 export type QuizState = MatchingQuizState | RankingQuizState | SortingOutQuizState;
 
 // For quizzing on related or often confused countries.
+// Try to edit the country location descriptions to not reference countries in the same group.
 // Best to stick to sizes of 2, 3, or 7.  Try to keep a relatively even ratio of 2s and 3s.
 // NI = not independent.
 export const COUNTRY_GROUPS: CountryGroup[] = [
@@ -400,6 +399,9 @@ export const COUNTRY_GROUPS: CountryGroup[] = [
     // Mali/Malawi
     countryCodes: ["MLI", "MWI"],
   }, {
+    // Christmas Island/Cocos (Keeling) Islands (NI)
+    countryCodes: ["CXR", "CCK"],
+  }, {
     // Bangladesh/Bhutan
     countryCodes: ["BGD", "BTN"],
   }, {
@@ -460,6 +462,11 @@ export const COUNTRY_GROUPS: CountryGroup[] = [
     // /Saint Lucia/Saint Martin/Saint Pierre and Miquelon/Saint Vincent and the Grenadines (NI)
     nameOverride: 'The "Saints"',
     countryCodes: ["BLM", "SHN", "KNA", "LCA", "MAF", "SPM", "VCT"],
+  }, {
+    // Cook Islands/Marshal Islands/Norfolk Island/Northern Mariana Islands/Pitcairn Islands
+    // /Solomon Islands/United States Minor Outlying Islands (NI)
+    nameOverride: 'The Oceania "Islands"',
+    countryCodes: ["COK", "MHL", "NFK", "MNP", "PCN", "SLB", "UMI"],
   }, {
     // Aland Islands/Denmark/Faroe Islands/Finland/Iceland/Sweden/Norway (NI)
     nameOverride: "The Nordic Crosses",
