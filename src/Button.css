@@ -39,6 +39,10 @@
       border-radius: inherit;
       border: 1px solid var(--shadow-color);
       box-shadow: 0 2px 4px 0 var(--shadow-color);
+
+      --shadow-filter: drop-shadow(0);
+      --brightness-filter: brightness(1);
+      filter: var(--shadow-filter) var(--brightness-filter);
     }
 
     &:not(:disabled) {
@@ -60,7 +64,7 @@
         &:hover {
           .button-shell {
             /* Use brightness to indicate hover */
-            filter: brightness(var(--light-hover-brightness));
+            --brightness-filter: brightness(var(--light-hover-brightness));
           }
         }
 
@@ -137,6 +141,16 @@
         text-decoration: underline dotted;
         text-underline-offset: 0.1em;
         text-decoration-thickness: 0.05em;
+
+        /* Putting the drop shadow on a wrapper rather than the img itself
+        can help it render better for mobile when transforms are applied */
+        &:has(.flag:not(.load-failed)) {
+          --shadow-filter: drop-shadow(0 2px 3px black);
+
+          .flag {
+            filter: none;
+          }
+        }
       }
 
       @media (hover: hover) and (pointer: fine) {

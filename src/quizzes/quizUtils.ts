@@ -12,7 +12,7 @@ import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } fro
  * @returns A random new quiz type
  */
 export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
-  // return "MATCH_TO_LOCATIONS"; // For easy testing
+  // return "SORT_OUT_VALUES"; // For easy testing
   const quizConfigs = Object.values(QUIZ_TYPES);
   const quizTypes: QuizType[] = [];
 

@@ -31,6 +31,8 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Sound effects?
  *
+ * Add config setting for showing only metric or only imperial units?
+ *
  * Show more messages, like encouragement for getting everything right in one go,
  * or a fun fact about one of the countries locked in?
  *

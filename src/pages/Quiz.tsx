@@ -577,8 +577,12 @@ function Quiz() {
                 {quizState?.quiz.structure === "ranking" && <div>
                   <dt>Note About Ranking</dt>
                   <dd>
-                    Ranked country numbering and locking in only take into account the currently ranked countries.
-                    <br /><strong>Remaining unranked countries can still go before or between them!</strong>
+                    {/* The dd has a flex display, so wrap in a p for standard text formatting */}
+                    <p>
+                      Ranked country numbering and locking in only take into account the currently ranked countries.
+                      <br /><strong>Remaining unranked countries can still go before or between them!</strong>
+                      <br />So there need to be at least two countries ranked in order to submit, as one on its own is meaningless.
+                    </p>
                   </dd>
                 </div>}
 
