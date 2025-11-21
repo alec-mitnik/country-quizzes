@@ -482,7 +482,9 @@ dl {
 
   /* Nepal's flag isn't rectangular!  Use drop-shadow filter instead to match the shape.
   There are also flags like Martinique whose border/box-shadow isn't flush with the
-  flag edge for some reason.  But border is still beneficial for high contrast mode. */
+  flag edge for some reason.  But border is still beneficial for high contrast mode.
+  Also note that drop-shadow has rendering issues on mobile, especially when in a button
+  with a transform applied (showing an after image after shrinking)... */
   /* box-shadow: 0 2px 3px 1px var(--shadow-color); */
   border: 1px solid transparent;
   filter: drop-shadow(0 2px 3px black);
