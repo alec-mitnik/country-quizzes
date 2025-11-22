@@ -111,21 +111,32 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   }, [...dependencies, imgHasAttached, imgRef, currentSrcRef, doneLoadingRef,
       setCurrentSrc, setDoneLoading, setLoadFailed]);
 
-  // Force Safari to recalculate the filter region after the image is ready
+  // Force Safari to recalculate the filter region after the image is ready and visible
   useEffect(() => {
     const img = imgRef.current;
     if (!img || !doneLoading || loadFailed) {
       return;
     }
 
-    const originalTransform = img.style.transform;
-    img.style.transform = 'translateZ(0.001px)';
+    // Triggers when an observed element exits or enters the viewport,
+    // including if it is already in the viewport initially
+    const observer = new IntersectionObserver((entries) => {
 
-    requestAnimationFrame(() => {
-      if (img) {
-        img.style.transform = originalTransform;
+      if (entries[0].isIntersecting) {
+        const originalTransform = img.style.transform;
+        img.style.transform = 'translateZ(0.001px)';
+
+        requestAnimationFrame(() => {
+          if (img) {
+            img.style.transform = originalTransform;
+          }
+        });
+
+        observer.disconnect();
       }
     });
+
+    observer.observe(img);
   }, [doneLoading, loadFailed, imgRef]);
 
   // Class names can be interpolated directly into className attributes, and double as status flags
