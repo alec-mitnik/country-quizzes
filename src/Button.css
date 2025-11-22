@@ -16,13 +16,16 @@
     -webkit-tap-highlight-color: transparent;
     -webkit-touch-callout: none;
     user-select: none;
-    outline-offset: -4px;
     border-radius: 8px;
     transition: all 0.1s ease-in-out, opacity 0.3s ease-in-out, visibility 0s;
     font-size: inherit;
     font-family: inherit;
     font-weight: bold;
     max-width: 100%;
+
+    /* Can't use negative outline-offset if applying will-change to the wrapper */
+    /* outline-offset: -4px; */
+    outline-offset: 2px;
 
     .button-shell {
       /* The transforms need to be on a non-inline container,
@@ -40,7 +43,9 @@
       border: 1px solid var(--shadow-color);
       box-shadow: 0 2px 4px 0 var(--shadow-color);
 
-      /* Attempt to improve rendering on mobile or drop-shadows inside buttons */
+      /* Improves rendering on mobile for drop-shadows inside buttons,
+      but causes the shell to render over the button outline, so can't
+      use negative outline-offset if applying this! */
       will-change: transform;
     }
 
@@ -117,38 +122,11 @@
     }
 
     &.small {
-      outline-offset: -3px;
+      /* Can't use negative outline-offset if applying will-change to the wrapper */
+      /* outline-offset: -3px; */
 
       .button-shell {
         padding: 4px 8px;
-      }
-    }
-
-    figure &.image-dialog-button {
-      outline-offset: 1px;
-      border-radius: 0;
-
-      .button-shell {
-        display: inline flex;
-        padding: 0;
-        background: transparent;
-        border: none;
-        box-shadow: none;
-
-        /* For if the image doesn't load and text is shown instead */
-        color: var(--background-color-primary-foreground-accent);
-        text-decoration: underline dotted;
-        text-underline-offset: 0.1em;
-        text-decoration-thickness: 0.05em;
-      }
-
-      @media (hover: hover) and (pointer: fine) {
-        &:hover:not(:disabled) {
-          .button-shell {
-            text-decoration-style: solid;
-            text-decoration-thickness: 0.15em;
-          }
-        }
       }
     }
   }

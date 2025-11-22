@@ -1,3 +1,35 @@
 .captioned-image-dialog-wrapper {
   display: contents;
+
+  /* Selecting for inside a figure makes sure this is only applied
+  to img buttons and not "View Country Location" buttons */
+  figure & button.image-dialog-button {
+    /* Would need to override if using negative outline-offset for buttons,
+    but not doing that now since will-change doesn't allow for it */
+    /* outline-offset: 1px; */
+    border-radius: 0;
+
+    .button-shell {
+      display: inline flex;
+      padding: 0;
+      background: transparent;
+      border: none;
+      box-shadow: none;
+
+      /* For if the image doesn't load and text is shown instead */
+      color: var(--background-color-primary-foreground-accent);
+      text-decoration: underline dotted;
+      text-underline-offset: 0.1em;
+      text-decoration-thickness: 0.05em;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+      &:hover:not(:disabled) {
+        .button-shell {
+          text-decoration-style: solid;
+          text-decoration-thickness: 0.15em;
+        }
+      }
+    }
+  }
 }

@@ -111,6 +111,23 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   }, [...dependencies, imgHasAttached, imgRef, currentSrcRef, doneLoadingRef,
       setCurrentSrc, setDoneLoading, setLoadFailed]);
 
+  // Force Safari to recalculate the filter region after the image is ready
+  useEffect(() => {
+    const img = imgRef.current;
+    if (!img || !doneLoading || loadFailed) {
+      return;
+    }
+
+    const originalTransform = img.style.transform;
+    img.style.transform = 'translateZ(0.001px)';
+
+    requestAnimationFrame(() => {
+      if (img) {
+        img.style.transform = originalTransform;
+      }
+    });
+  }, [doneLoading, loadFailed, imgRef]);
+
   // Class names can be interpolated directly into className attributes, and double as status flags
   return {
     imgCallbackRef,
