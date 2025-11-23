@@ -141,7 +141,13 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
             // Use the pre-loaded supplemental description if provided, indicating a need to override
             const flagDescription =
                 newData.countries[cca3]?.data?.flagDescription ?? extractFlagAltDescription(country);
-            const flag = country.flags?.svg;
+            let flag = country.flags?.svg;
+
+            if (cca3 === "BLZ") {
+              // For Belize, the Flagpedia source SVG file has a display error, and they didn't respond
+              // when I tried to contact them, so use a local SVG sourced from Wikipedia instead
+              flag = "/images/BLZ_flag.svg";
+            }
 
             const newCountryData: StoredCountry = {
               ...newData.countries[cca3]?.data,
