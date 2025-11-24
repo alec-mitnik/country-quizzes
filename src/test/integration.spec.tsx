@@ -91,40 +91,4 @@ describe(APP_TITLE, () => {
   });
 
   // TODO - more to come (quiz functionality, etc.).
-  // Test that data is not missing and has no unexpected duplicates.
 });
-
-
-/*
-TODO - use logic like this to test all the loaded data
-
-const countryData = Object.values(storedCountryData.countries).map(country => country?.data);
-for (const code of countryCodes) {
-  const country = storedCountryData.countries[code]?.data;
-
-  if (country) {
-    if (!country.location) {
-      console.log(`${country.name} has no location!`);
-    }
-
-    if (!country.flagDescription) {
-      console.log(`${country.name} has no flag description!`);
-    }
-
-    for (const otherCountry of countryData) {
-      if (!otherCountry || otherCountry.cca3 === country.cca3) {
-        continue;
-      }
-
-      if (otherCountry.location === country.location) {
-        console.log(`${country.name} has the same location as ${otherCountry.name}!`);
-      }
-
-      // Note expected duplicates and exclude them from this check
-      // if (otherCountry.flagDescription === country.flagDescription) {
-      //   console.log(`${country.name} has the same flag description as ${otherCountry.name}!`);
-      // }
-    }
-  }
-}
-*/

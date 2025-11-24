@@ -16,13 +16,9 @@ export const QUIZ_ROUND_BREAKING_VERSION = 1;
  *
  * Refactor ranking and matching quiz types to use new utilities for value/label/markup
  *
- * Mark up foreign language phrases in flag descriptions appropriately?  Or just edit them out?
- *
  * Change how drop works to be more intuitive so that top half of item goes above,
  * bottom half goes below, above top item is first, below last item is last,
  * and to the sides of items is not valid
- *
- * Data testing
  *
  * More unit/integration testing
  *

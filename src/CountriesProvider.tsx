@@ -288,6 +288,67 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
               sortCountryCodesByName(country.borders, newData.countries);
             }
           }
+
+          // For the dev build, do some checks on the real, processed shallow + supplemental data
+          if (import.meta.env.DEV) {
+            console.log("Testing data...");
+
+            const countryCodes = Object.keys(newData.countries);
+            const countryData = Object.values(newData.countries)
+                .map(country => country?.data).filter(Boolean);
+
+            if (countryCodes.length !== 250) {
+              console.warn("There are", countryCodes.length, "country codes, not the expected 250!");
+            }
+
+            if (countryCodes.length !== countryData.length) {
+              console.warn("There are", countryCodes.length, "country codes, but only",
+                  countryData.length, "have data!");
+            }
+
+            for (const code of countryCodes) {
+              const country = newData.countries[code]?.data;
+
+              if (country) {
+                if (!country.location) {
+                  console.warn(`${country.cca3} - ${country.name} has no location!`);
+                }
+
+                if (!country.flagDescription) {
+                  console.warn(`${country.cca3} - ${country.name} has no flag description!`);
+                }
+
+                for (const otherCountry of countryData) {
+                  if (!otherCountry || otherCountry.cca3 === country.cca3) {
+                    continue;
+                  }
+
+                  if (otherCountry.location === country.location) {
+                    console.warn(`${country.cca3} - ${country.name} has the same location as ${
+                        otherCountry.cca3} - ${otherCountry.name}!`);
+                  }
+
+                  const EXPECTED_DUPLICATE_FLAG_GROUPS = [
+                    ["AUS", "HMD"],
+                    ["NOR", "BVT", "SJM"],
+                    ["FRA", "MAF"],
+                    ["USA", "UMI"],
+                  ];
+
+                  if (otherCountry.flagDescription === country.flagDescription) {
+                    // Check if that this is not an expected duplicate flag
+                    if (!EXPECTED_DUPLICATE_FLAG_GROUPS.some(group =>
+                        group.includes(country.cca3) && group.includes(otherCountry.cca3))) {
+                      console.log(`${country.cca3} - ${country.name} has the same flag description as ${
+                          otherCountry.cca3} - ${otherCountry.name}!`);
+                    }
+                  }
+                }
+              }
+            }
+
+            console.log("Done testing data.");
+          }
         }
 
         return newData;
