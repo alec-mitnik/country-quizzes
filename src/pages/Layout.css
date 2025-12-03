@@ -8,7 +8,7 @@
 
     /* Prevent shadow from showing below, allowing the selected nav option
     to blend with the background */
-    overflow: hidden;
+    /* overflow: hidden; */
 
     .banner-content {
       background: var(--background-color-accent);

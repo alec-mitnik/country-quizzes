@@ -71,7 +71,7 @@ function Layout() {
                 </label>
               </div>
 
-              <div className="spacer"></div>
+              {/* <div className="spacer"></div> */}
 
               <div>
                 <label>
