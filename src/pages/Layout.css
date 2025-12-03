@@ -18,6 +18,10 @@
       text-align: center;
       box-shadow: 0 0 40px 5px var(--shadow-color);
     }
+
+    nav {
+      margin-top: 16px;
+    }
   }
 
   #settings-bar {
