@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Button from "../Button";
 import useCountries from "../hooks/useCountries";
-import { isLocalStorageAvailable } from "../hooks/useLocalStorageState";
+import { isLocalStorageAvailable, useLocalStorageStateString } from "../hooks/useLocalStorageState";
 import {
   COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT,
   SETTINGS_BAR_ACCESSIBLE_NAME
@@ -17,7 +17,7 @@ function Layout() {
   const { pathname } = useLocation();
   const mainElementRef = useRef<HTMLElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
-  // const [colorScheme, setColorScheme] = useLocalStorageStateString("colorScheme", "");
+  const [colorScheme, setColorScheme] = useLocalStorageStateString("colorScheme", "");
 
   // Use a function initializer to only evaluate once on mount rather than every render
   const [localStorageAvailable, setLocalStorageAvailable] = useState(() => isLocalStorageAvailable());
@@ -45,8 +45,8 @@ function Layout() {
 
   return (
     <div className="layout-component component-wrapper">
-      <div className="bn">
-        <div className="bn-content">
+      <div className="banner">
+        <div className="banner-content">
           <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
               <div>
@@ -59,7 +59,7 @@ function Layout() {
             </div>}
 
             <div className="settings-controls">
-              {/* <div>
+              <div>
                 <label>
                   <span>Color Scheme:</span>
                   <select id="color-scheme-select" value={colorScheme}
@@ -69,9 +69,9 @@ function Layout() {
                     <option value="dark">Dark</option>
                   </select>
                 </label>
-              </div> */}
+              </div>
 
-              {/* <div className="spacer"></div> */}
+              <div className="spacer"></div>
 
               <div>
                 <label>
