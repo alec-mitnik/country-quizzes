@@ -1,7 +1,7 @@
 .layout-component {
-  .banner {
-    width: 100%;
-    margin: auto;
+  /* .banner { */
+    /* width: 100%;
+    margin: auto; */
 
     /* Darken the banner a bit when beyond the max width */
     /* background: hsl(from var(--background-color-accent) h s calc(l * 0.8)); */
@@ -10,15 +10,15 @@
     to blend with the background */
     /* overflow: hidden; */
 
-    .banner-content {
+    /* .banner-content {
       background: var(--background-color-accent);
       color: var(--background-color-accent-foreground-primary);
       max-width: var(--layout-max-width);
       margin: auto;
       text-align: center;
       box-shadow: 0 0 40px 5px var(--shadow-color);
-    }
-  }
+    } */
+  /* } */
 
   #settings-bar {
     width: 100%;
