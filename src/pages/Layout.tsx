@@ -45,8 +45,8 @@ function Layout() {
 
   return (
     <div className="layout-component component-wrapper">
-      <div className="banner">
-        <div className="banner-content">
+      <div className="bn">
+        <div className="bn-content">
           <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
               <div>
