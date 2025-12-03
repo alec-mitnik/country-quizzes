@@ -45,8 +45,8 @@ function Layout() {
 
   return (
     <div className="layout-component component-wrapper">
-      <div className="banner">
-        <div className="banner-content">
+      {/* <div className="banner">
+        <div className="banner-content"> */}
           <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
               <div>
@@ -96,8 +96,8 @@ function Layout() {
               </li>
             </ul>
           </nav>
-        </div>
-      </div>
+        {/* </div>
+      </div> */}
 
       <main ref={mainElementRef}>
         <Outlet />
