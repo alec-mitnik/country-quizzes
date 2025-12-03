@@ -45,8 +45,9 @@ function Layout() {
 
   return (
     <div className="layout-component component-wrapper">
-      <div className="banner">
-        <div className="banner-content">
+      {/* A class name of "banner" can trigger ad blockers! */}
+      <div className="header-bar">
+        <div className="header-bar-content">
           <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
               <div>

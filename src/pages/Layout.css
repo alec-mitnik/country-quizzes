@@ -1,16 +1,16 @@
 .layout-component {
-  .banner {
+  .header-bar {
     width: 100%;
     margin: auto;
 
-    /* Darken the banner a bit when beyond the max width */
+    /* Darken the header bar a bit when beyond the max width */
     background: hsl(from var(--background-color-accent) h s calc(l * 0.8));
 
     /* Prevent shadow from showing below, allowing the selected nav option
     to blend with the background */
     overflow: hidden;
 
-    .banner-content {
+    .header-bar-content {
       background: var(--background-color-accent);
       color: var(--background-color-accent-foreground-primary);
       max-width: var(--layout-max-width);
