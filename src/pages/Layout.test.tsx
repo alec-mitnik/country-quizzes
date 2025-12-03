@@ -18,6 +18,9 @@ describe('Layout', () => {
     const settingsBar = screen.getByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME });
     expect(settingsBar).toBeInTheDocument();
 
+    // Check for the Color Scheme select
+    expect(within(settingsBar).getByRole('combobox', { name: 'Color Scheme:' })).toBeInTheDocument();
+
     // Check for the Independent Countries Only checkbox
     expect(within(settingsBar).getByRole('checkbox',
         { name: INDEPENDENT_COUNTRIES_CHECKBOX_LABEL })).toBeInTheDocument();

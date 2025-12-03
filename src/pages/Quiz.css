@@ -118,11 +118,8 @@
         height: calc(100% + var(--layout-max-width));
         inset: calc(-0.5 * var(--layout-max-width));
         filter: blur(10px);
-        background-image: conic-gradient(in hsl longer hue, #f00, #f00, #f00);
-
-        @media (prefers-color-scheme: dark) {
-          background-image: conic-gradient(in hsl longer hue, #ff8080, #ff8080, #ff8080);
-        }
+        background-image: conic-gradient(in hsl longer hue,
+            var(--rainbow-base-color), var(--rainbow-base-color), var(--rainbow-base-color));
 
         @media not (prefers-reduced-motion: reduce) {
           animation: rainbowMotion 12s infinite linear;
