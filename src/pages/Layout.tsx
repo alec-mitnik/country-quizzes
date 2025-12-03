@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Button from "../Button";
 import useCountries from "../hooks/useCountries";
-import { isLocalStorageAvailable, useLocalStorageStateString } from "../hooks/useLocalStorageState";
+import { isLocalStorageAvailable } from "../hooks/useLocalStorageState";
 import {
   COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT,
   SETTINGS_BAR_ACCESSIBLE_NAME
@@ -17,7 +17,7 @@ function Layout() {
   const { pathname } = useLocation();
   const mainElementRef = useRef<HTMLElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
-  const [colorScheme, setColorScheme] = useLocalStorageStateString("colorScheme", "");
+  // const [colorScheme, setColorScheme] = useLocalStorageStateString("colorScheme", "");
 
   // Use a function initializer to only evaluate once on mount rather than every render
   const [localStorageAvailable, setLocalStorageAvailable] = useState(() => isLocalStorageAvailable());
