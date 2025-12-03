@@ -4,7 +4,7 @@
     margin: auto;
 
     /* Darken the banner a bit when beyond the max width */
-    background: hsl(from var(--background-color-accent) h s calc(l * 0.8));
+    /* background: hsl(from var(--background-color-accent) h s calc(l * 0.8)); */
 
     /* Prevent shadow from showing below, allowing the selected nav option
     to blend with the background */
