@@ -59,7 +59,7 @@ function Layout() {
             </div>}
 
             <div className="settings-controls">
-              <div>
+              {/* <div>
                 <label>
                   <span>Color Scheme:</span>
                   <select id="color-scheme-select" value={colorScheme}
@@ -69,7 +69,7 @@ function Layout() {
                     <option value="dark">Dark</option>
                   </select>
                 </label>
-              </div>
+              </div> */}
 
               {/* <div className="spacer"></div> */}
 
