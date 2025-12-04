@@ -100,6 +100,8 @@ html, body {
   text-align: center;
 }
 
+/* Put on button content rather than buttons themselves,
+as the button style of inheriting font will override this weak selector */
 .symbol-font {
   font-family: "Symbola", system-ui, Arial, sans-serif;
 }

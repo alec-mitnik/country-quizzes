@@ -63,18 +63,21 @@
   #settings-bar-toggle-button {
     margin: 8px;
     border-radius: 100vw;
+    aspect-ratio: 1;
+    line-height: 1;
+    font-size: 1.75rem;
+
+    .button-shell {
+      place-content: center;
+    }
 
     &.collapse .button-content {
-      display: block;
-
       &::before {
         content: '⯅' / '';
       }
     }
 
     &.expand .button-content {
-      display: block;
-
       &::before {
         content: '⛭' / '';
       }

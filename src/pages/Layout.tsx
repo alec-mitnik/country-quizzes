@@ -106,11 +106,11 @@ function Layout() {
               </ul>
             </nav>
 
-            <Button id="settings-bar-toggle-button" className={`symbol-font outlined ${settingsBarCollapsed ? "expand" : "collapse"}`}
+            <Button id="settings-bar-toggle-button" className={`small outlined ${settingsBarCollapsed ? "expand" : "collapse"}`}
                 onClick={() => setSettingsBarCollapsed(!settingsBarCollapsed)}
                 aria-label={settingsBarCollapsed ? EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME
                 : COLLAPSE_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME}>
-              <span className="button-content"></span>
+              <span className={`button-content ${settingsBarCollapsed ? "" : "symbol-font"}`}></span>
             </Button>
           </div>
         </div>
