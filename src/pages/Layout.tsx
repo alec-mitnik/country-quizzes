@@ -2,10 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import { NavLink, Outlet, useLocation } from "react-router-dom";
 import Button from "../Button";
 import useCountries from "../hooks/useCountries";
-import { isLocalStorageAvailable, useLocalStorageStateString } from "../hooks/useLocalStorageState";
 import {
-  COUNTRIES_NAV_TEXT, HOME_NAV_TEXT, QUIZ_NAV_TEXT,
-  SETTINGS_BAR_ACCESSIBLE_NAME
+  isLocalStorageAvailable, useLocalStorageStateBoolean, useLocalStorageStateString
+} from "../hooks/useLocalStorageState";
+import {
+  COLLAPSE_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME,
+  COLOR_SCHEME_SELECT_ACCESSIBLE_NAME, COUNTRIES_NAV_TEXT,
+  DISMISS_LOCAL_STORAGE_WARNING_BUTTON_ACCESSIBLE_NAME,
+  EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME,
+  HOME_NAV_TEXT, QUIZ_NAV_TEXT, SETTINGS_BAR_ACCESSIBLE_NAME
 } from "../utils/consts";
 import "./Layout.css";
 
@@ -18,6 +23,8 @@ function Layout() {
   const mainElementRef = useRef<HTMLElement>(null);
   const { independentOnly, setIndependentOnly} = useCountries();
   const [colorScheme, setColorScheme] = useLocalStorageStateString("colorScheme", "");
+  const [settingsBarCollapsed, setSettingsBarCollapsed] =
+      useLocalStorageStateBoolean("settingsBarCollapsed");
 
   // Use a function initializer to only evaluate once on mount rather than every render
   const [localStorageAvailable, setLocalStorageAvailable] = useState(() => isLocalStorageAvailable());
@@ -48,21 +55,21 @@ function Layout() {
       {/* A class name of "banner" can trigger ad blockers! */}
       <div className="header-bar">
         <div className="header-bar-content">
-          <section id="settings-bar" aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
-            {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
-              <div>
-                <p>Warning: local storage unavailable.  Data will not be saved!</p>
-                <Button type="button" aria-label="Dismiss Warning" className="small outlined"
-                    onClick={() => setLocalStorageWarningDismissed(true)}>
-                  X
-                </Button>
-              </div>
-            </div>}
+          {!localStorageAvailable && !localStorageWarningDismissed && <div className="local-storage-warning">
+            <p>Warning: local storage unavailable.  Data will not be saved!</p>
 
+            <Button type="button" aria-label={DISMISS_LOCAL_STORAGE_WARNING_BUTTON_ACCESSIBLE_NAME}
+                className="small outlined" onClick={() => setLocalStorageWarningDismissed(true)}>
+              X
+            </Button>
+          </div>}
+
+          <section id="settings-bar" className={`${settingsBarCollapsed ? "display-none" : ""}`}
+              aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             <div className="settings-controls">
               <div>
                 <label>
-                  <span>Color Scheme:</span>
+                  <span>{COLOR_SCHEME_SELECT_ACCESSIBLE_NAME}</span>
                   <select id="color-scheme-select" value={colorScheme}
                       onChange={event => setColorScheme(event.target.value)}>
                     <option value="">Auto</option>
@@ -84,19 +91,28 @@ function Layout() {
             </div>
           </section>
 
-          <nav>
-            <ul>
-              <li>
-                <NavLink to="/">{HOME_NAV_TEXT}</NavLink>
-              </li>
-              <li>
-                <NavLink to="/countries" end>{COUNTRIES_NAV_TEXT}</NavLink>
-              </li>
-              <li>
-                <NavLink to="/quiz">{QUIZ_NAV_TEXT}</NavLink>
-              </li>
-            </ul>
-          </nav>
+          <div className="bar-bottom">
+            <nav>
+              <ul>
+                <li>
+                  <NavLink to="/">{HOME_NAV_TEXT}</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/countries" end>{COUNTRIES_NAV_TEXT}</NavLink>
+                </li>
+                <li>
+                  <NavLink to="/quiz">{QUIZ_NAV_TEXT}</NavLink>
+                </li>
+              </ul>
+            </nav>
+
+            <Button id="settings-bar-toggle-button" className={`symbol-font outlined ${settingsBarCollapsed ? "expand" : "collapse"}`}
+                onClick={() => setSettingsBarCollapsed(!settingsBarCollapsed)}
+                aria-label={settingsBarCollapsed ? EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME
+                : COLLAPSE_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME}>
+              <span className="button-content"></span>
+            </Button>
+          </div>
         </div>
       </div>
 

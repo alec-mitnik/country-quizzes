@@ -177,6 +177,11 @@ nav {
   white-space: nowrap;
 }
 
+/* Use a global style without nesting for automated test recognition */
+.display-none {
+  display: none;
+}
+
 label {
   --hover-glow-color: var(--background-color-primary-foreground-accent);
   cursor: pointer;

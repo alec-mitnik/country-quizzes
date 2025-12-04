@@ -773,7 +773,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         </DraggableCountryPool>
       </div>
 
-      {/* Reminder that you don't have to submit everything in one go TODO - verify this works */}
+      {/* Reminder that you don't have to submit everything in one go */}
       {roundActive && !Object.keys(quizState.countryFieldsLockedInAsCorrect).length
           && !!quizState.incorrectSubmissions.length
           && Object.values(quizState.incorrectSubmissions[

@@ -1,8 +1,12 @@
 import type { CountryStorage } from "../CountriesProvider";
 import supplementalCountryData from "../supplementalData/supplementalCountryData.json";
 
+export const DISMISS_LOCAL_STORAGE_WARNING_BUTTON_ACCESSIBLE_NAME = "Dismiss Warning";
 export const SETTINGS_BAR_ACCESSIBLE_NAME = "Settings Bar";
+export const COLOR_SCHEME_SELECT_ACCESSIBLE_NAME = "Color Scheme:";
 export const INDEPENDENT_COUNTRIES_CHECKBOX_LABEL = "Independent Countries Only";
+export const COLLAPSE_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME = "Collapse Settings Bar";
+export const EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME = "Expand Settings Bar";
 
 export const APP_URL = "https://alec-mitnik-country-quizzes.netlify.app/";
 
