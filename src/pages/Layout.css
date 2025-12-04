@@ -75,7 +75,7 @@
       &::before {
         content: '⯅' / '';
         display: block;
-        translate: 0 0.02em;
+        translate: 0 0.1em;
       }
     }
 
