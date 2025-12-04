@@ -81,8 +81,8 @@
 
     &.expand .button-content {
       &::before {
+        /* Too high up on Android devices, but eh, what can you do? */
         content: '⛭' / '';
-        display: block;
       }
     }
   }
