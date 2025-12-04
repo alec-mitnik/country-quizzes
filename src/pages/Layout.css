@@ -74,6 +74,8 @@
     &.collapse .button-content {
       &::before {
         content: '⯅' / '';
+        display: block;
+        translate: 0 0.02em;
       }
     }
 
