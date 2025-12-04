@@ -82,6 +82,7 @@
     &.expand .button-content {
       &::before {
         content: '⛭' / '';
+        display: block;
       }
     }
   }
