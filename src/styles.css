@@ -538,6 +538,10 @@ dl {
   opacity: 0;
   transition: opacity 0.3s ease-in-out;
 
+  &.instant-load {
+    transition: none;
+  }
+
   &.with-max-height {
     /* Keep some padding on the edges for the drop-shadow
     to not become hidden overflow for the max-height transition */

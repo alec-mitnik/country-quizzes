@@ -28,7 +28,8 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
       useState<React.ComponentProps<'img'>['loading']>("lazy");
   const dialogRef = useRef<HTMLDialogElement>(null);
   const closeButtonRef = useRef<HTMLButtonElement>(null);
-  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
+  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName, instantLoadClassName }
+      = useSmoothLoadingImageRef();
 
   return <div className="captioned-image-dialog-wrapper">
     {/* Put in the body so that screen readers don't treat the dialog
@@ -53,7 +54,8 @@ function CaptionedImageDialogButton({ imageDescription, buttonLabelOverride, src
 
           {!doneLoadingClassName && <span className="loading-image">{LOADING_IMAGE_MESSAGE}</span>}
           <figure>
-            <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}`}>
+            <div className={`smooth-loading with-max-height${doneLoadingClassName}${loadFailedClassName}${
+                  instantLoadClassName}`}>
               <div className="scroll-container with-height">
                 <img ref={imgCallbackRef} src={src} alt="" loading={imageLoadingAttribute}
                     className={`flag${src?.toLowerCase().endsWith('.svg') ? ' svg' : ''}`} />

@@ -16,6 +16,22 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   const [doneLoading, setDoneLoading, doneLoadingRef] = useStateRef(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const imagesDisabled = useRef(false);
+  const [instantLoad, setInstantLoad] = useState(true);
+  const instantLoadTimeoutRef = useRef<NodeJS.Timeout>(undefined);
+
+  // If the image is ready in the first 100ms, may want to show it instantly rather than with a fade-in
+  // (important for sorting out quizzes with image fields to not fade in after every move)
+  useEffect(() => {
+    setInstantLoad(true);
+
+    instantLoadTimeoutRef.current = setTimeout(() => {
+      setInstantLoad(false);
+    }, 100);
+
+    return () => {
+      clearTimeout(instantLoadTimeoutRef.current);
+    }
+  }, []);
 
   // A callback ref can be used like a useRef value, but will automatically
   // be called when the element attaches
@@ -145,6 +161,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
     imgHasAttached,
     doneLoadingClassName: doneLoading ? ' done-loading' : '',
     loadFailedClassName: loadFailed ? ' load-failed' : '',
+    instantLoadClassName: instantLoad ? ' instant-load' : '',
   };
 };
 

@@ -7,10 +7,12 @@ import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef";
  */
 function SmoothLoadingImage({src, className = "",
     ...htmlImageProps}: React.ImgHTMLAttributes<HTMLImageElement>) {
-  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName } = useSmoothLoadingImageRef();
+  const { imgCallbackRef, doneLoadingClassName, loadFailedClassName, instantLoadClassName }
+      = useSmoothLoadingImageRef();
 
   return src ? <img ref={imgCallbackRef} src={src}
-      className={`${className} smooth-loading${doneLoadingClassName}${loadFailedClassName}`}
+      className={`${className} smooth-loading${doneLoadingClassName}${loadFailedClassName}${
+          instantLoadClassName}`}
       {...htmlImageProps} /> : null;
 }
 
