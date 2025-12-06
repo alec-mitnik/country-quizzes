@@ -1,4 +1,5 @@
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
+import SmoothLoadingImage from "../SmoothLoadingImage";
 
 interface CaptionedImageForMatchingProps {
   imageTerm: string;
@@ -20,8 +21,8 @@ function CaptionedImageForMatching({ imageTerm, src,
       <CaptionedImageDialogButton imageDescription={`Country ${imageTerm}`} src={src} caption={caption}>
         {/* Don't use smooth loading here - it causes a delay for rendering the image on every mount,
         especially on mobile, so it doesn't work for movable components */}
-        {/* <SmoothLoadingImage src={src} alt={`Country ${imageTerm}`} className="flag" draggable={false} /> */}
-        <img src={src} alt={`Country ${imageTerm}`} className="flag" draggable={false} />
+        <SmoothLoadingImage src={src} alt={`Country ${imageTerm}`} className="flag" draggable={false} />
+        {/* <img src={src} alt={`Country ${imageTerm}`} className="flag" draggable={false} /> */}
       </CaptionedImageDialogButton>
 
       <figcaption>

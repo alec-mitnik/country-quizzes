@@ -28,7 +28,7 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
     }
     case "flagDescription": {
       display = <CaptionedImageForMatching
-          src={/* storedCountryData.countries[cca3]?.data?.flag */ "https://alec-mitnik.github.io/images/PXL_Avatar_1B.jpg"}
+          src={storedCountryData.countries[cca3]?.data?.flag}
           imageTerm="Flag"
           caption={getReactNodeString(value as string,
               "The flag of this country. No additional description available.")} />
