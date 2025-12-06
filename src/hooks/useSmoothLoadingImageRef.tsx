@@ -13,7 +13,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
   const imgRef = useRef<HTMLImageElement>(null);
   const [imgHasAttached, setImgHasAttached] = useState(false);
   const [, setCurrentSrc, currentSrcRef] = useStateRef('');
-  const [doneLoading, setDoneLoading, doneLoadingRef] = useStateRef(false);
+  const [doneLoading, setDoneLoading] = useState(false);
   const [loadFailed, setLoadFailed] = useState(false);
   const imagesDisabled = useRef(false);
   const [instantLoad, setInstantLoad] = useState(true);
@@ -31,18 +31,14 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
     return () => {
       clearTimeout(instantLoadTimeoutRef.current);
     }
-  }, []);
+  }, [setInstantLoad]);
 
   // A callback ref can be used like a useRef value, but will automatically
   // be called when the element attaches
   const imgCallbackRef = useCallback((imgElement: HTMLImageElement) => {
     imgRef.current = imgElement;
-    const hasAttached = !!imgElement;
-
-    if (hasAttached !== imgHasAttached) {
-      setImgHasAttached(hasAttached);
-    }
-  }, [setImgHasAttached, imgHasAttached]);
+    setImgHasAttached(!!imgElement);
+  }, [setImgHasAttached]);
 
   // The events won't be triggered if images are disabled by the browser,
   // so attempt to detect that with a test image
@@ -124,7 +120,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
     };
   // Spread operator prevents the linter from being able to analyze exhaustive dependencies
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [...dependencies, imgHasAttached, imgRef, currentSrcRef, doneLoadingRef,
+  }, [...dependencies, imgHasAttached, imgRef, currentSrcRef,
       setCurrentSrc, setDoneLoading, setLoadFailed]);
 
   // Force Safari to recalculate the filter region after the image is ready and visible
