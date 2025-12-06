@@ -17,7 +17,7 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
 
   switch (field) {
     case "location": {
-      const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
+      // const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
 
       display = <CaptionedImageForMatching
           src={/* key ? getLocatorMapSrc(key) : undefined */ "/images/locatorMaps/AF-locator-map.jpg"}
