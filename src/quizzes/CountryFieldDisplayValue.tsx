@@ -20,7 +20,7 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
       // const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
 
       display = <CaptionedImageForMatching
-          src={/* key ? getLocatorMapSrc(key) : undefined */ "/images/locatorMaps/AF-locator-map.jpg"}
+          src={/* key ? getLocatorMapSrc(key) : undefined */ "./images/locatorMaps/AF-locator-map.jpg"}
           imageTerm="Location"
           caption={getReactNodeString(value as string ?? "Unknown",
               "The location of this country. No additional description available.")} />
@@ -28,7 +28,7 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
     }
     case "flagDescription": {
       display = <CaptionedImageForMatching
-          src={/* storedCountryData.countries[cca3]?.data?.flag */ "images/BLZ_flag.svg"}
+          src={/* storedCountryData.countries[cca3]?.data?.flag */ "./images/BLZ_flag.svg"}
           imageTerm="Flag"
           caption={getReactNodeString(value as string,
               "The flag of this country. No additional description available.")} />
