@@ -1,7 +1,7 @@
 import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { FormattedCountryField, StoredCountry } from "../../types/commonTypes";
 import useCountries from "../hooks/useCountries";
-import { getReactNodeString } from "../utils/utils";
+import { getLocatorMapSrc, getReactNodeString } from "../utils/utils";
 import CaptionedImageForMatching from "./CaptionedImageForMatching";
 
 interface CountryFieldDisplayValueProps {
@@ -17,10 +17,10 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
 
   switch (field) {
     case "location": {
-      // const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
+      const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
 
       display = <CaptionedImageForMatching
-          src={/* key ? getLocatorMapSrc(key) : undefined */ "./images/locatorMaps/AF-locator-map.jpg"}
+          src={key ? getLocatorMapSrc(key) : undefined}
           imageTerm="Location"
           caption={getReactNodeString(value as string ?? "Unknown",
               "The location of this country. No additional description available.")} />
@@ -28,7 +28,7 @@ function CountryFieldDisplayValue({ cca3, field }: CountryFieldDisplayValueProps
     }
     case "flagDescription": {
       display = <CaptionedImageForMatching
-          src={/* storedCountryData.countries[cca3]?.data?.flag */ "./images/BLZ_flag.svg"}
+          src={/* storedCountryData.countries[cca3]?.data?.flag */ "https://alec-mitnik.github.io/images/PXL_Avatar_1B.jpg"}
           imageTerm="Flag"
           caption={getReactNodeString(value as string,
               "The flag of this country. No additional description available.")} />
