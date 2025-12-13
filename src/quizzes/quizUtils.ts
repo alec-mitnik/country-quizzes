@@ -2,9 +2,18 @@ import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import confetti from "canvas-confetti";
 import type { StoredCountry } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
-import { QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
-import { extractRandomArrayElement, getRandomArrayElement, getRandomHue, hslToHex, removeElementFromArray } from "../utils/utils";
-import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } from "./quizConfig";
+import {
+  QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL,
+  QUIZ_ROUNDS_PER_LEVEL
+} from "../utils/consts";
+import {
+  extractRandomArrayElement, getRandomArrayElement, getRandomHue,
+  hslToHex, removeElementFromArray
+} from "../utils/utils";
+import {
+  QUIZ_TYPES, type CountryCodeOverrideData, type MatchingQuizState,
+  type QuizState, type QuizType
+} from "./quizConfig";
 
 /**
  * Selects a new random quiz type
@@ -12,7 +21,7 @@ import { QUIZ_TYPES, type MatchingQuizState, type QuizState, type QuizType } fro
  * @returns A random new quiz type
  */
 export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
-  // return "SORT_OUT_VALUES"; // For easy testing
+  // return "MATCH_TO_FUN_FACTS"; // For easy testing
   const quizConfigs = Object.values(QUIZ_TYPES);
   const quizTypes: QuizType[] = [];
 
@@ -27,6 +36,39 @@ export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefin
       : quizTypes.filter(quizType => quizType !== currentType);
   const randomType = getRandomArrayElement<QuizType>(quizzes);
   return randomType;
+}
+
+/**
+ * Constructs the country codes override data for bordering country quizzes
+ * @param storedCountryData The country data
+ * @param countryCodes The originating country codes
+ * @returns The CountryCodeOverrideData[] of bordering country code data
+ */
+export function constructBorderingCountryCodesOverride(storedCountryData: CountryStorage, countryCodes: Cca3Code[]) {
+  // Combine all bordering countries into a single sorted array
+  // that keeps reference to the original countries for rendering tracking
+  const borderingCountryCodes: CountryCodeOverrideData[] =
+      countryCodes.flatMap(cca3 => (storedCountryData.countries[cca3]?.data?.borders ?? [])
+          .map(borderingCca3 => (
+            {
+              originatingCca3: cca3,
+              cca3: borderingCca3,
+              secondaryIndex: 0,
+            }
+          )) as CountryCodeOverrideData[]);
+  return borderingCountryCodes;
+}
+
+/**
+ * Function for checking if two CountryCodeOverrideData objects represent the same data
+ * @param a The first CountryCodeOverrideData to compare
+ * @param b The second CountryCodeOverrideData to compare
+ * @returns Whether the two CountryCodeOverrideData objects match
+ */
+export function doCountryCodeOverridesMatch(a: CountryCodeOverrideData | null,
+    b: CountryCodeOverrideData | null) {
+  return !!(a && b && a.cca3 === b.cca3 && a.originatingCca3 === b.originatingCca3
+      && a.secondaryIndex === b.secondaryIndex);
 }
 
 /**

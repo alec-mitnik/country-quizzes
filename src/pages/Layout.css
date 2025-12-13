@@ -3,6 +3,10 @@
     width: 100%;
     margin: auto;
 
+    /* Prevent view-transitioning elements from being shown in front of the header */
+    view-transition-name: header-bar;
+    z-index: 1;
+
     /* Darken the header bar a bit when beyond the max width */
     background: hsl(from var(--background-color-accent) h s calc(l * 0.8));
 
@@ -28,6 +32,9 @@
       display: flex;
       justify-content: space-between;
       align-items: end;
+      isolation: isolate;
+      z-index: 1;
+      background: inherit;
     }
   }
 
@@ -89,8 +96,21 @@
 
   #settings-bar {
     width: 100%;
+    display: grid;
+    grid-template-rows: 1fr;
+    transition: grid-template-rows 0.2s ease;
+
+    &.collapsed {
+      grid-template-rows: 0fr;
+
+      .settings-controls {
+        display: none;
+        transition: display 0s 0.2s allow-discrete;
+      }
+    }
 
     .settings-controls {
+      grid-row: 1 / -1;
       width: 100%;
       margin: auto;
       max-width: var(--layout-max-width);

@@ -1,4 +1,5 @@
 import React, { type PropsWithChildren } from "react";
+import { flushSync } from "react-dom";
 
 /**
  * For when filter can't be used because there can be duplicates
@@ -249,4 +250,24 @@ export function getEmojisForNumber(num: number): string {
       + String.fromCodePoint(0xfe0f) + String.fromCodePoint(0x20e3));
 
   return emojis.join('');
+}
+
+/**
+ * Calls the given function within a view transition (if supported),
+ * allowing for smooth transitions between states
+ * @param func Function to call within the view transition that will update the page state/layout
+ * @param skipCondition If true, the view transition will be skipped
+ */
+export function callFunctionWithViewTransition(func: () => void, skipCondition = false) {
+  if (!document.startViewTransition || skipCondition) {
+    func();
+  } else {
+    document.startViewTransition(() => {
+      // Calling flushSync is necessary for the view transition to work
+      // eslint-disable-next-line react-dom/no-flush-sync
+      flushSync(() => {
+        func();
+      });
+    });
+  }
 }

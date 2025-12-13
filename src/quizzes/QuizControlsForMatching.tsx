@@ -7,22 +7,25 @@ import CountryLinksValue from "../CountryLinksValue";
 import useCountries from "../hooks/useCountries";
 import { CUSTOM_DRAG_TYPE, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
 import { getCountryNameFromCode, sortCountryCodesByName } from "../utils/countryUtils";
-import { getLocatorMapSrc, getReactNodeString, removeFirstMatchFromArray } from "../utils/utils";
+import { callFunctionWithViewTransition, getLocatorMapSrc, getReactNodeString } from "../utils/utils";
 import CountryFieldDisplayValue from "./CountryFieldDisplayValue";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
-import type { MatchingQuizState, QuizState } from "./quizConfig";
-import { isQuizActive } from "./quizUtils";
+import type { CountryCodeOverrideData, MatchingQuizState, QuizState } from "./quizConfig";
+import { doCountryCodeOverridesMatch, isQuizActive } from "./quizUtils";
 
 function getSortedMatchedCountryCodes(storedCountryData: CountryStorage,
-    matchedCountryCodes: Partial<Record<number, Cca3Code[]>>) {
+    matchedCountryCodes: Partial<Record<number, CountryCodeOverrideData[]>>) {
   const matchedCodes = structuredClone(matchedCountryCodes);
 
   // Sort alphabetically by country name
   for (const cca3Array of Object.values(matchedCodes)) {
     if (cca3Array?.length) {
-      sortCountryCodesByName(cca3Array, storedCountryData.countries);
+      cca3Array.sort((a, b) => {
+        return getCountryNameFromCode(a.cca3, storedCountryData.countries)
+            .localeCompare(getCountryNameFromCode(b.cca3, storedCountryData.countries)) ?? 0;
+      });
     }
   }
 
@@ -36,9 +39,7 @@ interface QuizControlsForMatchingProps {
 
 function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatchingProps) {
   const [selectedCountryCode, setSelectedCountryCode] =
-      useState<Cca3Code | null>(null);
-  const [selectedCountryCodeArrayIndex, setSelectedCountryCodeArrayIndex] =
-      useState<number>(-1);
+      useState<CountryCodeOverrideData | null>(null);
   const [selectedCountryCodeMatchIndex, setSelectedCountryCodeMatchIndex] =
       useState<number>(-1);
   const [isDraggingCountryCode, setIsDraggingCountryCode] = useState(false);
@@ -50,8 +51,18 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   const [srAnnouncement, setSrAnnouncement] = useState<React.ReactNode>('');
   const srAnnouncementTimeoutIdRef = useRef<NodeJS.Timeout | number>(0);
 
-  const quizCountryCodes = quizState.countryCodesOverride ?? quizState.countryCodes;
+  const { storedCountryData } = useCountries();
+
   const singleCapacity = quizState.quiz.singleCapacity;
+
+  const quizCountryCodes: CountryCodeOverrideData[] = useMemo(() => {
+    return quizState.countryCodesOverride ??
+        quizState.countryCodes.map(countryCode => ({
+          originatingCca3: countryCode,
+          cca3: countryCode,
+          secondaryIndex: 0,
+        }));
+  }, [quizState.countryCodesOverride, quizState.countryCodes]);
 
   const numberOfLockedInCountryCodes = useMemo(() => {
     return Object.values(quizState.countryCodesLockedInAsCorrect).flat().length;
@@ -61,7 +72,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   const roundActive = quizActive && quizState.submissionsRemaining > 0
       && numberOfLockedInCountryCodes < quizCountryCodes.length;
 
-  function setMatchedCountryCodes(matchedCountryCodes: Partial<Record<number, Cca3Code[]>>) {
+  function setMatchedCountryCodes(matchedCountryCodes: Partial<Record<number, CountryCodeOverrideData[]>>) {
     setQuizState({
       ...quizState,
       matchedCountryCodes,
@@ -78,10 +89,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     };
   }, [quizState.countryCodes]);
 
-  const { storedCountryData } = useCountries();
-
   const allValuesAreIdentical = useMemo(() => {
-    return quizCountryCodes.every(countryCode => {
+    return quizCountryCodes.every(({cca3: countryCode}) => {
       return quizState.quiz.valueFunction(storedCountryData, countryCode)
           === quizState.quiz.valueFunction(storedCountryData, quizState.countryCodes[0])
     });
@@ -90,21 +99,21 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   const sortedMatchValues = useMemo(() => {
     const matchValues: {cca3: Cca3Code, valueArray: string[] | undefined,
         secondaryIndex: number | undefined, value: string,
-        label: React.ReactNode}[] = quizState.countryCodes.map((countryCode, index) => {
+        label: React.ReactNode}[] = quizCountryCodes.map(countryCodeData => {
       const valueArray = quizState.quiz.valueArrayFunction ?
-          quizState.quiz.valueArrayFunction(storedCountryData, countryCode) : undefined;
-      const secondaryIndex = quizState.countryCodeSecondaryIndexes?.[index];
-      const value = quizState.quiz.valueFunction(storedCountryData, countryCode, secondaryIndex);
-      let label = quizState.quiz.labelFunction(storedCountryData, countryCode, secondaryIndex);
+          quizState.quiz.valueArrayFunction(storedCountryData, countryCodeData.cca3) : undefined;
+      const secondaryIndex = countryCodeData.secondaryIndex;
+      const value = quizState.quiz.valueFunction(storedCountryData, countryCodeData.cca3, secondaryIndex);
+      let label = quizState.quiz.labelFunction(storedCountryData, countryCodeData.cca3, secondaryIndex);
 
       if (quizState.quiz.type === "MATCH_TO_FLAGS") {
-        label = <CountryFieldDisplayValue cca3={countryCode} field="flagDescription" />
+        label = <CountryFieldDisplayValue cca3={countryCodeData.cca3} field="flagDescription" />
       } else if (quizState.quiz.type === "MATCH_TO_LOCATIONS") {
-        label = <CountryFieldDisplayValue cca3={countryCode} field="location" />
+        label = <CountryFieldDisplayValue cca3={countryCodeData.cca3} field="location" />
       }
 
       return {
-        cca3: countryCode,
+        cca3: countryCodeData.cca3,
         valueArray,
         secondaryIndex,
         value,
@@ -126,20 +135,20 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     return matchValues;
-  }, [storedCountryData, quizState.countryCodes, quizState.countryCodeSecondaryIndexes, quizState.quiz]);
+  }, [storedCountryData, quizCountryCodes, quizState.quiz]);
 
   const unmatchedCountryCodes = useMemo(() => {
-    const unmatchedCodes = [...quizCountryCodes];
+    const matchedCodes = Object.values(quizState.matchedCountryCodes).flat()
+        .filter(Boolean) as CountryCodeOverrideData[];
+    const unmatchedCodes = quizCountryCodes.filter(countryCodeData => {
+      return !matchedCodes.some(matchedCountryCode =>
+          doCountryCodeOverridesMatch(matchedCountryCode, countryCodeData));
+    });
 
-    // Can't just filter, because there might be duplicates
-    for (const cca3 of Object.values(quizState.matchedCountryCodes).flat()) {
-      removeFirstMatchFromArray(unmatchedCodes, cca3);
-    }
-
-    sortCountryCodesByName(unmatchedCodes, storedCountryData.countries);
-
+    unmatchedCodes.sort((a, b) => getCountryNameFromCode(a.cca3, storedCountryData.countries)
+        ?.localeCompare(getCountryNameFromCode(b.cca3, storedCountryData.countries)));
     return unmatchedCodes;
-  }, [quizState.matchedCountryCodes, storedCountryData.countries, quizCountryCodes]);
+  }, [quizState.matchedCountryCodes, quizCountryCodes, storedCountryData.countries]);
 
   const sortedMatchedCountryCodes = useMemo(() => {
     return getSortedMatchedCountryCodes(storedCountryData, quizState.matchedCountryCodes);
@@ -147,8 +156,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
   const alreadyGuessed = useMemo(() => {
     for (const incorrectSubmission of quizState.incorrectSubmissions) {
-      if (incorrectSubmission.join("|") ===
-          Object.entries(sortedMatchedCountryCodes).join("|")) {
+      if (JSON.stringify(incorrectSubmission) ===
+          JSON.stringify(Object.entries(sortedMatchedCountryCodes))) {
         return true;
       }
     };
@@ -172,7 +181,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     srAnnouncementTimeoutIdRef.current = setTimeout(() => setSrAnnouncement(''), 1000);
   }
 
-  function handleDragStart(event: DragEvent, countryCode: Cca3Code, arrayIndex: number, matchIndex = -1) {
+  function handleDragStart(event: DragEvent, countryCodeData: CountryCodeOverrideData,
+      matchIndex = -1) {
     if (event.dataTransfer.types.length) {
       // Deselect any selected text
       window.getSelection()?.removeAllRanges();
@@ -183,11 +193,10 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     // Use a custom data type to prevent interactions with dragged text or the like
-    event.dataTransfer.setData(CUSTOM_DRAG_TYPE, countryCode);
+    event.dataTransfer.setData(CUSTOM_DRAG_TYPE, countryCodeData.cca3);
     event.dataTransfer.effectAllowed = 'move';
 
-    setSelectedCountryCode(countryCode);
-    setSelectedCountryCodeArrayIndex(arrayIndex);
+    setSelectedCountryCode(countryCodeData);
     setSelectedCountryCodeMatchIndex(matchIndex);
     setIsDraggingCountryCode(true);
 
@@ -212,7 +221,6 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     // is unmounted in the drop handler, so drop handlers that
     // move elements need to clear the selection themselves
     setSelectedCountryCode(null);
-    setSelectedCountryCodeArrayIndex(-1);
     setSelectedCountryCodeMatchIndex(-1);
     setIsDraggingCountryCode(false);
   }
@@ -243,7 +251,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     let submissionCorrect = true;
 
     // For a correct submission, clear out previous incorrect submissions
-    let incorrectSubmissions: [string, Cca3Code[]][][] = [];
+    let incorrectSubmissions: [string, CountryCodeOverrideData[]][][] = [];
 
     // Submission is correct if all matched (non-blank) values are correct
     for (const [index, countryCodes] of Object.entries(sortedMatchedCountryCodes)) {
@@ -254,15 +262,15 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
         continue;
       }
 
-      for (const countryCode of countryCodes) {
+      for (const countryCodeData of countryCodes) {
         if (quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES") {
-          if (matchedValueArray && !matchedValueArray.includes(countryCode)) {
+          if (matchedValueArray && !matchedValueArray.includes(countryCodeData.cca3)) {
             submissionCorrect = false;
             break;
           }
         } else {
           const correctValue = quizState.quiz.valueFunction(
-              storedCountryData, countryCode, secondaryIndex);
+              storedCountryData, countryCodeData.cca3, secondaryIndex);
 
           if (correctValue !== matchedValue) {
             submissionCorrect = false;
@@ -281,13 +289,14 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     if (!submissionCorrect) {
       // Record the incorrect submission
       incorrectSubmissions = [...quizState.incorrectSubmissions,
-          Object.entries(newMatchedCountryCodes) as [string, Cca3Code[]][]];
+          Object.entries(newMatchedCountryCodes) as [string, CountryCodeOverrideData[]][]];
 
       // Clear out any non-locked-in countries
       for (const [index, countryCodes] of Object.entries(sortedMatchedCountryCodes)) {
         if (countryCodes?.length) {
           newMatchedCountryCodes[parseInt(index)] = countryCodes.filter(countryCode =>
-              newLockedInCountryCodes[parseInt(index)]?.includes(countryCode));
+              newLockedInCountryCodes[parseInt(index)]?.find(lockedInCountryCode =>
+                  doCountryCodeOverridesMatch(countryCode, lockedInCountryCode)));
         }
 
         if (!countryCodes?.length) {
@@ -339,14 +348,16 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     const countryCodesAtSlot = sortedMatchedCountryCodes[matchIndex];
 
     if (countryCodesAtSlot?.length) {
-      if (countryCodesAtSlot.includes(countryCode)) {
+      if (countryCodesAtSlot.find(slotData => slotData.cca3 === countryCode)) {
         // Occupied by the same country already
         return false;
       }
 
       if (singleCapacity) {
         if (allowSwaps) {
-          if (quizState.countryCodesLockedInAsCorrect[matchIndex]?.includes(countryCodesAtSlot[0])) {
+          if (quizState.countryCodesLockedInAsCorrect[matchIndex]
+              ?.find(lockedInCountryCode => doCountryCodeOverridesMatch(
+                  lockedInCountryCode, countryCodesAtSlot[0]))) {
             // Occupied by a locked-in country
             return false;
           }
@@ -361,7 +372,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   }
 
   // Remove the country code from the slot at the designated index
-  function onRemove(countryCode: Cca3Code, matchIndex: number) {
+  function onRemove(countryCodeData: CountryCodeOverrideData, matchIndex: number) {
     const matchCountryCodes = sortedMatchedCountryCodes[matchIndex];
 
     if (!matchCountryCodes?.length) {
@@ -371,8 +382,9 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     const matchedData = sortedMatchValues[matchIndex];
 
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
-    const newCountryCodes = [...matchCountryCodes];
-    removeFirstMatchFromArray(newCountryCodes, countryCode);
+    const newCountryCodes = matchCountryCodes.filter(countryCodeValue =>
+        countryCodeValue.cca3 !== countryCodeData.cca3
+        || countryCodeValue.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (newCountryCodes.length) {
       newMatchedCountryCodes[matchIndex] = newCountryCodes;
@@ -380,26 +392,28 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
       delete newMatchedCountryCodes[matchIndex];
     }
 
-    setMatchedCountryCodes(newMatchedCountryCodes);
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryCodes(newMatchedCountryCodes);
 
-    // Use the original label to avoid using the markup for flags
-    announceForScreenReaders(<>{getCountryNameFromCode(countryCode, storedCountryData.countries)
-        } unmatched from {quizState.quiz.labelFunction(storedCountryData, matchedData.cca3)}.</>);
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+          } unmatched from {quizState.quiz.labelFunction(storedCountryData, matchedData.cca3)}.</>);
+    }, isDraggingCountryCode);
   }
 
   // Add to the slot at the designated index if set,
   // or else to the first one with capacity.  If single capacity and the provided index
   // is occupied and not locked-in, swap with the country code there.
   // If it is locked-in, do nothing. Also handles if dragged from another index.
-  function onAdd(countryCode: Cca3Code, matchIndex = targetMatchIndexForAdd) {
-    if (matchIndex >= 0 && !canSlotAcceptCountryCode(countryCode, matchIndex)) {
+  function onAdd(countryCodeData: CountryCodeOverrideData, matchIndex = targetMatchIndexForAdd) {
+    if (matchIndex >= 0 && !canSlotAcceptCountryCode(countryCodeData.cca3, matchIndex)) {
       return;
     }
 
     if (matchIndex < 0) {
       // No designated slot, so find the first available slot
       for (let i = 0; i < sortedMatchValues.length; i++) {
-        if (canSlotAcceptCountryCode(countryCode, i, false)) {
+        if (canSlotAcceptCountryCode(countryCodeData.cca3, i, false)) {
           matchIndex = i;
           break;
         }
@@ -412,8 +426,9 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
       const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
 
       if (selectedCountryCodeMatchIndex >= 0) {
-        const newCountryCodes = [...(sortedMatchedCountryCodes[selectedCountryCodeMatchIndex] ?? [])];
-        removeFirstMatchFromArray(newCountryCodes, countryCode);
+        const newCountryCodes = [...(sortedMatchedCountryCodes[selectedCountryCodeMatchIndex] ?? [])]
+            .filter(countryCodeData => countryCodeData.cca3 !== countryCodeData.cca3
+                || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
         if (singleCapacity && countryCodesAtSlot?.length) {
           // Add the occupying country to the moving country's slot
@@ -437,24 +452,26 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       // Add the country to its new slot
       const newCountryCodes = (countryCodesAtSlot ?? []);
-      newCountryCodes.push(countryCode);
+      newCountryCodes.push(countryCodeData);
       newMatchedCountryCodes[matchIndex] = newCountryCodes;
 
-      setMatchedCountryCodes(newMatchedCountryCodes);
+      callFunctionWithViewTransition(() => {
+        setMatchedCountryCodes(newMatchedCountryCodes);
 
-      // Use the original label to avoid using the markup for flags
-      announceForScreenReaders(<>{getCountryNameFromCode(countryCode, storedCountryData.countries)
-          } now matched to {
-            quizState.quiz.labelFunction(storedCountryData, sortedMatchValues[matchIndex].cca3)
-          }{singleCapacity && countryCodesAtSlot?.length ? `, swapped with ${
-            getCountryNameFromCode(countryCodesAtSlot[0], storedCountryData.countries)
-          }` : ""}.</>);
+        // Use the original label to avoid using the markup for flags
+        announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+            } now matched to {
+              quizState.quiz.labelFunction(storedCountryData, sortedMatchValues[matchIndex].cca3)
+            }{singleCapacity && countryCodesAtSlot?.length ? `, swapped with ${
+              getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
+            }` : ""}.</>);
+      }, isDraggingCountryCode);
     }
   }
 
   // Move to previous index with capacity in the sortedMatchValues order,
   // looping around if the first one, and swapping with any country code there if single capacity
-  function onMoveUp(countryCode: Cca3Code, matchIndex: number) {
+  function onMoveUp(countryCodeData: CountryCodeOverrideData, matchIndex: number) {
     const matchCountryCodes = sortedMatchedCountryCodes[matchIndex];
 
     if (!matchCountryCodes?.length) {
@@ -462,7 +479,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     let newMatchValueIndex = -1;
-    let countryCodesAtSlot: Cca3Code[] | undefined;
+    let countryCodesAtSlot: CountryCodeOverrideData[] | undefined;
 
     for (let i = matchIndex - 1; i !== matchIndex; i--) {
       if (i < 0) {
@@ -470,7 +487,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
         continue;
       }
 
-      if (!canSlotAcceptCountryCode(countryCode, i)) {
+      if (!canSlotAcceptCountryCode(countryCodeData.cca3, i)) {
         continue;
       }
 
@@ -487,8 +504,9 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
 
-    const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])];
-    removeFirstMatchFromArray(newCountryCodes, countryCode);
+    const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])]
+        .filter(countryCodeData => countryCodeData.cca3 !== countryCodeData.cca3
+            || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (singleCapacity && countryCodesAtSlot.length) {
       // Add the occupying country to the moving country's slot
@@ -507,37 +525,41 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     // Add the moving country to the new slot
-    newMatchedCountryCodes[newMatchValueIndex] = [...countryCodesAtSlot, countryCode];
-    setMatchedCountryCodes(newMatchedCountryCodes);
+    newMatchedCountryCodes[newMatchValueIndex] = [...countryCodesAtSlot, countryCodeData];
 
-    setTimeout(() => {
-      const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
-      const arrayIndex = sortedMatched[newMatchValueIndex]?.indexOf(countryCode) ?? -1;
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryCodes(newMatchedCountryCodes);
 
-      if (arrayIndex >= 0) {
-        // Maintain focus on the button for the value element after moving
-        const moveUpButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
-          newMatchValueIndex + 1
-        }) .move-up-button`)[arrayIndex];
+      requestAnimationFrame(() => {
+        const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
+        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(countryCode =>
+            doCountryCodeOverridesMatch(countryCode, countryCodesAtSlot[0])) ?? -1;
 
-        if (moveUpButton instanceof HTMLButtonElement) {
-          moveUpButton.focus();
+        if (arrayIndex >= 0) {
+          // Maintain focus on the button for the value element after moving
+          const moveUpButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
+            newMatchValueIndex + 1
+          }) .move-up-button`)[arrayIndex];
+
+          if (moveUpButton instanceof HTMLButtonElement) {
+            moveUpButton.focus();
+          }
         }
-      }
-    });
+      });
 
-    // Use the original label to avoid using the markup for flags
-    announceForScreenReaders(<>{getCountryNameFromCode(countryCode, storedCountryData.countries)
-        } moved up, now matched to {quizState.quiz.labelFunction(
-            storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
-        singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
-          getCountryNameFromCode(countryCodesAtSlot[0], storedCountryData.countries)
-        }.` : ""}</>);
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+          } moved up, now matched to {quizState.quiz.labelFunction(
+              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
+          singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
+            getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
+          }.` : ""}</>);
+    });
   }
 
   // Move to next index with capacity in the sortedMatchValues order,
   // looping around if the last one, and swapping with any country code there if single capacity
-  function onMoveDown(countryCode: Cca3Code, matchIndex: number) {
+  function onMoveDown(countryCodeData: CountryCodeOverrideData, matchIndex: number) {
     const matchCountryCodes = sortedMatchedCountryCodes[matchIndex];
 
     if (!matchCountryCodes?.length) {
@@ -545,7 +567,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     let newMatchValueIndex = -1;
-    let countryCodesAtSlot: Cca3Code[] | undefined;
+    let countryCodesAtSlot: CountryCodeOverrideData[] | undefined;
 
     for (let i = matchIndex + 1; i !== matchIndex; i++) {
       if (i >= sortedMatchValues.length) {
@@ -553,7 +575,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
         continue;
       }
 
-      if (!canSlotAcceptCountryCode(countryCode, i)) {
+      if (!canSlotAcceptCountryCode(countryCodeData.cca3, i)) {
         continue;
       }
 
@@ -570,8 +592,9 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
 
-    const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])];
-    removeFirstMatchFromArray(newCountryCodes, countryCode);
+    const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])]
+        .filter((countryCodeData) => countryCodeData.cca3 !== countryCodeData.cca3
+            || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (singleCapacity && countryCodesAtSlot.length) {
       // Add the occupying country to the moving country's slot
@@ -590,32 +613,36 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     // Add the moving country to the new slot
-    newMatchedCountryCodes[newMatchValueIndex] = [...countryCodesAtSlot, countryCode];
-    setMatchedCountryCodes(newMatchedCountryCodes);
+    newMatchedCountryCodes[newMatchValueIndex] = [...countryCodesAtSlot, countryCodeData];
 
-    setTimeout(() => {
-      const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
-      const arrayIndex = sortedMatched[newMatchValueIndex]?.indexOf(countryCode) ?? -1;
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryCodes(newMatchedCountryCodes);
 
-      if (arrayIndex >= 0) {
-        // Maintain focus on the button for the value element after moving
-        const moveDownButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
-          newMatchValueIndex + 1
-        }) .move-down-button`)[arrayIndex];
+      requestAnimationFrame(() => {
+        const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
+        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(countryCodeData =>
+            doCountryCodeOverridesMatch(countryCodeData, countryCodeData)) ?? -1;
 
-        if (moveDownButton instanceof HTMLButtonElement) {
-          moveDownButton.focus();
+        if (arrayIndex >= 0) {
+          // Maintain focus on the button for the value element after moving
+          const moveDownButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
+            newMatchValueIndex + 1
+          }) .move-down-button`)[arrayIndex];
+
+          if (moveDownButton instanceof HTMLButtonElement) {
+            moveDownButton.focus();
+          }
         }
-      }
-    });
+      });
 
-    // Use the original label to avoid using the markup for flags
-    announceForScreenReaders(<>{getCountryNameFromCode(countryCode, storedCountryData.countries)
-        } moved down, now matched to {quizState.quiz.labelFunction(
-            storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
-        singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
-          getCountryNameFromCode(countryCodesAtSlot[0], storedCountryData.countries)
-        }.` : ""}</>);
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+          } moved down, now matched to {quizState.quiz.labelFunction(
+              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
+          singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
+            getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
+          }.` : ""}</>);
+    });
   }
 
   return (
@@ -627,30 +654,34 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
             headerText={`Unmatched ${quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
                 "Bordering " : ""}Countries`}
             emptyMessage="All countries have been matched"
-            selectedCountryCode={selectedCountryCode}
+            selectedCountryCode={selectedCountryCode?.cca3}
             onDrop={handleDropForUnmatchedPool}>
-          {unmatchedCountryCodes.map((countryCode, index) => (
-            // Allow duplicate country codes for bordering country quizzes
-            // eslint-disable-next-line react-x/no-array-index-key
-            <li key={`${(countryCode)}_${index}`}>
-              <DraggableCountry cca3={countryCode}
-                  revealedValueLabel={quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
-                      undefined : sortedMatchValues.find(
-                          matchData => matchData.cca3 === countryCode)?.label}
-                  isSelected={countryCode === selectedCountryCode && index === selectedCountryCodeArrayIndex
-                      && selectedCountryCodeMatchIndex < 0}
-                  isDragged={countryCode === selectedCountryCode && index === selectedCountryCodeArrayIndex
-                      && selectedCountryCodeMatchIndex < 0 && isDraggingCountryCode}
-                  roundActive={roundActive}
-                  quizActive={quizActive}
-                  quizType={quizState.quiz.type}
-                  onDragStart={(event) => handleDragStart(event, countryCode, index)}
-                  onDragEnd={handleDragEnd}
-                  onDrag={handleDrag}
-                  onDrop={handleDropForUnmatchedPool}
-                  onAdd={() => onAdd(countryCode)} />
-            </li>
-          ))}
+          {unmatchedCountryCodes.map(countryCodeData => {
+            const key = `${countryCodeData.originatingCca3}_${countryCodeData.cca3}_${
+                countryCodeData.secondaryIndex}`;
+
+            // Allow duplicate country codes for bordering country and fun fact quizzes
+            return (
+              <li key={key} style={{ viewTransitionName: key}}>
+                <DraggableCountry cca3={countryCodeData.cca3}
+                    revealedValueLabel={quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
+                        undefined : sortedMatchValues.find(
+                            matchData => matchData.cca3 === countryCodeData.cca3)?.label}
+                    isSelected={doCountryCodeOverridesMatch(countryCodeData, selectedCountryCode)
+                        && selectedCountryCodeMatchIndex < 0}
+                    isDragged={doCountryCodeOverridesMatch(countryCodeData, selectedCountryCode)
+                        && selectedCountryCodeMatchIndex < 0 && isDraggingCountryCode}
+                    roundActive={roundActive}
+                    quizActive={quizActive}
+                    quizType={quizState.quiz.type}
+                    onDragStart={(event) => handleDragStart(event, countryCodeData)}
+                    onDragEnd={handleDragEnd}
+                    onDrag={handleDrag}
+                    onDrop={handleDropForUnmatchedPool}
+                    onAdd={() => onAdd(countryCodeData)} />
+              </li>
+            );
+          })}
         </DraggableCountryPool>
 
         <DraggableCountryPool headerId="matched-pool-header"
@@ -662,7 +693,10 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           {sortedMatchValues.map((matchData, matchIndex) => {
             const matchValueCountryCodes = sortedMatchedCountryCodes[matchIndex];
             const itemKey = `${getReactNodeString(matchData.label)}_${matchIndex}`;
-            const CountryWrapper = singleCapacity ? React.Fragment : 'li';
+
+            // Can't be a fragment, as it needs the view transition style applied
+            const CountryWrapper = singleCapacity ? 'div' : 'li';
+
             let matchDataLabel = matchData.label;
             let revealedBorderingCountries: React.ReactNode = undefined;
 
@@ -721,12 +755,13 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
                     contentBelowHeader={contentBelowHeader}
                     singleCapacity={singleCapacity}
                     canBeDroppedIntoDirectly={!matchValueCountryCodes?.length
-                        || (!(selectedCountryCode && matchValueCountryCodes.includes(selectedCountryCode))
-                        && !(singleCapacity && quizState.countryCodesLockedInAsCorrect[matchIndex]?.includes(
-                            matchValueCountryCodes[0])))}
+                        || (!(selectedCountryCode && matchValueCountryCodes.find(matchedCountryCode =>
+                            doCountryCodeOverridesMatch(matchedCountryCode, selectedCountryCode)))
+                        && !(singleCapacity && quizState.countryCodesLockedInAsCorrect[matchIndex]?.find(
+                            lockedInCountryCode => doCountryCodeOverridesMatch(lockedInCountryCode, selectedCountryCode))))}
                     emptyMessage={roundActive ? `Drag${singleCapacity ? " the" : " any"} matching ${
                         singleCapacity ? "country" : "countries"} here` : ""}
-                    selectedCountryCode={selectedCountryCode}
+                    selectedCountryCode={selectedCountryCode?.cca3}
                     isTargetForAdd={targetMatchIndexForAdd === matchIndex}
                     hideTargetForAddButton={singleCapacity
                         && !!quizState.matchedCountryCodes[matchIndex]?.length}
@@ -736,31 +771,34 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
                             matchIndex === targetMatchIndexForAdd ? -1 : matchIndex) : undefined}
                     onDrop={event => handleDropForMatchValue(event, matchIndex)}>
                   {matchValueCountryCodes ?
-                      matchValueCountryCodes.map((countryCode, index) => (
-                    // Allow duplicate country codes for bordering country quizzes
-                    // eslint-disable-next-line react-x/no-array-index-key
-                    <CountryWrapper key={`${(countryCode)}_${index}`}>
-                      <DraggableCountry cca3={countryCode}
-                        isSelected={countryCode === selectedCountryCode
-                            && index === selectedCountryCodeArrayIndex
-                            && matchIndex === selectedCountryCodeMatchIndex}
-                        isDragged={countryCode === selectedCountryCode
-                            && index === selectedCountryCodeArrayIndex
-                            && matchIndex === selectedCountryCodeMatchIndex
-                            && isDraggingCountryCode}
-                        isLockedIn={quizState.countryCodesLockedInAsCorrect[matchIndex]
-                            ?.includes(countryCode)}
-                        roundActive={roundActive}
-                        quizActive={quizActive}
-                        quizType={quizState.quiz.type}
-                        onDragStart={(event) => handleDragStart(event, countryCode, index, matchIndex)}
-                        onDragEnd={handleDragEnd}
-                        onDrag={handleDrag}
-                        onMoveUp={() => onMoveUp(countryCode, matchIndex)}
-                        onMoveDown={() => onMoveDown(countryCode, matchIndex)}
-                        onRemove={() => onRemove(countryCode, matchIndex)} />
-                    </CountryWrapper>
-                  )) : null}
+                      matchValueCountryCodes.map(countryCodeData => {
+                    const key = `${countryCodeData.originatingCca3}_${countryCodeData.cca3}_${
+                        countryCodeData.secondaryIndex}`;
+
+                    // Allow duplicate country codes for fun fact and bordering country quizzes
+                    return (
+                      <CountryWrapper key={key} style={{ viewTransitionName: key}}>
+                        <DraggableCountry cca3={countryCodeData.cca3}
+                          isSelected={doCountryCodeOverridesMatch(countryCodeData, selectedCountryCode)
+                              && matchIndex === selectedCountryCodeMatchIndex}
+                          isDragged={doCountryCodeOverridesMatch(countryCodeData, selectedCountryCode)
+                              && matchIndex === selectedCountryCodeMatchIndex
+                              && isDraggingCountryCode}
+                          isLockedIn={!!quizState.countryCodesLockedInAsCorrect[matchIndex]
+                              ?.find(lockedInCountryCode =>
+                                  doCountryCodeOverridesMatch(lockedInCountryCode, countryCodeData))}
+                          roundActive={roundActive}
+                          quizActive={quizActive}
+                          quizType={quizState.quiz.type}
+                          onDragStart={(event) => handleDragStart(event, countryCodeData, matchIndex)}
+                          onDragEnd={handleDragEnd}
+                          onDrag={handleDrag}
+                          onMoveUp={() => onMoveUp(countryCodeData, matchIndex)}
+                          onMoveDown={() => onMoveDown(countryCodeData, matchIndex)}
+                          onRemove={() => onRemove(countryCodeData, matchIndex)} />
+                      </CountryWrapper>
+                    )}) : null
+                  }
                 </DraggableCountryPool>
               </li>
             );

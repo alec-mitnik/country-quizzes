@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import { QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
 import { getCountryNameFromCode, sortCountryCodesByName } from "../utils/countryUtils";
+import { callFunctionWithViewTransition } from "../utils/utils";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
@@ -258,8 +259,10 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   }
 
   function onRemove(countryCode: Cca3Code) {
-    setRankedCountryCodes(quizState.rankedCountryCodes.filter(code => code !== countryCode));
-    announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)} removed`);
+    callFunctionWithViewTransition(() => {
+      setRankedCountryCodes(quizState.rankedCountryCodes.filter(code => code !== countryCode));
+      announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)} removed`);
+    }, isDraggingCountryCode);
   }
 
   function onAdd(countryCode: Cca3Code, rankIndex = -1) {
@@ -274,9 +277,11 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
       : (rankIndex < 0 ? newRankedCountryCodes.length : 0);
     newRankedCountryCodes.splice(updatedEffectiveIndex, 0, countryCode);
 
-    setRankedCountryCodes(newRankedCountryCodes);
-    announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)
-        } ${moved ? "moved to" : "added at"} rank ${updatedEffectiveIndex + 1}.`);
+    callFunctionWithViewTransition(() => {
+      setRankedCountryCodes(newRankedCountryCodes);
+      announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)
+          } ${moved ? "moved to" : "added at"} rank ${updatedEffectiveIndex + 1}.`);
+    }, isDraggingCountryCode);
   }
 
   return (
@@ -290,7 +295,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
             selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForUnrankedPool}>
           {unrankedCountryCodes.map((countryCode) => (
-            <li key={countryCode}>
+            <li key={countryCode} style={{ viewTransitionName: countryCode }}>
               <DraggableCountry cca3={countryCode}
                   revealedValueLabel={quizState.quiz.labelFunction(
                       storedCountryData, independentOnly, countryCode)}
@@ -313,7 +318,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
             selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForRankedList}>
           {quizState.rankedCountryCodes.map((countryCode, index) => (
-            <li key={countryCode}>
+            <li key={countryCode} style={{ viewTransitionName: countryCode }}>
               <DraggableCountry cca3={countryCode} rankIndex={index}
                   revealedValueLabel={quizState.quiz.labelFunction(
                       storedCountryData, independentOnly, countryCode)}

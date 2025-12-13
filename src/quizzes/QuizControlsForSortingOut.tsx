@@ -7,7 +7,7 @@ import type { CountryStorage } from "../CountriesProvider";
 import useCountries from "../hooks/useCountries";
 import { CUSTOM_DRAG_TYPE, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
 import { getCountryNameFromCode, getFieldReadableValue, getPluralFieldLabel } from "../utils/countryUtils";
-import { getLocatorMapSrc } from "../utils/utils";
+import { callFunctionWithViewTransition, getLocatorMapSrc } from "../utils/utils";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
@@ -399,14 +399,16 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
     const newMatchedCountryFields = structuredClone(quizState.matchedCountryFields);
     delete newMatchedCountryFields[countryCodeSlot]?.[countryField];
 
-    setMatchedCountryFields(newMatchedCountryFields);
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryFields(newMatchedCountryFields);
 
-    // Use the original label to avoid using the markup for flags
-    announceForScreenReaders(<>{
-      getFieldReadableValue(storedCountryData, matchedValue, countryField, !singleCapacity)
-    } unmatched from {
-      getCountryNameFromCode(countryCodeSlot, storedCountryData.countries)
-    }.</>);
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{
+        getFieldReadableValue(storedCountryData, matchedValue, countryField, !singleCapacity)
+      } unmatched from {
+        getCountryNameFromCode(countryCodeSlot, storedCountryData.countries)
+      }.</>);
+    }, isDraggingCountryField);
   }
 
   // Add to the designated country code slot if set,
@@ -459,15 +461,17 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         [countryField]: countryCodeValue,
       };
 
-      setMatchedCountryFields(newMatchedCountryFields);
+      callFunctionWithViewTransition(() => {
+        setMatchedCountryFields(newMatchedCountryFields);
 
-      announceForScreenReaders(<>{
-        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
-      } now matched to {
-        getCountryNameFromCode(countryCodeSlot, storedCountryData.countries)
-      }{
-        swappedValue ? `, swapped with ${swappedValue}` : ""
-      }.</>);
+        announceForScreenReaders(<>{
+          getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
+        } now matched to {
+          getCountryNameFromCode(countryCodeSlot, storedCountryData.countries)
+        }{
+          swappedValue ? `, swapped with ${swappedValue}` : ""
+        }.</>);
+      }, isDraggingCountryField);
     }
   }
 
@@ -528,32 +532,34 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       [countryField]: countryCodeValue,
     };
 
-    setMatchedCountryFields(newMatchedCountryFields);
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryFields(newMatchedCountryFields);
 
-    setTimeout(() => {
-      const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
-          !singleCapacity);
-      const arrayIndex = Object.keys(sortedMatched[toSlotCountryCode] ?? {}).indexOf(countryField) ?? -1;
+      requestAnimationFrame(() => {
+        const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
+            !singleCapacity);
+        const arrayIndex = Object.keys(sortedMatched[toSlotCountryCode] ?? {}).indexOf(countryField) ?? -1;
 
-      if (arrayIndex >= 0) {
-        // Maintain focus on the button for the value element after moving
-        const moveUpButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
-          toSlotIndex + 1
-        }) .move-up-button`)[arrayIndex];
+        if (arrayIndex >= 0) {
+          // Maintain focus on the button for the value element after moving
+          const moveUpButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
+            toSlotIndex + 1
+          }) .move-up-button`)[arrayIndex];
 
-        if (moveUpButton instanceof HTMLButtonElement) {
-          moveUpButton.focus();
+          if (moveUpButton instanceof HTMLButtonElement) {
+            moveUpButton.focus();
+          }
         }
-      }
-    });
+      });
 
-    announceForScreenReaders(<>{
-      getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
-    } moved up, now matched to {
-      getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
-    }{
-      swappedValue ? `, swapped with ${swappedValue}` : ""
-    }.</>);
+      announceForScreenReaders(<>{
+        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
+      } moved up, now matched to {
+        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
+      }{
+        swappedValue ? `, swapped with ${swappedValue}` : ""
+      }.</>);
+    });
   }
 
   // Move to next slot in sorted order that has capacity,
@@ -613,32 +619,34 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       [countryField]: countryCodeValue,
     };
 
-    setMatchedCountryFields(newMatchedCountryFields);
+    callFunctionWithViewTransition(() => {
+      setMatchedCountryFields(newMatchedCountryFields);
 
-    setTimeout(() => {
-      const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
-          !singleCapacity);
-      const arrayIndex = Object.keys(sortedMatched[toSlotCountryCode] ?? {}).indexOf(countryField) ?? -1;
+      requestAnimationFrame(() => {
+        const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
+            !singleCapacity);
+        const arrayIndex = Object.keys(sortedMatched[toSlotCountryCode] ?? {}).indexOf(countryField) ?? -1;
 
-      if (arrayIndex >= 0) {
-        // Maintain focus on the button for the value element after moving
-        const moveDownButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
-          toSlotIndex + 1
-        }) .move-down-button`)[arrayIndex];
+        if (arrayIndex >= 0) {
+          // Maintain focus on the button for the value element after moving
+          const moveDownButton = document.querySelectorAll(`.draggable-country-pool.target-container > ul > li:nth-child(${
+            toSlotIndex + 1
+          }) .move-down-button`)[arrayIndex];
 
-        if (moveDownButton instanceof HTMLButtonElement) {
-          moveDownButton.focus();
+          if (moveDownButton instanceof HTMLButtonElement) {
+            moveDownButton.focus();
+          }
         }
-      }
-    });
+      });
 
-    announceForScreenReaders(<>{
-      getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
-    } moved down, now matched to {
-      getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
-    }{
-      swappedValue ? `, swapped with ${swappedValue}` : ""
-    }.</>);
+      announceForScreenReaders(<>{
+        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
+      } moved down, now matched to {
+        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
+      }{
+        swappedValue ? `, swapped with ${swappedValue}` : ""
+      }.</>);
+    });
   }
 
   return (
@@ -655,7 +663,8 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             onDrop={handleDropForUnmatchedFieldPool}>
           {(Object.keys(sortedUnmatchedValues) as (keyof StoredCountry)[]).map(countryField => (
             (sortedUnmatchedValues[countryField] ?? []).map(countryCode => (
-              <li key={`${(countryField)}_${countryCode}`}>
+              <li key={`${(countryField)}_${countryCode}`}
+                  style={{ viewTransitionName: `${(countryField)}_${countryCode}`}}>
                 <DraggableCountry cca3={countryCode}
                     countryField={countryField}
                     showCountryFieldInLabel={!singleCapacity}
@@ -685,7 +694,9 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             isTargetContainer
             emptyMessage="Error">
           {quizState.countryCodes.map(countryCodeSlot => {
-            const CountryWrapper = singleCapacity ? React.Fragment : 'li';
+            // Can't be a fragment, as it needs the view transition style applied
+            const CountryWrapper = singleCapacity ? 'div' : 'li';
+
             let countryLabel: React.ReactNode =
                 getCountryNameFromCode(countryCodeSlot, storedCountryData.countries);
 
@@ -743,7 +754,8 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
                             null : countryCodeSlot) : undefined}
                     onDrop={event => handleDropForMatchCountry(event, countryCodeSlot)}>
                   {countryEntries.length ? countryEntries.map(([countryField, countryFieldCountryCode]) => (
-                    <CountryWrapper key={`${(countryField)}_${countryFieldCountryCode}`}>
+                    <CountryWrapper key={`${(countryField)}_${countryFieldCountryCode}`}
+                        style={{ viewTransitionName: `${(countryField)}_${countryFieldCountryCode}`}}>
                       <DraggableCountry cca3={countryFieldCountryCode}
                         countryField={countryField}
                         showCountryFieldInLabel={!singleCapacity}

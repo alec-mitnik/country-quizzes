@@ -3,13 +3,16 @@ import type { StoredCountry } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
 import { formatCountryDataArray, getCountryNameFromCode } from "../utils/countryUtils";
 
-// Increment this any time a breaking change is introduce to quiz data
+// Increment this any time a breaking change is introduced to quiz data
 // so that preexisting data will be completely discarded rather than cause an error
 export const QUIZ_BREAKING_VERSION = 1;
 
-// Increment this any time a breaking change is introduce to quiz round data
-// so that only preexisting data for the current round will be discarded
-export const QUIZ_ROUND_BREAKING_VERSION = 1;
+// Increment these as applicable any time a breaking change is introduced to quiz round data
+// so that only preexisting data for the current round will be discarded.
+// Need add to these for any new quiz types.
+export const QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING = 2;
+export const QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING = 1;
+export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
 
 /*
  * TODO:
@@ -274,7 +277,16 @@ export interface SortingOutQuiz {
   structure: "sortingOut";
 }
 
+// When adding a quiz type, need to update the handling of restarting a round
+// due to the quiz round breaking version
 export type CountryQuiz = MatchingQuiz | RankingQuiz | SortingOutQuiz;
+
+// For ensuring uniqueness among quiz elements for rendering tracking
+export interface CountryCodeOverrideData {
+  cca3: Cca3Code;
+  originatingCca3: Cca3Code; // For bordering country quizzes
+  secondaryIndex: number; // For fun fact quizzes
+}
 
 export interface MatchingQuizState {
   quiz: MatchingQuiz;
@@ -283,15 +295,16 @@ export interface MatchingQuizState {
   round: number;
   level: number;
   countryCodes: Cca3Code[];
-  countryCodesOverride?: Cca3Code[]; // For bordering country quizzes
+  // Need to keep a reference to the original country or secondary index
+  // for rendering tracking because of duplicates
+  countryCodesOverride?: CountryCodeOverrideData[];
   // Have to match the structure of matchedCountryCodes
-  countryCodeSecondaryIndexes?: number[]; // For fun fact quizzes
-  countryCodesLockedInAsCorrect: Partial<Record<number, Cca3Code[]>>;
-  incorrectSubmissions: [string, Cca3Code[]][][];
+  countryCodesLockedInAsCorrect: Partial<Record<number, CountryCodeOverrideData[]>>;
+  incorrectSubmissions: [string, CountryCodeOverrideData[]][][];
 
-  // Use sorted match value index as the key to allow for duplicate values.
+  // Use sorted match value index as the key to allow for duplicate match values.
   // Use Object.values().flat() to get the matched country codes/count.
-  matchedCountryCodes: Partial<Record<number, Cca3Code[]>>;
+  matchedCountryCodes: Partial<Record<number, CountryCodeOverrideData[]>>;
 };
 
 export interface RankingQuizState {

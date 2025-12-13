@@ -64,7 +64,7 @@ function Layout() {
             </Button>
           </div>}
 
-          <section id="settings-bar" className={`${settingsBarCollapsed ? "display-none" : ""}`}
+          <section id="settings-bar" className={`${settingsBarCollapsed ? "collapsed" : ""}`}
               aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
             <div className="settings-controls">
               <div>

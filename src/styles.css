@@ -106,6 +106,17 @@ as the button style of inheriting font will override this weak selector */
   font-family: "Symbola", system-ui, Arial, sans-serif;
 }
 
+/* Only animate the draggable country elements */
+::view-transition-group(root) {
+  animation: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*) {
+    animation: none;
+  }
+}
+
 strong {
   font-weight: 500;
 }

@@ -11,20 +11,19 @@ import {
 import useStateRef from "../hooks/useStateRef";
 import {
   COUNTRY_GROUPS,
-  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION, QUIZ_TYPES, SORTING_OUT_QUIZ_EXTRA_FIELDS,
-  SORTING_OUT_QUIZ_PRIORITY_FIELDS, type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
-  type QuizState, type QuizType, type RankingQuizState,
-  type SortingOutQuizState
+  QUIZ_BREAKING_VERSION, QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING,
+  QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING, QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT,
+  QUIZ_TYPES, SORTING_OUT_QUIZ_EXTRA_FIELDS, SORTING_OUT_QUIZ_PRIORITY_FIELDS,
+  type CountryQuiz, type MatchingQuiz, type MatchingQuizState,
+  type QuizState, type QuizType, type RankingQuizState, type SortingOutQuizState
 } from "../quizzes/quizConfig";
 import QuizControlsForMatching from "../quizzes/QuizControlsForMatching";
 import QuizControlsForRanking from "../quizzes/QuizControlsForRanking";
 import QuizControlsForSortingOut from "../quizzes/QuizControlsForSortingOut";
 import {
-  getCountryCodesFilteredForQuizLevel,
+  constructBorderingCountryCodesOverride, getCountryCodesFilteredForQuizLevel,
   getRandomCountryCodes, getRandomNewQuizType, isQuizActive,
-  isQuizBeaten,
-  renderQuizOutcomeMessage,
-  showConfettiFirework
+  isQuizBeaten, renderQuizOutcomeMessage, showConfettiFirework
 } from "../quizzes/quizUtils";
 import RenderWithLoading from "../RenderWithLoading";
 import {
@@ -61,8 +60,13 @@ import "./Quiz.css";
  * Quizzes gradually get harder as you progress.
  */
 function Quiz() {
-  const [quizVersion, setQuizVersion] = useLocalStorageStateNumber("quizVersion", -1);
-  const [quizRoundVersion, setQuizRoundVersion] = useLocalStorageStateNumber("quizRoundVersion", -1);
+  const [quizVersion, setQuizVersion] = useLocalStorageStateNumber("quizVersion", 1);
+  const [quizRoundVersionForMatching, setQuizRoundVersionForMatching] =
+      useLocalStorageStateNumber("quizRoundVersionForMatching", 1);
+  const [quizRoundVersionForRanking, setQuizRoundVersionForRanking] =
+      useLocalStorageStateNumber("quizRoundVersionForRanking", 1);
+  const [quizRoundVersionForSortingOut, setQuizRoundVersionForSortingOut] =
+      useLocalStorageStateNumber("quizRoundVersionForSortingOut", 1);
   const [instructionsCollapsed, setInstructionsCollapsed] =
       useLocalStorageStateBoolean("instructionsCollapsed");
   const [quizState, setQuizState] =
@@ -118,34 +122,78 @@ function Quiz() {
     // clear out any pre-existing state.
     if (quizVersion < QUIZ_BREAKING_VERSION) {
       setQuizVersion(QUIZ_BREAKING_VERSION);
-      setQuizRoundVersion(QUIZ_ROUND_BREAKING_VERSION);
+      setQuizRoundVersionForMatching(QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING);
+      setQuizRoundVersionForRanking(QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING);
+      setQuizRoundVersionForSortingOut(QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT);
 
       if (quizState) {
         setQuizState(null);
       }
-    } else if (quizRoundVersion < QUIZ_ROUND_BREAKING_VERSION) {
-      // Only the quiz round data is breaking, so just restart the round
-      setQuizRoundVersion(QUIZ_ROUND_BREAKING_VERSION);
+    } else {
+      // Need to update this logic for any new quiz types
+      if (quizRoundVersionForMatching < QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING) {
+        // Only the quiz round data is breaking, so just restart the round if it's the same type
+        setQuizRoundVersionForMatching(QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING);
 
-      if (quizState) {
-        const updatedQuizState: QuizState = {
-          ...quizState,
-          submissionsRemaining: quizState.roundStartSubmissionsRemaining,
-          countryCodesLockedInAsCorrect: [],
-          incorrectSubmissions: [],
-        };
+        if (quizState && quizState.quiz.structure === "matching") {
+          const updatedQuizState: QuizState = {
+            ...quizState,
+            submissionsRemaining: quizState.roundStartSubmissionsRemaining,
+            countryCodesLockedInAsCorrect: [],
+            incorrectSubmissions: [],
+          };
 
-        if (updatedQuizState.quiz.structure === "ranking") {
-          (updatedQuizState as RankingQuizState).rankedCountryCodes = [];
-        } else if (updatedQuizState.quiz.structure === "matching") {
           (updatedQuizState as MatchingQuizState).matchedCountryCodes = {};
-        }
 
-        setQuizState(updatedQuizState);
+          // In case this was outdated for the existing round,
+          // set the logic to be redone once the country shallow data is loaded
+          // (?? operator is used, so can't just be emptied)
+          delete (updatedQuizState as MatchingQuizState).countryCodesOverride;
+
+          setQuizState(updatedQuizState);
+        }
+      }
+
+      if (quizRoundVersionForRanking < QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING) {
+        // Only the quiz round data is breaking, so just restart the round if it's the same type
+        setQuizRoundVersionForRanking(QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING);
+
+        if (quizState && quizState.quiz.structure === "ranking") {
+          const updatedQuizState: QuizState = {
+            ...quizState,
+            submissionsRemaining: quizState.roundStartSubmissionsRemaining,
+            countryCodesLockedInAsCorrect: [],
+            incorrectSubmissions: [],
+          };
+
+          (updatedQuizState as RankingQuizState).rankedCountryCodes = [];
+
+          setQuizState(updatedQuizState);
+        }
+      }
+
+      if (quizRoundVersionForSortingOut < QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT) {
+        // Only the quiz round data is breaking, so just restart the round if it's the same type
+        setQuizRoundVersionForSortingOut(QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT);
+
+        if (quizState && quizState.quiz.structure === "sortingOut") {
+          const updatedQuizState: QuizState = {
+            ...quizState,
+            submissionsRemaining: quizState.roundStartSubmissionsRemaining,
+            countryCodesLockedInAsCorrect: [],
+            incorrectSubmissions: [],
+          };
+
+          (updatedQuizState as SortingOutQuizState).matchedCountryFields = {};
+
+          setQuizState(updatedQuizState);
+        }
       }
     }
-  }, [quizState, quizVersion, quizRoundVersion, setQuizState,
-      setQuizVersion, setQuizRoundVersion]);
+  }, [quizState, quizVersion, quizRoundVersionForMatching, quizRoundVersionForRanking,
+      quizRoundVersionForSortingOut, setQuizState, setQuizVersion,
+      setQuizRoundVersionForMatching, setQuizRoundVersionForRanking,
+      setQuizRoundVersionForSortingOut]);
 
   useEffect(() => {
     if (!error && !storedCountryData.shallowDataRequested) {
@@ -153,6 +201,48 @@ function Quiz() {
       fetchShallowDataForAllCountries();
     }
   }, [error, storedCountryData, fetchShallowDataForAllCountries]);
+
+  useEffect(() => {
+    if (storedCountryData.shallowDataLoaded
+        && !(quizState as MatchingQuizState)?.countryCodesOverride?.length
+        && (quizState?.quiz.type === "MATCH_TO_BORDERING_COUNTRIES"
+            || quizState?.quiz.type === "MATCH_TO_FUN_FACTS")) {
+      // Redo this logic in case it was outdated for the existing round,
+      // which requires the country shallow data be loaded first
+      const updatedQuizState: QuizState = {
+        ...quizState
+      };
+
+      if (quizState?.quiz.type === "MATCH_TO_BORDERING_COUNTRIES") {
+        const borderingCountryCodes =
+            constructBorderingCountryCodesOverride(storedCountryData, quizState.countryCodes);
+        (updatedQuizState as MatchingQuizState).countryCodesOverride = borderingCountryCodes;
+      } else if (quizState?.quiz.type === "MATCH_TO_FUN_FACTS") {
+        // Reselect secondary indexes, ensuring uniqueness
+        const duplicates: Partial<Record<Cca3Code, number>> = {};
+
+        for (const countryCode of updatedQuizState.countryCodes) {
+          duplicates[countryCode] ??= -1;
+          duplicates[countryCode]++;
+        }
+
+        (updatedQuizState as MatchingQuizState).countryCodesOverride =
+            updatedQuizState.countryCodes.map(countryCode => {
+          // Simple approach for this fallback
+          const secondaryIndex = duplicates[countryCode]!;
+          duplicates[countryCode]!--;
+
+          return {
+            cca3: countryCode,
+            originatingCca3: countryCode,
+            secondaryIndex,
+          }
+        });
+      }
+
+      setQuizState(updatedQuizState);
+    }
+  }, [storedCountryData, quizState, setQuizState]);
 
   useEffect(() => {
     if (countriesForQuizRoundLoaded && countriesForQuizRoundRequested) {
@@ -376,18 +466,16 @@ function Quiz() {
       const newMatchingQuizState = newQuizState as Partial<MatchingQuizState>;
       newMatchingQuizState.matchedCountryCodes = {};
 
+      // Need similar logic for quiz round breaking change handling
       if (countryCodeSecondaryIndexes?.length) {
-        newMatchingQuizState.countryCodeSecondaryIndexes = countryCodeSecondaryIndexes;
-      }
-
-      if (randomQuizType === "MATCH_TO_BORDERING_COUNTRIES") {
-        // Combine all bordering countries into a single list
-        const borderingCountryCodes: Cca3Code[] = countryCodes.reduce<Cca3Code[]>(
-            (acc: Cca3Code[], cca3: Cca3Code) => {
-          return [...acc, ...(storedCountryData.countries[cca3]?.data?.borders ?? [])];
-        }, []);
-
-        sortCountryCodesByName(borderingCountryCodes, storedCountryData.countries);
+        newMatchingQuizState.countryCodesOverride = countryCodes.map((countryCode, i) => ({
+          cca3: countryCode,
+          originatingCca3: countryCode,
+          secondaryIndex: countryCodeSecondaryIndexes[i],
+        }));
+      } else if (randomQuizType === "MATCH_TO_BORDERING_COUNTRIES") {
+        const borderingCountryCodes =
+            constructBorderingCountryCodesOverride(storedCountryData, countryCodes);
         newMatchingQuizState.countryCodesOverride = borderingCountryCodes;
       }
 
