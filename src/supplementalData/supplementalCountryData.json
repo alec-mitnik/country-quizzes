@@ -783,7 +783,10 @@
       "cca3": "GEO",
       "name": "Georgia",
       "worldFactbookCountryKey": "GG",
-      "location": "Southwestern Asia, bordering the Black Sea, between Turkey and Russia, with a sliver of land north of the Caucasus extending into Europe"
+      "location": "Southwestern Asia, bordering the Black Sea, between Turkey and Russia, with a sliver of land north of the Caucasus extending into Europe",
+      "funFacts": [
+        "Known as Sakartvelo by the natives"
+      ]
     }
   },
   "DEU": {
