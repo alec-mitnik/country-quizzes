@@ -4,9 +4,9 @@
 A deploy of this code is available at https://alec-mitnik-country-quizzes.netlify.app/
 
 Has a simple landing page, a Countries directory page with links to detail pages for each country,
-and a Quiz page.  Additional quiz types and other features are still in the works.
+and a Quiz page featuring various types of quizzes.
 
-Supports light and dark color schemes, applying the preference detected by the browser.
+Supports light and dark color schemes, applying the system preference or manual setting.
 Works across different browsers and viewport sizes, and adheres to accessible practices, such as:
 * Providing alt text or captions for images, including flag and location map descriptions
 * Avoiding overly-complex language and providing explanations for terms
@@ -22,7 +22,6 @@ Works across different browsers and viewport sizes, and adheres to accessible pr
 
 Includes automated unit tests and a few integration tests using vitest and testing-library.
 Tests favor detecting elements by role and accessible name where possible.
-This testing continues to be worked on in aims to reach a more comprehensive coverage.
 
 To run this project locally, clone the repository, run `npm install`,
 then use the configured script commands in package.json to build or test the code.

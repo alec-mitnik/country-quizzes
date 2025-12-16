@@ -17,7 +17,10 @@ export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
 /*
  * TODO:
  *
- * Refactor ranking and matching quiz types to use new utilities for value/label/markup
+ * Track stats on best quiz score, times beaten, and win streaks.
+ * The first win could unlock the stats feature.
+ *
+ * Refactor ranking and matching quiz types to use the new utilities for value/label/markup
  *
  * Change how drop works to be more intuitive so that top half of item goes above,
  * bottom half goes below, above top item is first, below last item is last,
@@ -25,8 +28,13 @@ export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
  *
  * More unit/integration testing
  *
+ * More fun facts...
+ *
  *
  * Ideas:
+ *
+ * Could track correct/incorrect submissions per country in local storage,
+ * and show stats on how well you know each country.
  *
  * Sound effects?
  *
@@ -39,7 +47,11 @@ export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
  *
  * Adapt code to be data agnostic and work for non-country quiz topics?
  *
- * More fun facts...
+ * Could make some match type quizzes extra challenging by including
+ * additional countries that don't match to anything.
+ *
+ * Offer a way to practice specific quiz types, doing a single level at a time
+ * (But how to set the difficulty level?).
  *
  * Maybe more roguelike elements could be introduced, like items and bonuses that
  * reveal more values of the countries involved (languages, currencies, continent, etc.),
@@ -68,17 +80,6 @@ export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
  * When all but one country is locked in, the last country reveals its value (does not stack)
  * When you get 3 incorrect submissions in a row, +1 country reveals its value
  * Decrease the obscurity of countries used by +1 level
- *
- * Could make some match type quizzes extra challenging by including
- * additional countries that don't match to anything.
- *
- * Offer a way to practice specific quiz types, doing a single level at a time
- * (But how to set the difficulty level?).
- *
- * Could track correct/incorrect submissions per country in local storage,
- * and show stats on how well you know each country.
- * Could also track stats on best quiz score, times beaten, and win streaks.
- * Maybe the first win could unlock the stats feature.
  */
 
 export interface CountryGroup {

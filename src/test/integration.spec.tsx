@@ -90,5 +90,5 @@ describe(APP_TITLE, () => {
     expect(screen.getByRole('heading', { name: COUNTRIES_TITLE })).toBeInTheDocument();
   });
 
-  // TODO - more to come (quiz functionality, etc.).
+  // TODO - more testing...
 });

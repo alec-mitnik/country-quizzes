@@ -73,7 +73,12 @@ describe('Layout', () => {
     );
 
     // Check for the Settings Bar region
-    expect(screen.getByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME })).toBeVisible();
+    const settingsBar = screen.getByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME });
+    expect(settingsBar).toBeInTheDocument();
+
+    // Check that the Independent Countries Only checkbox is visible
+    expect(within(settingsBar).getByRole('checkbox',
+        { name: INDEPENDENT_COUNTRIES_CHECKBOX_LABEL })).toBeVisible();
 
     // Find and click the Settings Bar Toggle button
     const collapseSettingsBarButton = screen.getByRole('button',
@@ -82,17 +87,20 @@ describe('Layout', () => {
 
     await user.click(collapseSettingsBarButton);
 
-    // Check that the Settings Bar region is now hidden
-    expectNotToBeVisibleInDocument(screen.queryByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME }));
+    // Check that the Independent Countries Only checkbox is now hidden
+    expectNotToBeVisibleInDocument(screen.queryByRole('checkbox',
+        { name: INDEPENDENT_COUNTRIES_CHECKBOX_LABEL }));
 
     // Check for the Settings Bar Toggle button by its new expected state
     const expandSettingsBarButton = screen.getByRole('button',
         { name: EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME });
     expect(expandSettingsBarButton).toBeInTheDocument();
+
     await user.click(expandSettingsBarButton);
 
-    // Check that the Settings Bar region is visible again
-    expect(screen.getByRole('region', { name: SETTINGS_BAR_ACCESSIBLE_NAME })).toBeVisible();
+    // Check that the Independent Countries Only checkbox is visible again
+    expect(within(settingsBar).getByRole('checkbox',
+        { name: INDEPENDENT_COUNTRIES_CHECKBOX_LABEL })).toBeVisible();
   });
 
   it('renders the local storage warning when appropriate and allows its dismissal', async () => {

@@ -61,5 +61,5 @@ describe('Quiz', () => {
     expect(instructionsList).not.toBeVisible();
   });
 
-  // TODO - More to come...
+  // TODO - more testing...
 });

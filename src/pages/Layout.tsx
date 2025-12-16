@@ -10,7 +10,8 @@ import {
   COLOR_SCHEME_SELECT_ACCESSIBLE_NAME, COUNTRIES_NAV_TEXT,
   DISMISS_LOCAL_STORAGE_WARNING_BUTTON_ACCESSIBLE_NAME,
   EXPAND_SETTINGS_BAR_BUTTON_ACCESSIBLE_NAME,
-  HOME_NAV_TEXT, QUIZ_NAV_TEXT, SETTINGS_BAR_ACCESSIBLE_NAME
+  HOME_NAV_TEXT, INDEPENDENT_COUNTRIES_CHECKBOX_LABEL,
+  QUIZ_NAV_TEXT, SETTINGS_BAR_ACCESSIBLE_NAME
 } from "../utils/consts";
 import "./Layout.css";
 
@@ -66,7 +67,8 @@ function Layout() {
 
           <section id="settings-bar" className={`${settingsBarCollapsed ? "collapsed" : ""}`}
               aria-label={SETTINGS_BAR_ACCESSIBLE_NAME}>
-            <div className="settings-controls">
+            {/* Applying display-none purely for automated testing, which doesn't recognized nested styles */}
+            <div className={`settings-controls ${settingsBarCollapsed ? "display-none" : ""}`}>
               <div>
                 <label>
                   <span>{COLOR_SCHEME_SELECT_ACCESSIBLE_NAME}</span>
@@ -85,7 +87,7 @@ function Layout() {
                 <label>
                   <input type="checkbox" id="independent-only-checkbox" checked={independentOnly}
                       onChange={event => setIndependentOnly(event.target.checked)} />
-                  <span>Independent Countries Only</span>
+                  <span>{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}</span>
                 </label>
               </div>
             </div>
