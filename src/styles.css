@@ -8,7 +8,9 @@
 (which otherwise don't display on iOS Safari) */
 @font-face {
   font-family: "Symbola";
-  src: url("/Symbola.ttf");
+  src: url("./fonts/Symbola/Symbola-AjYx.woff2") format("woff2");
+  font-weight: normal;
+  font-style: normal;
 }
 
 *, *::before, *::after {
@@ -103,7 +105,7 @@ html, body {
 /* Put on button content rather than buttons themselves,
 as the button style of inheriting font will override this weak selector */
 .symbol-font {
-  font-family: "Symbola", system-ui, Arial, sans-serif;
+  font-family: Symbola, system-ui, Arial, sans-serif;
 }
 
 /* Only animate the draggable country elements */
