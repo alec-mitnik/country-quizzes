@@ -8,7 +8,8 @@
 (which otherwise don't display on iOS Safari) */
 @font-face {
   font-family: "Symbola";
-  src: url("./fonts/Symbola/Symbola-AjYx.woff2") format("woff2");
+  /* No dot at the start of the path to work with the React public folder */
+  src: url("/fonts/Symbola/Symbola-AjYx.woff2") format("woff2");
   font-weight: normal;
   font-style: normal;
 }

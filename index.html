@@ -9,7 +9,8 @@
 
     <!-- Preload the font so that it is immediately applied
     when first used (may give CORS error when local) -->
-    <link rel="preload" href="./fonts/Symbola/Symbola-AjYx.woff2" as="font" type="font/woff2" crossorigin />
+    <!-- No dot at the start of the path to work with the React public folder -->
+    <link rel="preload" href="/fonts/Symbola/Symbola-AjYx.woff2" as="font" type="font/woff2" crossorigin />
 
     <link rel="apple-touch-icon" sizes="180x180" href="/images/icons/apple-touch-icon.png">
     <!-- Better to just use the ico file, since with PNGs,
