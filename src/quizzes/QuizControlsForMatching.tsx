@@ -97,23 +97,34 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
   }, [quizCountryCodes, quizState.quiz, quizState.countryCodes, storedCountryData]);
 
   const sortedMatchValues = useMemo(() => {
+    // Map on quizState.countryCodes, because countries without bordering countries
+    // aren't represented in the countryCodesOverride, and will have duplicates
+    // for countries with multiple bordering countries
     const matchValues: {cca3: Cca3Code, valueArray: string[] | undefined,
         secondaryIndex: number | undefined, value: string,
-        label: React.ReactNode}[] = quizCountryCodes.map(countryCodeData => {
+        label: React.ReactNode}[] = quizState.countryCodes.map(countryCode => {
+      const countryCodeData = quizCountryCodes.find(countryCodeData =>
+          countryCodeData.originatingCca3 === countryCode) ?? {
+            originatingCca3: countryCode,
+            cca3: countryCode,
+            secondaryIndex: 0,
+          };
       const valueArray = quizState.quiz.valueArrayFunction ?
-          quizState.quiz.valueArrayFunction(storedCountryData, countryCodeData.cca3) : undefined;
+          quizState.quiz.valueArrayFunction(storedCountryData, countryCodeData.originatingCca3) : undefined;
       const secondaryIndex = countryCodeData.secondaryIndex;
-      const value = quizState.quiz.valueFunction(storedCountryData, countryCodeData.cca3, secondaryIndex);
-      let label = quizState.quiz.labelFunction(storedCountryData, countryCodeData.cca3, secondaryIndex);
+      const value = quizState.quiz.valueFunction(storedCountryData,
+          countryCodeData.originatingCca3, secondaryIndex);
+      let label = quizState.quiz.labelFunction(storedCountryData,
+          countryCodeData.originatingCca3, secondaryIndex);
 
       if (quizState.quiz.type === "MATCH_TO_FLAGS") {
-        label = <CountryFieldDisplayValue cca3={countryCodeData.cca3} field="flagDescription" />
+        label = <CountryFieldDisplayValue cca3={countryCodeData.originatingCca3} field="flagDescription" />
       } else if (quizState.quiz.type === "MATCH_TO_LOCATIONS") {
-        label = <CountryFieldDisplayValue cca3={countryCodeData.cca3} field="location" />
+        label = <CountryFieldDisplayValue cca3={countryCodeData.originatingCca3} field="location" />
       }
 
       return {
-        cca3: countryCodeData.cca3,
+        cca3: countryCodeData.originatingCca3,
         valueArray,
         secondaryIndex,
         value,
@@ -135,7 +146,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     }
 
     return matchValues;
-  }, [storedCountryData, quizCountryCodes, quizState.quiz]);
+  }, [storedCountryData, quizCountryCodes, quizState.quiz, quizState.countryCodes]);
 
   const unmatchedCountryCodes = useMemo(() => {
     const matchedCodes = Object.values(quizState.matchedCountryCodes).flat()
@@ -263,6 +274,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
       }
 
       for (const countryCodeData of countryCodes) {
+        // Only bordering countries quizzes actually use the value array for validation
         if (quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES") {
           if (matchedValueArray && !matchedValueArray.includes(countryCodeData.cca3)) {
             submissionCorrect = false;
@@ -384,7 +396,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
     const newCountryCodes = matchCountryCodes.filter(countryCodeValue =>
         countryCodeValue.cca3 !== countryCodeData.cca3
-        || countryCodeValue.originatingCca3 !== countryCodeData.originatingCca3);
+            || countryCodeValue.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (newCountryCodes.length) {
       newMatchedCountryCodes[matchIndex] = newCountryCodes;
@@ -427,8 +439,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       if (selectedCountryCodeMatchIndex >= 0) {
         const newCountryCodes = [...(sortedMatchedCountryCodes[selectedCountryCodeMatchIndex] ?? [])]
-            .filter(countryCodeData => countryCodeData.cca3 !== countryCodeData.cca3
-                || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
+            .filter((slotCountryCodeData) => slotCountryCodeData.cca3 !== countryCodeData.cca3
+                || slotCountryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
         if (singleCapacity && countryCodesAtSlot?.length) {
           // Add the occupying country to the moving country's slot
@@ -505,8 +517,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
 
     const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])]
-        .filter(countryCodeData => countryCodeData.cca3 !== countryCodeData.cca3
-            || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
+        .filter((slotCountryCodeData) => slotCountryCodeData.cca3 !== countryCodeData.cca3
+            || slotCountryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (singleCapacity && countryCodesAtSlot.length) {
       // Add the occupying country to the moving country's slot
@@ -593,8 +605,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     const newMatchedCountryCodes = structuredClone(sortedMatchedCountryCodes);
 
     const newCountryCodes = [...(newMatchedCountryCodes[matchIndex] ?? [])]
-        .filter((countryCodeData) => countryCodeData.cca3 !== countryCodeData.cca3
-            || countryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
+        .filter((slotCountryCodeData) => slotCountryCodeData.cca3 !== countryCodeData.cca3
+            || slotCountryCodeData.originatingCca3 !== countryCodeData.originatingCca3);
 
     if (singleCapacity && countryCodesAtSlot.length) {
       // Add the occupying country to the moving country's slot
