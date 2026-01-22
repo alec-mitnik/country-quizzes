@@ -49,7 +49,7 @@
     --light-dark-active-brightness: 0.75;
     --rainbow-base-color: #ff8080;
 
-    /* Webkit browsers don't have enough contrast by default for dark themes */
+    /* Chromium browsers don't have enough contrast by default for dark themes */
     ::-webkit-input-placeholder {
       color: #a6a6a6;
     }
@@ -71,7 +71,7 @@
       --light-dark-active-brightness: 0.75;
       --rainbow-base-color: #ff8080;
 
-      /* Webkit browsers don't have enough contrast by default for dark themes */
+      /* Chromium browsers don't have enough contrast by default for dark themes */
       ::-webkit-input-placeholder {
         color: #a6a6a6;
       }

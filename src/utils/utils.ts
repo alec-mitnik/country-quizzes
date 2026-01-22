@@ -2,20 +2,6 @@ import React, { type PropsWithChildren } from "react";
 import { flushSync } from "react-dom";
 
 /**
- * For when filter can't be used because there can be duplicates
- * and you only want to remove one
- * @param array Array to remove the first match from
- * @param value Value to remove
- */
-export function removeFirstMatchFromArray<T>(array: T[], value: T) {
-  const index = array.indexOf(value);
-
-  if (index > -1) {
-    array.splice(index, 1);
-  }
-}
-
-/**
  * Removes the first instance of the given element from the given array
  * @param array The array to extract from
  * @param element The element to extract

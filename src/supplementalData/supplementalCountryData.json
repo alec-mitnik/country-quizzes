@@ -210,7 +210,10 @@
       "cca3": "BEL",
       "name": "Belgium",
       "worldFactbookCountryKey": "BE",
-      "location": "Western Europe, bordering the North Sea, between France and the Netherlands"
+      "location": "Western Europe, bordering the North Sea, between France and the Netherlands",
+      "funFacts": [
+        "Where NATO (the North Atlantic Treaty Organization) is headquartered"
+      ]
     }
   },
   "BLZ": {
@@ -220,7 +223,7 @@
       "worldFactbookCountryKey": "BH",
       "location": "Central America, bordering the Caribbean Sea to the east and Mexico to the north",
       "funFacts": [
-        "Home of the Cockscomb Basin Wildlife Sanctuary, the world's first nature reserve for jaguars"
+        "Home of the Cockscomb Basin Wildlife Sanctuary, the world's first nature reserve for jaguars (founded in 1990)"
       ]
     }
   },
@@ -657,7 +660,7 @@
       "worldFactbookCountryKey": "EN",
       "location": "Eastern Europe, bordering the Baltic Sea, and bordering where Russia to the east meets the Gulf of Finland",
       "funFacts": [
-        "Offers nearly all public services online, including nationwide internet voting for binding general elections, the first country to do so"
+        "Offers nearly all public services online, including nationwide internet voting for binding general elections since 2005, the first country to do so"
       ]
     }
   },
@@ -1023,7 +1026,10 @@
       "cca3": "IRL",
       "name": "Ireland",
       "worldFactbookCountryKey": "EI",
-      "location": "Western Europe, occupying five-sixths of its island in the North Atlantic Ocean, west of the United Kingdom"
+      "location": "Western Europe, occupying five-sixths of its island in the North Atlantic Ocean, west of the United Kingdom",
+      "funFacts": [
+        "The first country to legalize marriage equality by popular vote (enacted in 2015)"
+      ]
     }
   },
   "IMN": {
@@ -1116,7 +1122,7 @@
       "worldFactbookCountryKey": "KZ",
       "location": "Central Asia, northwest of China, south of Russia",
       "funFacts": [
-        "Home of the launch site of the first manned spaceflight"
+        "Home of the launch site of the first manned spaceflight (performed in 1961)"
       ]
     }
   },
@@ -1251,7 +1257,7 @@
       "worldFactbookCountryKey": "LU",
       "location": "Western Europe, between France and Germany, southeast of Belgium",
       "funFacts": [
-        "The first country in the world to have free public transportation nationwide"
+        "The first country to have free public transportation nationwide (enacted in 2020)"
       ]
     }
   },
@@ -1506,7 +1512,8 @@
       "worldFactbookCountryKey": "NL",
       "location": "Western Europe, bordering the North Sea, between Belgium and Germany",
       "funFacts": [
-        "Home of the Eurobridges Spijkenisse, an applied arts project of real bridges built to resemble the fictional bridges depicted on the euro banknotes"
+        "Home of the Eurobridges Spijkenisse, an applied arts project of real bridges built to resemble the fictional bridges depicted on the euro banknotes",
+        "The first country to legalize marriage equality (enacted in 2001)"
       ]
     }
   },
@@ -1527,7 +1534,7 @@
       "worldFactbookCountryKey": "NZ",
       "location": "Oceania, islands in the South Pacific Ocean, southeast of Australia",
       "funFacts": [
-        "First nation in the world to grant all women the right to vote",
+        "The first country to grant all women the right to vote (enacted in 1893)",
         "Where instant coffee was invented",
         "Home of Frying Pan Lake, the world's largest hot spring"
       ]
@@ -1747,7 +1754,7 @@
       "location": "Southwestern Europe, bordering the North Atlantic Ocean, west of Spain",
       "funFacts": [
         "Produces about half of all cork (used for bottle stoppers, among other things)",
-        "The first country to allow usage and personal possession of all common drugs after decriminalizing them in 2001"
+        "The first country to decriminalize usage and personal possession of all common drugs (enacted in 2001)"
       ]
     }
   },
@@ -2286,7 +2293,8 @@
       "worldFactbookCountryKey": "UK",
       "location": "Western Europe, islands between the North Atlantic Ocean and the North Sea, north of France",
       "funFacts": [
-        "Its currency is the oldest in the world to be in continuous use since its inception"
+        "Its currency is the oldest in the world to be in continuous use since its inception",
+        "Requires paying for a license to watch television in order to fund its public broadcasting"
       ]
     }
   },

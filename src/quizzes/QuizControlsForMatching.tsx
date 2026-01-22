@@ -7,7 +7,10 @@ import CountryLinksValue from "../CountryLinksValue";
 import useCountries from "../hooks/useCountries";
 import { CUSTOM_DRAG_TYPE, QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
 import { getCountryNameFromCode, sortCountryCodesByName } from "../utils/countryUtils";
-import { callFunctionWithViewTransition, getLocatorMapSrc, getReactNodeString } from "../utils/utils";
+import {
+  callFunctionWithViewTransition, getLocatorMapSrc,
+  getReactNodeString, removeElementFromArray
+} from "../utils/utils";
 import CountryFieldDisplayValue from "./CountryFieldDisplayValue";
 import DraggableCountry from "./DraggableCountry";
 import DraggableCountryPool from "./DraggableCountryPool";
@@ -100,15 +103,20 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     // Map on quizState.countryCodes, because countries without bordering countries
     // aren't represented in the countryCodesOverride, and will have duplicates
     // for countries with multiple bordering countries
+    const availableQuizCountryCodeData = [...quizCountryCodes];
     const matchValues: {cca3: Cca3Code, valueArray: string[] | undefined,
         secondaryIndex: number | undefined, value: string,
         label: React.ReactNode}[] = quizState.countryCodes.map(countryCode => {
-      const countryCodeData = quizCountryCodes.find(countryCodeData =>
+      const countryCodeData = availableQuizCountryCodeData.find(countryCodeData =>
           countryCodeData.originatingCca3 === countryCode) ?? {
             originatingCca3: countryCode,
             cca3: countryCode,
             secondaryIndex: 0,
           };
+
+      // Make sure each instance gets used, not just the first one each time
+      removeElementFromArray(availableQuizCountryCodeData, countryCodeData);
+
       const valueArray = quizState.quiz.valueArrayFunction ?
           quizState.quiz.valueArrayFunction(storedCountryData, countryCodeData.originatingCca3) : undefined;
       const secondaryIndex = countryCodeData.secondaryIndex;

@@ -321,7 +321,7 @@ export function getRandomCountryCodes(availableCountryCodes: Cca3Code[], storedC
       }
     }
   } else {
-    const allowDuplicateCountryCodes = quizType === "MATCH_TO_FUN_FACTS" && valueArrayFunction;
+    const allowDuplicateCountryCodes = quizType === "MATCH_TO_FUN_FACTS" && !!valueArrayFunction;
     const duplicatesCount: Record<string | number, number> = {};
     const availableSecondaryIndexes: Partial<Record<Cca3Code, number[]>> = {};
 
@@ -357,6 +357,7 @@ export function getRandomCountryCodes(availableCountryCodes: Cca3Code[], storedC
           }
         }
 
+        // Don't allow any more country codes with match values equaling this one
         if (duplicatesCount[value] >= QUIZ_MAX_DUPLICATE_MATCH_VALUES) {
           // Value function secondary index defaults to 0, so doesn't really support
           // filtering duplicates of values that use secondary indexes,
