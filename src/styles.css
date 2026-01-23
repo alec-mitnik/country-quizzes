@@ -38,6 +38,15 @@
   --shadow-color-foreground: white;
   --rainbow-base-color: #f00;
 
+  /* Makes native browser elements like form controls
+  reflect the preferred (media query) color scheme */
+  color-scheme: light dark;
+
+  &:has(#color-scheme-select option:checked[value="light"]) {
+    /* Listing dark second prevents the manual selection from overriding the media query */
+    color-scheme: light;
+  }
+
   &:has(#color-scheme-select option:checked[value="dark"]) {
     /* Dark mode color scheme - without light-dark, have to duplicate for the media query */
     --background-color-primary: #29273a;
@@ -54,6 +63,7 @@
       color: #a6a6a6;
     }
 
+    /* Listing light second prevents the manual selection from overriding the media query */
     color-scheme: dark;
   }
 
@@ -77,10 +87,6 @@
       }
     }
   }
-
-  /* Makes native browser elements like form controls
-  reflect the preferred color scheme */
-  color-scheme: light dark;
 
   background-color: var(--background-color-primary);
   color: var(--background-color-primary-foreground-primary);
