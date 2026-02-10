@@ -240,20 +240,31 @@ export function getEmojisForNumber(num: number): string {
 
 /**
  * Calls the given function within a view transition (if supported),
- * allowing for smooth transitions between states
+ * allowing for smooth transitions between states.  Doing multiple state updates within flushSync
+ * can cause flickering, so move extra state updates to the callback if possible.
  * @param func Function to call within the view transition that will update the page state/layout
  * @param skipCondition If true, the view transition will be skipped
+ * @param callback Function to call after the view transition is complete
  */
-export function callFunctionWithViewTransition(func: () => void, skipCondition = false) {
+export function callFunctionWithViewTransition(func: () => void, skipCondition = false, callback?: () => void) {
   if (!document.startViewTransition || skipCondition) {
     func();
+    callback?.();
   } else {
-    document.startViewTransition(() => {
+    const transition = document.startViewTransition(() => {
       // Calling flushSync is necessary for the view transition to work
       // eslint-disable-next-line react-dom/no-flush-sync
       flushSync(() => {
         func();
       });
     });
+
+    if (callback) {
+      transition.finished.then(() => {
+        callback();
+      }).catch(() => {
+        callback();
+      });
+    }
   }
 }

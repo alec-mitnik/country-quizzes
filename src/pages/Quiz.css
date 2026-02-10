@@ -54,6 +54,7 @@
   }
 
   .quiz-action-button {
+    view-transition-name: match-element;
     margin-block: 16px 48px;
 
     &.give-up {

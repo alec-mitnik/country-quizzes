@@ -130,6 +130,12 @@ as the button style of inheriting font will override this weak selector */
   animation: none;
 }
 
+/* This is necessary for most items to transition with squash/stretch rather than crossfading */
+::view-transition-old(.stable-height),
+::view-transition-new(.stable-height) {
+  height: 100%;
+}
+
 @media (prefers-reduced-motion: reduce) {
   ::view-transition-group(*) {
     animation: none;

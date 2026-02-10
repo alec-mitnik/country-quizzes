@@ -401,14 +401,14 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryFields(newMatchedCountryFields);
-
+    }, isDraggingCountryField, () => {
       // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{
         getFieldReadableValue(storedCountryData, matchedValue, countryField, !singleCapacity)
       } unmatched from {
         getCountryNameFromCode(countryCodeSlot, storedCountryData.countries)
       }.</>);
-    }, isDraggingCountryField);
+    });
   }
 
   // Add to the designated country code slot if set,
@@ -463,7 +463,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
 
       callFunctionWithViewTransition(() => {
         setMatchedCountryFields(newMatchedCountryFields);
-
+      }, isDraggingCountryField, () => {
         announceForScreenReaders(<>{
           getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
         } now matched to {
@@ -471,7 +471,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         }{
           swappedValue ? `, swapped with ${swappedValue}` : ""
         }.</>);
-      }, isDraggingCountryField);
+      });
     }
   }
 
@@ -551,7 +551,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
           }
         }
       });
-
+    }, false, () => {
       announceForScreenReaders(<>{
         getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
       } moved up, now matched to {
@@ -638,7 +638,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
           }
         }
       });
-
+    }, false, () => {
       announceForScreenReaders(<>{
         getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
       } moved down, now matched to {

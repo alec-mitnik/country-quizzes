@@ -414,11 +414,11 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryCodes(newMatchedCountryCodes);
-
+    }, isDraggingCountryCode, () => {
       // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
           } unmatched from {quizState.quiz.labelFunction(storedCountryData, matchedData.cca3)}.</>);
-    }, isDraggingCountryCode);
+    });
   }
 
   // Add to the slot at the designated index if set,
@@ -477,7 +477,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       callFunctionWithViewTransition(() => {
         setMatchedCountryCodes(newMatchedCountryCodes);
-
+      }, isDraggingCountryCode, () => {
         // Use the original label to avoid using the markup for flags
         announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
             } now matched to {
@@ -485,7 +485,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
             }{singleCapacity && countryCodesAtSlot?.length ? `, swapped with ${
               getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
             }` : ""}.</>);
-      }, isDraggingCountryCode);
+      });
     }
   }
 
@@ -552,8 +552,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
-        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(countryCode =>
-            doCountryCodeOverridesMatch(countryCode, countryCodesAtSlot[0])) ?? -1;
+        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(slotCountryCodeData =>
+            doCountryCodeOverridesMatch(countryCodeData, slotCountryCodeData)) ?? -1;
 
         if (arrayIndex >= 0) {
           // Maintain focus on the button for the value element after moving
@@ -566,7 +566,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           }
         }
       });
-
+    }, false, () => {
       // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
           } moved up, now matched to {quizState.quiz.labelFunction(
@@ -640,8 +640,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
-        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(countryCodeData =>
-            doCountryCodeOverridesMatch(countryCodeData, countryCodeData)) ?? -1;
+        const arrayIndex = sortedMatched[newMatchValueIndex]?.findIndex(slotCountryCodeData =>
+            doCountryCodeOverridesMatch(countryCodeData, slotCountryCodeData)) ?? -1;
 
         if (arrayIndex >= 0) {
           // Maintain focus on the button for the value element after moving
@@ -654,7 +654,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           }
         }
       });
-
+    }, false, () => {
       // Use the original label to avoid using the markup for flags
       announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
           } moved down, now matched to {quizState.quiz.labelFunction(

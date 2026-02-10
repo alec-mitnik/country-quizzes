@@ -261,8 +261,9 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   function onRemove(countryCode: Cca3Code) {
     callFunctionWithViewTransition(() => {
       setRankedCountryCodes(quizState.rankedCountryCodes.filter(code => code !== countryCode));
+    }, isDraggingCountryCode, () => {
       announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)} removed`);
-    }, isDraggingCountryCode);
+    });
   }
 
   function onAdd(countryCode: Cca3Code, rankIndex = -1) {
@@ -279,9 +280,10 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
 
     callFunctionWithViewTransition(() => {
       setRankedCountryCodes(newRankedCountryCodes);
+    }, isDraggingCountryCode, () => {
       announceForScreenReaders(`${getCountryNameFromCode(countryCode, storedCountryData.countries)
           } ${moved ? "moved to" : "added at"} rank ${updatedEffectiveIndex + 1}.`);
-    }, isDraggingCountryCode);
+    });
   }
 
   return (

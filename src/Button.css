@@ -27,6 +27,8 @@
     /* outline-offset: -4px; */
     outline-offset: 2px;
 
+    view-transition-class: stable-height;
+
     .button-shell {
       /* The transforms need to be on a non-inline container,
       but that's handled by the button display being inline flex,
