@@ -286,13 +286,16 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
     });
   }
 
+  const unrankedPoolHeader = "Unranked Countries";
+
   return (
     (quizState.quiz.structure !== "ranking") ? null : <>
       <p className="sr-only" aria-live="polite">{srAnnouncement}</p>
 
       <div className="quiz-controls">
         <DraggableCountryPool headerId="unranked-pool-header"
-            headerText="Unranked Countries"
+            headerLabel={unrankedPoolHeader}
+            headerText={unrankedPoolHeader}
             emptyMessage="All countries have been ranked"
             selectedCountryCode={selectedCountryCode}
             onDrop={handleDropForUnrankedPool}>
