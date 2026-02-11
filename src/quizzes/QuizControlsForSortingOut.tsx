@@ -702,7 +702,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             // Can't be a fragment, as it needs the view transition style applied
             const CountryWrapper = singleCapacity ? 'div' : 'li';
 
-            let countryText = getCountryNameFromCode(countryCodeSlot, storedCountryData.countries);
+            const countryText = getCountryNameFromCode(countryCodeSlot, storedCountryData.countries);
             let countryLabel: React.ReactNode = countryText;
 
             if (!roundActive) {
