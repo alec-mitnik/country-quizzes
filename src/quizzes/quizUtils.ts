@@ -21,7 +21,7 @@ import {
  * @returns A random new quiz type
  */
 export function getRandomNewQuizType(currentType?: QuizType): QuizType | undefined {
-  // return "MATCH_TO_FUN_FACTS"; // For easy testing
+  // return "MATCH_TO_BORDERING_COUNTRIES"; // For easy testing
   const quizConfigs = Object.values(QUIZ_TYPES);
   const quizTypes: QuizType[] = [];
 

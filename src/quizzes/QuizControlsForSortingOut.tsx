@@ -736,6 +736,8 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             const canBeDroppedIntoDirectly = !!selectedCountryField
                 && !quizState.countryFieldsLockedInAsCorrect[countryCodeSlot]?.includes(selectedCountryField);
 
+            const isPoolFilled = countryEntries.length >= quizState.countryFields.length
+
             // Could use the country code as the key when available, so that focus
             // automatically remains on the country component's buttons when moved up/down,
             // but the key needs to be based on the slot in order to preserve image loading
@@ -753,7 +755,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
                     selectedCountryCode={selectedCountryField}
                     isTargetForAdd={targetMatchCountryCodeForAdd === countryCodeSlot}
                     hideTargetForAddButton={singleCapacity
-                        && !!countryEntries.length}
+                        && !!countryEntries.length || isPoolFilled}
                     onTargetForAddToggle={roundActive && !(singleCapacity
                         && !!countryEntries.length) ?
                         () => setTargetMatchCountryCodeForAdd(countryCodeSlot === targetMatchCountryCodeForAdd ?
