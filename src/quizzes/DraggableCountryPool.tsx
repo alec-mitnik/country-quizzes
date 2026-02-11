@@ -2,6 +2,7 @@ import type { Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
 import Button from "../Button";
 import { CUSTOM_DRAG_TYPE } from "../utils/consts";
+import { doesStringEndWithPunctuation } from "../utils/utils";
 
 interface DraggableCountryPoolProps {
   headerId: string;
@@ -113,15 +114,14 @@ function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel =
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
-  const doesHeaderLabelEndWithPunctuation = ['.', '!', '?'].includes(headerText?.[headerText.length - 1]);
-  const headerLabelSuffix = doesHeaderLabelEndWithPunctuation ? '' : '.';
+  const headerTextSuffix = doesStringEndWithPunctuation(headerText) ? '' : '.';
 
   // The period at the end of the aria-label adds a helpful pause
   // before the word "button" is spoken
   const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <Button type="button"
     onClick={() => onTargetForAddToggle()}
-    aria-label={isTargetForAdd ? `Stop targeting this value: ${headerText}${headerLabelSuffix}`
-        : `Target this value for adding: ${headerText}${headerLabelSuffix}`}
+    aria-label={isTargetForAdd ? `Stop targeting this value: ${headerText}${headerTextSuffix}`
+        : `Target this value for adding: ${headerText}${headerTextSuffix}`}
   className={`target-for-add-button${hideTargetForAddButton ? " hidden" : ""}`}>
       <span aria-hidden="true" className="symbol-font">⌖</span>
   </Button> : null;

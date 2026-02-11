@@ -243,6 +243,15 @@ export function getEmojisForNumber(num: number): string {
   return emojis.join('');
 }
 
+export function doesStringEndWithPunctuation(str: string): boolean {
+  if (!str) {
+    return false;
+  };
+
+  const lastChar = str[str.length - 1];
+  return ['.', '?', '!'].includes(lastChar);
+}
+
 /**
  * Calls the given function within a view transition (if supported),
  * allowing for smooth transitions between states.  Doing multiple state updates within flushSync

@@ -6,7 +6,7 @@ import Button from "../Button";
 import CaptionedImageDialogButton from "../CaptionedImageDialogButton";
 import useCountries from "../hooks/useCountries";
 import { getCountryNameFromCode, getFieldLabel, getFieldReadableValue } from "../utils/countryUtils";
-import { getLocatorMapSrc } from "../utils/utils";
+import { doesStringEndWithPunctuation, getLocatorMapSrc } from "../utils/utils";
 import CountryFieldDisplayValue from "./CountryFieldDisplayValue";
 import type { QuizType } from "./quizConfig";
 
@@ -122,6 +122,7 @@ function DraggableCountry({cca3, countryField, showCountryFieldInLabel = false, 
   }
 
   const key = storedCountryData.countries[cca3]?.data?.worldFactbookCountryKey;
+  const conditionalPeriod = doesStringEndWithPunctuation(countryReadableValue) ? '' : '.';
 
   return (
     <div ref={elementRef} className={`draggable-country${isSelected ? " selected" : ""}${
@@ -155,14 +156,14 @@ function DraggableCountry({cca3, countryField, showCountryFieldInLabel = false, 
           </Button>}
 
           {roundActive && onRemove && !isLockedIn && <Button type="button"
-              className="remove-button" aria-label={`Remove ${countryReadableValue}.`} onClick={onRemove}>
+              className="remove-button" aria-label={`Remove ${countryReadableValue}${conditionalPeriod}`} onClick={onRemove}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
           </Button>}
 
           {/* The period at the end of the aria-label adds a helpful pause
           before the word "button" is spoken */}
           {roundActive && onAdd && <Button type="button" className="add-button"
-              aria-label={`Add ${countryReadableValue}.`} onClick={onAdd}>
+              aria-label={`Add ${countryReadableValue}${conditionalPeriod}`} onClick={onAdd}>
             <span aria-hidden="true" className="symbol-font">🞥</span>
           </Button>}
         </span>

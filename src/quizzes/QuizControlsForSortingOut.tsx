@@ -534,6 +534,14 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryFields(newMatchedCountryFields);
+    }, false, () => {
+      announceForScreenReaders(<>{
+        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
+      } moved up, now matched to {
+        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
+      }{
+        swappedValue ? `, swapped with ${swappedValue}` : ""
+      }.</>);
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
@@ -551,14 +559,6 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
           }
         }
       });
-    }, false, () => {
-      announceForScreenReaders(<>{
-        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
-      } moved up, now matched to {
-        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
-      }{
-        swappedValue ? `, swapped with ${swappedValue}` : ""
-      }.</>);
     });
   }
 
@@ -621,6 +621,14 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryFields(newMatchedCountryFields);
+    }, false, () => {
+      announceForScreenReaders(<>{
+        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
+      } moved down, now matched to {
+        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
+      }{
+        swappedValue ? `, swapped with ${swappedValue}` : ""
+      }.</>);
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryFields(storedCountryData, newMatchedCountryFields,
@@ -638,14 +646,6 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
           }
         }
       });
-    }, false, () => {
-      announceForScreenReaders(<>{
-        getFieldReadableValue(storedCountryData, countryCodeValue, countryField, !singleCapacity)
-      } moved down, now matched to {
-        getCountryNameFromCode(toSlotCountryCode, storedCountryData.countries)
-      }{
-        swappedValue ? `, swapped with ${swappedValue}` : ""
-      }.</>);
     });
   }
 
