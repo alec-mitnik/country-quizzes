@@ -649,14 +649,19 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
     });
   }
 
+  const unmatchedPoolHeader = `Country ${!singleCapacity ? "Info"
+      : getPluralFieldLabel(quizState.countryFields[0])} to Sort Out`
+  const matchedPoolHeader = `Countries the ${!singleCapacity ?
+      "Info Belongs" : `${getPluralFieldLabel(quizState.countryFields[0])} Belong`} to`
+
   return (
     (quizState.quiz.structure !== "sortingOut") ? null : <>
       <p className="sr-only" aria-live="polite">{srAnnouncement}</p>
 
       <div className="quiz-controls">
         <DraggableCountryPool headerId="unmatched-pool-header"
-            headerText={`Country ${!singleCapacity ? "Info"
-                : getPluralFieldLabel(quizState.countryFields[0])} to Sort Out`}
+            headerLabel={unmatchedPoolHeader}
+            headerText={unmatchedPoolHeader}
             emptyMessage={`All ${!singleCapacity ? "info has"
                 : `${getPluralFieldLabel(quizState.countryFields[0], true)} have`} been sorted out`}
             selectedCountryCode={selectedCountryFieldCountryCode}
@@ -688,8 +693,8 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         </DraggableCountryPool>
 
         <DraggableCountryPool headerId="matched-pool-header"
-            headerText={`Countries the ${!singleCapacity ?
-                "Info Belongs" : `${getPluralFieldLabel(quizState.countryFields[0])} Belong`} to`}
+            headerLabel={matchedPoolHeader}
+            headerText={matchedPoolHeader}
             canBeDroppedIntoDirectly={false}
             isTargetContainer
             emptyMessage="Error">
@@ -697,12 +702,12 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             // Can't be a fragment, as it needs the view transition style applied
             const CountryWrapper = singleCapacity ? 'div' : 'li';
 
-            let countryLabel: React.ReactNode =
-                getCountryNameFromCode(countryCodeSlot, storedCountryData.countries);
+            let countryText = getCountryNameFromCode(countryCodeSlot, storedCountryData.countries);
+            let countryLabel: React.ReactNode = countryText;
 
             if (!roundActive) {
-              countryLabel = <>{quizActive ? countryLabel
-                  : <Link to={`/countries/${countryCodeSlot}`}>{countryLabel}</Link>} ({
+              countryLabel = <>{quizActive ? countryText
+                  : <Link to={`/countries/${countryCodeSlot}`}>{countryText}</Link>} ({
                 storedCountryData.countries[countryCodeSlot]?.data?.continents?.formattedValue ??
                     "Continents Unavailable"
               })</>;
@@ -738,7 +743,8 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             return (
               <li key={countryCodeSlot}>
                 <DraggableCountryPool headerId={`matched-pool-header-${countryCodeSlot}`}
-                    headerText={countryLabel}
+                    headerLabel={countryLabel}
+                    headerText={countryText}
                     headerLevel={3}
                     contentBelowHeader={contentBelowHeader}
                     singleCapacity={singleCapacity}

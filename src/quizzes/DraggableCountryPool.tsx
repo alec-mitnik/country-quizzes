@@ -5,7 +5,8 @@ import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 
 interface DraggableCountryPoolProps {
   headerId: string;
-  headerText: React.ReactNode;
+  headerLabel: React.ReactNode;
+  headerText: string;
   headerLevel?: number;
   contentBelowHeader?: React.ReactNode;
   singleCapacity?: boolean;
@@ -23,7 +24,8 @@ interface DraggableCountryPoolProps {
 /**
  * Holds one or more unordered draggable countries, or nested pools for matching
  * @param {string} [props.headerId] ID of the header element
- * @param {React.ReactNode} [props.headerText] Text or markup to go inside the header element
+ * @param {React.ReactNode} [props.headerLabel] Text or markup to go inside the header element
+ * @param {string} [props.headerText] Readable string representation of the header label
  * @param {number} [props.headerLevel=2] Level of the header element
  * @param {React.ReactNode} [props.contentBelowHeader] Optional content to display below the header
  * @param {boolean} [props.singleCapacity=false] If true, only one country
@@ -40,7 +42,7 @@ interface DraggableCountryPoolProps {
  * @param {function} [props.onTargetForAddToggle] Function to call when the pool is set as the target for adding
  * @param {function} [props.onDrop] Function to call when a draggable country is dropped onto the pool
  */
-function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBelowHeader,
+function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel = 2, contentBelowHeader,
     singleCapacity = false, canBeDroppedIntoDirectly = true, isTargetContainer = false,
     emptyMessage, children, selectedCountryCode, isTargetForAdd = false, hideTargetForAddButton,
     onTargetForAddToggle, onDrop }: DraggableCountryPoolProps) {
@@ -111,16 +113,20 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBe
   // eslint-disable-next-line react-x/no-children-count
   const hasChildren = React.Children.count(children);
 
+  const doesHeaderLabelEndWithPunctuation = ['.', '!', '?'].includes(headerText?.[headerText.length - 1]);
+  const headerLabelSuffix = doesHeaderLabelEndWithPunctuation ? '' : '.';
+
   // The period at the end of the aria-label adds a helpful pause
   // before the word "button" is spoken
   const targetForAddButton: React.ReactNode = onTargetForAddToggle ? <Button type="button"
     onClick={() => onTargetForAddToggle()}
-    aria-label={isTargetForAdd ? "Stop targeting this value." : "Target this value for adding."}
+    aria-label={isTargetForAdd ? `Stop targeting this value: ${headerText}${headerLabelSuffix}`
+        : `Target this value for adding: ${headerText}${headerLabelSuffix}`}
   className={`target-for-add-button${hideTargetForAddButton ? " hidden" : ""}`}>
       <span aria-hidden="true" className="symbol-font">⌖</span>
   </Button> : null;
 
-  const headerTextWithOffset = <>{targetForAddButton}{headerText}</>
+  const headerTextWithOffset = <>{targetForAddButton}{headerLabel}</>
 
   return <ComponentWrapper className={`draggable-country-pool${isBeingDraggedOver ? " being-dragged-over" : ""
       }${isTargetContainer ? " target-container" : ""}${isTargetForAdd ? " target-for-add" : ""}`}
@@ -132,7 +138,7 @@ function DraggableCountryPool({ headerId, headerText, headerLevel = 2, contentBe
       onDragEnd={handleDragEnd}>
     {targetForAddButton}
 
-    {headerLevel === 0 && <div id={headerId}>{headerText}</div>}
+    {headerLevel === 0 && <div id={headerId}>{headerLabel}</div>}
     {headerLevel === 1 && <h1 id={headerId}>{headerTextWithOffset}</h1>}
     {headerLevel === 2 && <h2 id={headerId}>{headerTextWithOffset}</h2>}
     {headerLevel === 3 && <h3 id={headerId}>{headerTextWithOffset}</h3>}

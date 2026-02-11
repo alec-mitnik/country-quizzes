@@ -104,9 +104,14 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
     // aren't represented in the countryCodesOverride, and will have duplicates
     // for countries with multiple bordering countries
     const availableQuizCountryCodeData = [...quizCountryCodes];
-    const matchValues: {cca3: Cca3Code, valueArray: string[] | undefined,
-        secondaryIndex: number | undefined, value: string,
-        label: React.ReactNode}[] = quizState.countryCodes.map(countryCode => {
+    const matchValues: {
+      cca3: Cca3Code,
+      valueArray: string[] | undefined,
+      secondaryIndex: number | undefined,
+      value: string,
+      label: React.ReactNode,
+      pureText: string,
+    }[] = quizState.countryCodes.map(countryCode => {
       const countryCodeData = availableQuizCountryCodeData.find(countryCodeData =>
           countryCodeData.originatingCca3 === countryCode) ?? {
             originatingCca3: countryCode,
@@ -124,6 +129,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           countryCodeData.originatingCca3, secondaryIndex);
       let label = quizState.quiz.labelFunction(storedCountryData,
           countryCodeData.originatingCca3, secondaryIndex);
+      const pureText = quizState.quiz.pureTextFunction(storedCountryData,
+          countryCodeData.originatingCca3, secondaryIndex);
 
       if (quizState.quiz.type === "MATCH_TO_FLAGS") {
         label = <CountryFieldDisplayValue cca3={countryCodeData.originatingCca3} field="flagDescription" />
@@ -137,6 +144,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
         secondaryIndex,
         value,
         label,
+        pureText,
       };
     });
 
@@ -500,6 +508,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     let newMatchValueIndex = -1;
     let countryCodesAtSlot: CountryCodeOverrideData[] | undefined;
+    let swappedValue: string | undefined;
 
     for (let i = matchIndex - 1; i !== matchIndex; i--) {
       if (i < 0) {
@@ -534,6 +543,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
       newMatchedCountryCodes[matchIndex] = newCountryCodes;
 
       // Remove the occupying country from its original slot
+      swappedValue = getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries);
       countryCodesAtSlot = [];
     } else {
       // Remove the moving country from its slot
@@ -549,6 +559,12 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryCodes(newMatchedCountryCodes);
+    }, false, () => {
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+          } moved up, now matched to {quizState.quiz.labelFunction(
+              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
+          singleCapacity && swappedValue ? `, swapped with ${swappedValue}.` : ""}</>);
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
@@ -566,14 +582,6 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           }
         }
       });
-    }, false, () => {
-      // Use the original label to avoid using the markup for flags
-      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
-          } moved up, now matched to {quizState.quiz.labelFunction(
-              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
-          singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
-            getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
-          }.` : ""}</>);
     });
   }
 
@@ -588,6 +596,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     let newMatchValueIndex = -1;
     let countryCodesAtSlot: CountryCodeOverrideData[] | undefined;
+    let swappedValue: string | undefined;
 
     for (let i = matchIndex + 1; i !== matchIndex; i++) {
       if (i >= sortedMatchValues.length) {
@@ -622,6 +631,7 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
       newMatchedCountryCodes[matchIndex] = newCountryCodes;
 
       // Remove the occupying country from its original slot
+      swappedValue = getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries);
       countryCodesAtSlot = [];
     } else {
       // Remove the moving country from its slot
@@ -637,6 +647,12 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
     callFunctionWithViewTransition(() => {
       setMatchedCountryCodes(newMatchedCountryCodes);
+    }, false, () => {
+      // Use the original label to avoid using the markup for flags
+      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
+          } moved down, now matched to {quizState.quiz.labelFunction(
+              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
+          singleCapacity && swappedValue ? `, swapped with ${swappedValue}.` : ""}</>);
 
       requestAnimationFrame(() => {
         const sortedMatched = getSortedMatchedCountryCodes(storedCountryData, newMatchedCountryCodes);
@@ -654,16 +670,13 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
           }
         }
       });
-    }, false, () => {
-      // Use the original label to avoid using the markup for flags
-      announceForScreenReaders(<>{getCountryNameFromCode(countryCodeData.cca3, storedCountryData.countries)
-          } moved down, now matched to {quizState.quiz.labelFunction(
-              storedCountryData, sortedMatchValues[newMatchValueIndex].cca3)}{
-          singleCapacity && countryCodesAtSlot.length ? `, swapped with ${
-            getCountryNameFromCode(countryCodesAtSlot[0].cca3, storedCountryData.countries)
-          }.` : ""}</>);
     });
   }
+
+  const unmatchedPoolHeader = `Unmatched ${quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
+      "Bordering " : ""}Countries`;
+  const matchedPoolHeader = `${quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
+      "Countries" : quizState.quiz.matchTypeLabel} to Match to`
 
   return (
     (quizState.quiz.structure !== "matching") ? null : <>
@@ -671,8 +684,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
 
       <div className="quiz-controls">
         <DraggableCountryPool headerId="unmatched-pool-header"
-            headerText={`Unmatched ${quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
-                "Bordering " : ""}Countries`}
+            headerLabel={unmatchedPoolHeader}
+            headerText={unmatchedPoolHeader}
             emptyMessage="All countries have been matched"
             selectedCountryCode={selectedCountryCode?.cca3}
             onDrop={handleDropForUnmatchedPool}>
@@ -705,8 +718,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
         </DraggableCountryPool>
 
         <DraggableCountryPool headerId="matched-pool-header"
-            headerText={`${quizState.quiz.type === "MATCH_TO_BORDERING_COUNTRIES" ?
-                "Countries" : quizState.quiz.matchTypeLabel} to Match to`}
+            headerLabel={matchedPoolHeader}
+            headerText={matchedPoolHeader}
             canBeDroppedIntoDirectly={false}
             isTargetContainer
             emptyMessage="Error">
@@ -768,7 +781,8 @@ function QuizControlsForMatching({quizState, setQuizState}: QuizControlsForMatch
             return (
               <li key={itemKey}>
                 <DraggableCountryPool headerId={`matched-pool-header-${matchIndex}`}
-                    headerText={matchDataLabel}
+                    headerLabel={matchDataLabel}
+                    headerText={matchData.pureText}
                     headerLevel={quizState.quiz.type === "MATCH_TO_FUN_FACTS"
                         || quizState.quiz.type === "MATCH_TO_FLAGS"
                         || quizState.quiz.type === "MATCH_TO_LOCATIONS" ? 0 : 3}

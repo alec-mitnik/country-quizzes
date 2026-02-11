@@ -53,8 +53,11 @@
     font-size: 1.25rem;
   }
 
+  #quiz-submit-button {
+    view-transition-name: quiz-submit-button;
+  }
+
   .quiz-action-button {
-    view-transition-name: match-element;
     margin-block: 16px 48px;
 
     &.give-up {

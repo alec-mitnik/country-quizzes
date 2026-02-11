@@ -731,7 +731,8 @@ ${APP_URL}`;
 
           {/* Sound effect... */}
           {/* Start Next Round Button */}
-          {quizActive && nextRoundReadyToStart && <Button type="button"
+          {quizActive && nextRoundReadyToStart
+              && <Button type="button"
               disabled={countriesForQuizRoundRequested && !countriesForQuizRoundLoaded}
               className={`quiz-action-button${(quizState?.round ?? 0) < QUIZ_ROUNDS_PER_LEVEL ?
                   "" : " level-up"}`} onClick={() => startNextRound()}>

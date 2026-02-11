@@ -123,6 +123,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
         storedCountryData.countries[cca3]?.data?.currencies?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.currencies?.markupValue ?? "Unknown",
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.currencies?.pureTextValue ?? "Unknown",
   },
   MATCH_TO_BORDERING_COUNTRIES: {
     type: "MATCH_TO_BORDERING_COUNTRIES",
@@ -138,6 +140,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     // Name of the country
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         getCountryNameFromCode(cca3, storedCountryData.countries),
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        getCountryNameFromCode(cca3, storedCountryData.countries),
   },
   MATCH_TO_FUN_FACTS: {
     type: "MATCH_TO_FUN_FACTS",
@@ -152,6 +156,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
         storedCountryData.countries[cca3]?.data?.funFacts?.[index] ?? "Error",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index = 0) =>
         storedCountryData.countries[cca3]?.data?.funFacts?.[index] ?? "Error",
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index = 0) =>
+        storedCountryData.countries[cca3]?.data?.funFacts?.[index] ?? "Error",
   },
   MATCH_TO_CAPITALS: {
     type: "MATCH_TO_CAPITALS",
@@ -164,6 +170,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.capitals?.formattedValue ?? "Unknown",
   },
   MATCH_TO_FLAGS: {
@@ -179,6 +187,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
         storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.flagDescription ?? "Unknown",
   },
   MATCH_TO_LOCATIONS: {
     type: "MATCH_TO_LOCATIONS",
@@ -189,6 +199,8 @@ export const QUIZ_TYPES: Record<QuizType, CountryQuiz> = {
     valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
     labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
+        storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
+    pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code) =>
         storedCountryData.countries[cca3]?.data?.location ?? "Unknown",
   },
   ORDER_BY_SIZE: {
@@ -257,6 +269,7 @@ export interface MatchingQuiz {
   valueArrayFunction?: (storedCountryData: CountryStorage, cca3: Cca3Code) => string[] | undefined;
   valueFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => string;
   labelFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => React.ReactNode;
+  pureTextFunction: (storedCountryData: CountryStorage, cca3: Cca3Code, index?: number) => string;
 };
 
 export interface RankingQuiz {

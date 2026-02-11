@@ -142,6 +142,26 @@ export function toPreciseLocaleString(num: number) {
   });
 }
 
+function getReactNodeStringRecursive(node: React.ReactNode): string {
+  if (typeof node === 'string' || typeof node === 'number') {
+    return String(node);
+  }
+
+  if (node instanceof Array) {
+    return node.map(getReactNodeStringRecursive).join('');
+  }
+
+  if (React.isValidElement(node)) {
+    const props = node.props as PropsWithChildren;
+
+    if (props.children) {
+      return getReactNodeStringRecursive(props.children);
+    }
+  }
+
+  return '';
+}
+
 /**
  * Converts a ReactNode into a string value
  * @param node The ReactNode to convert
@@ -149,22 +169,7 @@ export function toPreciseLocaleString(num: number) {
  * @returns A string representation of the ReactNode that can be used as a rendering key
  */
 export function getReactNodeString(node: React.ReactNode, fallback = 'unknown'): string {
-  if (typeof node === 'string' || typeof node === 'number') {
-    return String(node);
-  }
-
-  if (React.isValidElement(node)) {
-    const props = node.props as PropsWithChildren;
-
-    // Use props.children if it's a string, otherwise use fallback
-    if (typeof props.children === 'string') {
-      return props.children;
-    }
-
-    return `${String(node.type)}_${fallback}`;
-  }
-
-  return fallback;
+  return getReactNodeStringRecursive(node) || fallback;
 }
 
 /**

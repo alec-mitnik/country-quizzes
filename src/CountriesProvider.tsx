@@ -205,6 +205,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                   rawValue: formattedCurrencies,
                   formattedValue: formatCountryDataArray(formattedCurrencies),
                   markupValue: formatCurrenciesMarkup(currencies),
+                  pureTextValue: formatCountryDataArray(Object.values(currencies).map(currency => currency.term)),
                 },
                 capitals: {
                   label: capitals?.length === 1 ? "Capital" : "Capitals",

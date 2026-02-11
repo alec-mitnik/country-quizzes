@@ -18,6 +18,7 @@ interface QuizSubmitButtonProps {
 function QuizSubmitButton({disabled, alreadyGuessed, onSubmit,
     submissionsRemaining}: QuizSubmitButtonProps) {
   return submissionsRemaining > 0 ? <Button type="button"
+      id="quiz-submit-button"
       className={`quiz-action-button${submissionsRemaining === 1 ? " danger" : ""}`}
       disabled={disabled || alreadyGuessed}
       onClick={onSubmit}>

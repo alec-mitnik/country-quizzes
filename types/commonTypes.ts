@@ -8,6 +8,7 @@ export interface FormattedCountryField<T> {
   rawValue?: T,
   formattedValue?: string,
   markupValue?: React.ReactNode,
+  pureTextValue?: string,
 }
 
 interface IndependenceDependentFormattedCountryField<T> {
