@@ -317,6 +317,18 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
 
                 if (!country.flagDescription) {
                   console.warn(`${country.cca3} - ${country.name} has no flag description!`);
+                } else {
+                  if (country.flagDescription.includes('  ')) {
+                    console.warn(`${country.cca3} - ${country.name} flag description contains double spaces!`);
+                  }
+
+                  // Check with regex that the flagDescription ends in punctuation
+                  // (., !, ?, and optionally escaped quotes after)
+                  const endsWithPunctuationRegex = new RegExp(`[.!?](\\")?$`);
+
+                  if (!endsWithPunctuationRegex.test(country.flagDescription)) {
+                    console.warn(`${country.cca3} - ${country.name} flag description does not end with punctuation!`);
+                  }
                 }
 
                 for (const otherCountry of countryData) {

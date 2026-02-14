@@ -170,12 +170,6 @@ export function extractFlagAltDescription(country: Partial<Country>) {
     return undefined;
   }
 
-  if (country.cca3 === "STP") {
-    // For São Tomé and Príncipe, the REST Countries API
-    // erroneously gives the flag description for South Sudan
-    return undefined;
-  }
-
   let flagDescription = country?.flags?.alt;
   const countryName = country?.name?.common;
 

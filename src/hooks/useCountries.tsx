@@ -5,7 +5,7 @@ import useFetch from "./useFetch";
 
 // Increment whenever the API updates its data, to invalidate caches.
 // Use underscore parameter to force cache invalidation without conflicting with valid parameters.
-const SHALLOW_DATA_VERSION = 2;
+const SHALLOW_DATA_VERSION = 3;
 const FULL_DATA_VERSION = 1;
 
 // Include area and population to allow for displaying the overall rankings.
