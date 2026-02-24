@@ -978,9 +978,10 @@
       "cca3": "IRQ",
       "name": "Iraq",
       "worldFactbookCountryKey": "IZ",
-      "location": "Middle East, bordering the Persian Gulf, north of Kuwait",
+      "location": "Middle East, bordering the Persian Gulf, north of Kuwait and Saudi Arabia",
       "funFacts": [
-        "Where the earliest known writing system was developed, known as Cuneiform"
+        "Where the earliest known writing system was developed, known as Cuneiform",
+        "Home of the ancient city of Babylon"
       ]
     }
   },
@@ -1340,7 +1341,8 @@
       "location": "North America, bordering the North Pacific Ocean, between Guatemala and the United States, and bordering the Caribbean Sea",
       "funFacts": [
         "Home of the ancient Aztec civilization",
-        "Its capital city, built on the bed of a drained lake, sinks almost 20 inches (50cm) every year"
+        "Its capital city, built on the bed of a drained lake, sinks almost 20 inches (50cm) every year",
+        "Home of the ancient Maya city of Chichén Itzá"
       ]
     }
   },
@@ -1660,7 +1662,8 @@
       "funFacts": [
         "Produces the most quinoa of any country",
         "Home of over 700 ancient geoglyphs known as the Nazca lines, formed by carving massive drawings into the ground",
-        "Home of La Rinconada, the highest permanent settlement in the world, at up to 3.2 mi (5.1km) above sea level"
+        "Home of La Rinconada, the highest permanent settlement in the world, at up to 3.2 mi (5.1km) above sea level",
+        "Home of the ancient Inca citadel of Machu Picchu"
       ]
     }
   },
