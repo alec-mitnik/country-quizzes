@@ -535,7 +535,10 @@
       "cca3": "CZE",
       "name": "Czechia",
       "worldFactbookCountryKey": "EZ",
-      "location": "Central Europe, between Germany, Poland, Slovakia, and Austria"
+      "location": "Central Europe, between Germany, Poland, Slovakia, and Austria",
+      "funFacts": [
+        "Where the term \"robot\" was coined"
+      ]
     }
   },
   "DNK": {
