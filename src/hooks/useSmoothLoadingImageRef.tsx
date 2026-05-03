@@ -134,7 +134,7 @@ function useSmoothLoadingImageRef(...dependencies: unknown[]) {
     // including if it is already in the viewport initially
     const observer = new IntersectionObserver((entries) => {
 
-      if (entries[0].isIntersecting) {
+      if (entries[0]?.isIntersecting) {
         const originalTransform = img.style.transform;
         img.style.transform = 'translateZ(0.001px)';
 

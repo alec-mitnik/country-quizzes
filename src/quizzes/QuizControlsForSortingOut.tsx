@@ -339,7 +339,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       let infoLabel = "information";
 
       if (singleCapacity) {
-        infoLabel = getPluralFieldLabel(quizState.countryFields[0], true);
+        infoLabel = getPluralFieldLabel(quizState.countryFields[0]!, true);
       }
 
       if (quizState.level >= QUIZ_MAX_LEVEL && quizState.round >= QUIZ_ROUNDS_PER_LEVEL) {
@@ -493,7 +493,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         continue;
       }
 
-      if (!canSlotAcceptCountryCodeValue(countryField, countryCodeValue, quizState.countryCodes[i])) {
+      if (!canSlotAcceptCountryCodeValue(countryField, countryCodeValue, quizState.countryCodes[i]!)) {
         continue;
       }
 
@@ -506,10 +506,10 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       return;
     }
 
-    const toSlotCountryCode = quizState.countryCodes[toSlotIndex];
+    const toSlotCountryCode = quizState.countryCodes[toSlotIndex]!;
     const newMatchedCountryFields = structuredClone(quizState.matchedCountryFields);
     newMatchedCountryFields[toSlotCountryCode] ??= {};
-    const countryCodeValueAtToSlot = newMatchedCountryFields[toSlotCountryCode][countryField];
+    const countryCodeValueAtToSlot = newMatchedCountryFields[toSlotCountryCode][countryField]!;
     let swappedValue: string | undefined;
 
     if (countryCodeValueAtToSlot) {
@@ -527,7 +527,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
     }
 
     // Set the country value to its new slot
-    newMatchedCountryFields[quizState.countryCodes[toSlotIndex]] = {
+    newMatchedCountryFields[quizState.countryCodes[toSlotIndex]!] = {
       ...newMatchedCountryFields[toSlotCountryCode],
       [countryField]: countryCodeValue,
     };
@@ -580,7 +580,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
         continue;
       }
 
-      if (!canSlotAcceptCountryCodeValue(countryField, countryCodeValue, quizState.countryCodes[i])) {
+      if (!canSlotAcceptCountryCodeValue(countryField, countryCodeValue, quizState.countryCodes[i]!)) {
         continue;
       }
 
@@ -593,7 +593,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       return;
     }
 
-    const toSlotCountryCode = quizState.countryCodes[toSlotIndex];
+    const toSlotCountryCode = quizState.countryCodes[toSlotIndex]!;
     const newMatchedCountryFields = structuredClone(quizState.matchedCountryFields);
     newMatchedCountryFields[toSlotCountryCode] ??= {};
     const countryCodeValueAtToSlot = newMatchedCountryFields[toSlotCountryCode][countryField];
@@ -614,7 +614,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
     }
 
     // Set the country value to its new slot
-    newMatchedCountryFields[quizState.countryCodes[toSlotIndex]] = {
+    newMatchedCountryFields[quizState.countryCodes[toSlotIndex]!] = {
       ...newMatchedCountryFields[toSlotCountryCode],
       [countryField]: countryCodeValue,
     };
@@ -650,9 +650,9 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
   }
 
   const unmatchedPoolHeader = `Country ${!singleCapacity ? "Info"
-      : getPluralFieldLabel(quizState.countryFields[0])} to Sort Out`
+      : getPluralFieldLabel(quizState.countryFields[0]!)} to Sort Out`
   const matchedPoolHeader = `Countries the ${!singleCapacity ?
-      "Info Belongs" : `${getPluralFieldLabel(quizState.countryFields[0])} Belong`} to`
+      "Info Belongs" : `${getPluralFieldLabel(quizState.countryFields[0]!)} Belong`} to`
 
   return (
     (quizState.quiz.structure !== "sortingOut") ? null : <>
@@ -663,7 +663,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
             headerLabel={unmatchedPoolHeader}
             headerText={unmatchedPoolHeader}
             emptyMessage={`All ${!singleCapacity ? "info has"
-                : `${getPluralFieldLabel(quizState.countryFields[0], true)} have`} been sorted out`}
+                : `${getPluralFieldLabel(quizState.countryFields[0]!, true)} have`} been sorted out`}
             selectedCountryCode={selectedCountryFieldCountryCode}
             onDrop={handleDropForUnmatchedFieldPool}>
           {(Object.keys(sortedUnmatchedValues) as (keyof StoredCountry)[]).map(countryField => (
@@ -797,7 +797,7 @@ function QuizControlsForSortingOut({quizState, setQuizState}: QuizControlsForSor
       {roundActive && !Object.keys(quizState.countryFieldsLockedInAsCorrect).length
           && !!quizState.incorrectSubmissions.length
           && Object.values(quizState.incorrectSubmissions[
-              quizState.incorrectSubmissions.length - 1])
+              quizState.incorrectSubmissions.length - 1]!)
               .flatMap(valueObject => Object.values(valueObject ?? {})).length
               === quizState.countryCodes.length * quizState.countryFields.length
           && <p className="quiz-message" aria-live="polite">

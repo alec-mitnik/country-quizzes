@@ -82,7 +82,7 @@ export function convertToOrdinal(n: number) {
     return `${n}th`;
   }
 
-  return `${n}${suffixMap[singlesDigit] || "th"}`;
+  return `${n}${suffixMap[singlesDigit] ?? "th"}`;
 }
 
 /**
@@ -124,7 +124,7 @@ export function getDecimalPlaces(num: number) {
   }
 
   const str = num.toString();
-  return str.includes('.') ? str.split('.')[1].length : 0;
+  return str.includes('.') ? str.split('.')[1]?.length : 0;
 }
 
 /**
@@ -248,7 +248,7 @@ export function doesStringEndWithPunctuation(str: string): boolean {
     return false;
   };
 
-  const lastChar = str[str.length - 1];
+  const lastChar = str[str.length - 1] ?? '';
   return ['.', '?', '!'].includes(lastChar);
 }
 

@@ -270,7 +270,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
     // Handle adding from outside or moving from within
     const newRankedCountryCodes = quizState.rankedCountryCodes.filter(code => code !== countryCode);
     const moved = newRankedCountryCodes.length < quizState.rankedCountryCodes.length;
-    const countryCodeAtIndex = quizState.rankedCountryCodes[rankIndex];
+    const countryCodeAtIndex = quizState.rankedCountryCodes[rankIndex]!;
     const updatedIndex = newRankedCountryCodes.indexOf(countryCodeAtIndex);
 
     // If moving off the edge, cycle back around
@@ -353,7 +353,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
       {/* Reminder that you don't have to submit everything in one go */}
       {roundActive && !quizState.countryCodesLockedInAsCorrect.length
           && !!quizState.incorrectSubmissions.length
-          && quizState.incorrectSubmissions[quizState.incorrectSubmissions.length - 1].length
+          && quizState.incorrectSubmissions[quizState.incorrectSubmissions.length - 1]!.length
               === quizState.countryCodes.length
           && <p className="quiz-message" aria-live="polite">
         Remember: {QUIZ_ONE_GO_TIP}

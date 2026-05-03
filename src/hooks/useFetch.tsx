@@ -5,7 +5,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
  * as opposed to e.g. a manual cancellation
  */
 class StaleRequestError extends Error {
-  name = 'StaleRequestError';
+  override name = 'StaleRequestError';
 
   constructor() {
     super('Request stale');
@@ -51,7 +51,7 @@ function useFetch<T = unknown>(
       return {
         ...prev,
         [url]: {
-          ...prev[url],
+          ...prev[url]!,
           ...newState,
         },
       };
