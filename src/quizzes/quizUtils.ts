@@ -335,7 +335,7 @@ export function getRandomCountryCodes(availableCountryCodes: Cca3Code[], storedC
       if (extractedCountryCode && fieldToRequire && valueFunctionForPreventingDuplicates) {
         const value = valueFunctionForPreventingDuplicates(storedCountryData, extractedCountryCode);
 
-        if (duplicatesCount[value] > 0) {
+        if (duplicatesCount[value] != null && duplicatesCount[value] > 0) {
           duplicatesCount[value]++;
         } else {
           duplicatesCount[value] = 1;

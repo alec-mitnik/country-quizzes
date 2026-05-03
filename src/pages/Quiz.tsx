@@ -471,7 +471,7 @@ function Quiz() {
         newMatchingQuizState.countryCodesOverride = countryCodes.map((countryCode, i) => ({
           cca3: countryCode,
           originatingCca3: countryCode,
-          secondaryIndex: countryCodeSecondaryIndexes[i],
+          secondaryIndex: countryCodeSecondaryIndexes[i] ?? 0,
         }));
       } else if (randomQuizType === "MATCH_TO_BORDERING_COUNTRIES") {
         const borderingCountryCodes =
@@ -552,8 +552,9 @@ function Quiz() {
       let descriptionFieldLabel: React.ReactNode = <>information</>;
 
       if (sortingOutQuizState.countryFields.length === 1) {
+        const field = sortingOutQuizState.countryFields[0];
         descriptionFieldLabel = <strong>{
-          getPluralFieldLabel(sortingOutQuizState.countryFields[0], true)
+          field ? getPluralFieldLabel(field, true) : "ERROR"
         }</strong>;
       }
 

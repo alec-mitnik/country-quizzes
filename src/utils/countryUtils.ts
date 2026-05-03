@@ -49,7 +49,7 @@ export function getRankAccountingForTies(rankedArray: Cca3Code[], cca3: Cca3Code
   let index = rankedArray.indexOf(cca3);
 
   // Walk back until we find an entry with a different value.
-  while (index > 0 && valueFunction(rankedArray[index - 1]) === valueFunction(cca3)) {
+  while (index > 0 && valueFunction(rankedArray[index - 1]!) === valueFunction(cca3)) {
     index--;
   }
 
@@ -83,7 +83,7 @@ export function extractCurrencies(country: Partial<Country>) {
         // Extract currencies using just the last word ("dollar" vs. "United States dollar")
         // For the purpose of quizzing on
         const nameArray = valueEntry.name.split(" ");
-        let currencyTerm = nameArray[nameArray.length - 1];
+        let currencyTerm = nameArray[nameArray.length - 1]!;
 
         if (country.cca3 === "VEN") {
           // For Venezuela, the REST Countries API gives "Venezuelan bolívar soberano",
