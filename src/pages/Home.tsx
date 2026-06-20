@@ -34,6 +34,14 @@ function Home() {
           </p>
         </div>
 
+        {/* TODO - Just temporary, so inline styles are fine */}
+        <div className="home-intro" style={{ marginTop: "0" }}>
+          <h2><span aria-hidden="true">🚧</span> Currently Under Construction <span aria-hidden="true">🚧</span></h2>
+          <p>
+            Support for REST Countries API v3.1 was suddenly ended.  Migration to v5 is now underway.
+          </p>
+        </div>
+
         {/* Portfolio Link */}
         <a id="portfolio-link" href={PORTFOLIO_URL} target="_blank" rel="noopener noreferrer author"
             className={`smooth-loading${doneLoadingClassName}${loadFailedClassName}${instantLoadClassName}`}
