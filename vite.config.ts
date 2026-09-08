@@ -10,7 +10,8 @@ export default defineConfig(({ command }) => {
   return {
     plugins: [react()],
     esbuild: {
-      drop: isProduction ? ['console'] : [],
+      // Suppress console messages in production, except for errors
+      pure: isProduction ? ['console.log', 'console.info', 'console.debug', 'console.warn'] : [],
     },
     test: {
       globals: true,

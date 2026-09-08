@@ -4,8 +4,8 @@ import { AppWithoutRouter } from './App';
 import useCountries from './hooks/useCountries';
 import { testCountry, testStoredCountryData } from './test/data';
 import {
-    APP_TITLE, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE, HOME_NAV_TEXT,
-    NO_PAGE_TITLE, QUIZ_NAV_TEXT, QUIZ_TITLE
+  APP_TITLE, COUNTRIES_NAV_TEXT, COUNTRIES_TITLE, HOME_NAV_TEXT,
+  NO_PAGE_TITLE, QUIZ_NAV_TEXT, QUIZ_TITLE
 } from './utils/consts';
 
 // Mock the hook

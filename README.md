@@ -32,13 +32,13 @@ to get a webpage interface along with it.
 
 REST Countries API: https://restcountries.com/
 
-Uses the related `@yusifaliyevpro/countries` package purely for typing the data:
+Uses the related `@yusifaliyevpro/countries` package for calling the API and typing the data:
 https://github.com/yusifaliyevpro/countries
 
-Location descriptions, maps, and some flag descriptions are derived from the CIA World Factbook:
+Location descriptions and maps are derived from the CIA World Factbook:
 https://www.cia.gov/the-world-factbook/countries/
 
-Any remaining flag descriptions or other missing info is derived from Wikipedia.
+Any other missing info is derived from Wikipedia.
 I also use pageview counts for the countries, available through their APIs, as a way to gauge
 general country familiarity for the purposes of controlling the difficulty of quizzes.
 All fun facts are also verified through Wikipedia and its sources.

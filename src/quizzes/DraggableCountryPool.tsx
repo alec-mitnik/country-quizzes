@@ -1,8 +1,8 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
 import Button from "../Button";
-import { CUSTOM_DRAG_TYPE } from "../utils/consts";
 import { doesStringEndWithPunctuation } from "../utils/utils";
+import { isOnlyDraggingCustomType } from "./quizUtils";
 
 interface DraggableCountryPoolProps {
   headerId: string;
@@ -50,7 +50,7 @@ function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel =
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
+    if (isOnlyDraggingCustomType(event)
         && canBeDroppedIntoDirectly) {
       event.preventDefault();
     }
@@ -61,8 +61,7 @@ function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel =
   }
 
   function handleDragEnter(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
-        && canBeDroppedIntoDirectly && selectedCountryCode) {
+    if (isOnlyDraggingCustomType(event) && canBeDroppedIntoDirectly && selectedCountryCode) {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
 
@@ -82,9 +81,7 @@ function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel =
     const isPool = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-pool');
 
-    if (isPool
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
-        && canBeDroppedIntoDirectly) {
+    if (isPool && isOnlyDraggingCustomType(event) && canBeDroppedIntoDirectly) {
       event.preventDefault();
       setIsBeingDraggedOver(false);
     }
@@ -92,8 +89,7 @@ function DraggableCountryPool({ headerId, headerLabel, headerText, headerLevel =
 
   // Doesn't fire if the drag involves no actual movement!
   function handleDrop(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)
-        && canBeDroppedIntoDirectly) {
+    if (isOnlyDraggingCustomType(event) && canBeDroppedIntoDirectly) {
       event.preventDefault();
       event.stopPropagation();
       setIsBeingDraggedOver(false);

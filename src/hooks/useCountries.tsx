@@ -1,31 +1,22 @@
-import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import { use, useCallback, useEffect, useState } from "react";
+import type { FullCountry, ShallowCountry } from "../../types/commonTypes";
 import { CountriesContext } from "../CountriesContext";
 import useFetch from "./useFetch";
 
-// Increment whenever the API updates its data, to invalidate caches.
-// Use underscore parameter to force cache invalidation without conflicting with valid parameters.
-const SHALLOW_DATA_VERSION = 3;
-const FULL_DATA_VERSION = 1;
-
-// Include area and population to allow for displaying the overall rankings.
-// Include flags to be able to show them and filter by their designs in the directory.
-// Include borders to be able to filter on bordering countries for border quizzes.
-// Include continents to be able to filter on them in the directory and do content-spanning quizzes.
-const SHALLOW_DATA_URL =
-    `https://restcountries.com/v3.1/all?_=${
-      SHALLOW_DATA_VERSION
-    }&fields=cca3,name,independent,area,population,flags,borders,continents`;
+// Reroutes to the Netlify function which applies the API key,
+// sets the response fields, and uses the @yusifaliyevpro/countries package.
+const SHALLOW_DATA_URL = '/.netlify/functions/countries?all=1';
 
 /**
- * Gives the full fetch URL to use for getting non-shallow data for specified countries
+ * Gives the full fetch URL to use for getting non-shallow data for specified countries.
+ * Reroutes to the Netlify function which applies the API key,
+ * sets the response fields, and uses the @yusifaliyevpro/countries package.
  * @param countryCodes cca3 codes of the countries to get data for
  * @returns The constructed URL
  */
 function getFullCountryFetchUrl(countryCodes: string[]) {
-  return `https://restcountries.com/v3.1/alpha?_=${FULL_DATA_VERSION}&codes=${
-    countryCodes.join(",")
-  }&fields=cca3,name,capital,currencies,languages`;
+  return `/.netlify/functions/countries?codes=${countryCodes.join(",")}`;
 }
 
 /**
@@ -37,7 +28,7 @@ function getFullCountryFetchUrl(countryCodes: string[]) {
  * as well as functions for fetching country data
  */
 function useCountries() {
-  const { state, initiateFetch, setStateForUrl } = useFetch<Partial<Country>[]>();
+  const { state, initiateFetch, setStateForUrl } = useFetch<(ShallowCountry | FullCountry)[]>();
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 

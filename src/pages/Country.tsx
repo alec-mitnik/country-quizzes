@@ -73,8 +73,8 @@ function Country() {
   }, [countryCode, error, storedCountryData, countryWrapper,
       fetchShallowDataForAllCountries, fetchCountry]);
 
-  const { name, worldFactbookCountryKey, location, independent, parentCountryCca3,
-      borders, flag, flagDescription, currencies, capitals, languages,
+  const { name, worldFactbookCountryKey, location, independent, independenceDisputed,
+      parentCountryCca3, borders, flag, flagDescription, currencies, capitals, languages,
       area, population, populationDensity, continents, funFacts } = country ?? {};
 
   const locatorMapSrc = worldFactbookCountryKey ? getLocatorMapSrc(worldFactbookCountryKey) : undefined;
@@ -142,7 +142,7 @@ function Country() {
               {renderCountryDataValue(continents?.label, continents?.formattedValue)}
               {renderCountryDataValue(borders?.length === 1 ? "Bordering Country" : "Bordering Countries",
                   <CountryLinksValue value={borders} />)}
-              {renderCountryDataValue("Independent", independent ? "Yes" : "No")}
+              {renderCountryDataValue("Independent", (independent ? "Yes" : "No") + (independenceDisputed ? " (Disputed)" : ""))}
               {!independent && parentCountryCca3 && renderCountryDataValue("Parent Country",
                   <CountryLinksValue value={[parentCountryCca3]} />)}
             </div>

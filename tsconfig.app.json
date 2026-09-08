@@ -20,7 +20,8 @@
     "strict": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "noUncheckedIndexedAccess": true,
+    // More of a nuisance than a help, and causes a "Type instantiation is excessively deep" warning
+    // "noUncheckedIndexedAccess": true,
     "allowUnusedLabels": false,
     "allowUnreachableCode": false,
     "noImplicitOverride": true,

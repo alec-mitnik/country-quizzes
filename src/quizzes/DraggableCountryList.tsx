@@ -1,6 +1,6 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useState, type DragEvent } from "react";
-import { CUSTOM_DRAG_TYPE } from "../utils/consts";
+import { isOnlyDraggingCustomType } from "./quizUtils";
 
 interface DraggableCountryListProps {
   headerId: string;
@@ -27,7 +27,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
   const [isBeingDraggedOver, setIsBeingDraggedOver] = useState(false);
 
   function handleDragOver(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (isOnlyDraggingCustomType(event)) {
       event.preventDefault();
     }
 
@@ -43,8 +43,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     const isRankedList = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-list, .draggable-country-list h2');
 
-    if (isRankedList && selectedCountryCode
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (isRankedList && selectedCountryCode && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       setIsBeingDraggedOver(true);
       event.dataTransfer.dropEffect = 'move';
@@ -58,8 +57,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
     const isRankedList = event.target instanceof HTMLElement
         && event.target.matches('.draggable-country-list');
 
-    if (isRankedList
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (isRankedList && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       setIsBeingDraggedOver(false);
     }
@@ -67,7 +65,7 @@ function DraggableCountryList({ headerId, headerText, headerLevel = 2,
 
   // Doesn't fire if the drag involves no actual movement!
   function handleDrop(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       event.stopPropagation();
       setIsBeingDraggedOver(false);

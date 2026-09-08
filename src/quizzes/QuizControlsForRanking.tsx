@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useEffect, useMemo, useRef, useState, type DragEvent } from "react";
 import useCountries from "../hooks/useCountries";
 import { QUIZ_MAX_LEVEL, QUIZ_ONE_GO_TIP, QUIZ_ROUNDS_PER_LEVEL } from "../utils/consts";
@@ -9,7 +9,7 @@ import DraggableCountryList from "./DraggableCountryList";
 import DraggableCountryPool from "./DraggableCountryPool";
 import QuizSubmitButton from "./QuizSubmitButton";
 import type { QuizState, RankingQuizState } from "./quizConfig";
-import { isQuizActive } from "./quizUtils";
+import { isOnlyDraggingCustomType, isQuizActive } from "./quizUtils";
 
 const CUSTOM_DRAG_TYPE = 'application/country-code';
 
@@ -124,14 +124,14 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   }
 
   function handleDragOver(event: DragEvent) {
-    if (event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (isOnlyDraggingCustomType(event)) {
       event.preventDefault();
     }
   }
 
   function handleDragEnterForRankedListItem(event: DragEvent, itemCountryCode: Cca3Code) {
     if (selectedCountryCode && selectedCountryCode !== itemCountryCode
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+        && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       event.dataTransfer.dropEffect = 'move';
       setCountryCodeBeingDraggedOver(itemCountryCode);
@@ -144,7 +144,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
     const isListItem = event.target instanceof HTMLDivElement
         && event.target.matches('.draggable-country');
     if (isListItem && selectedCountryCode && countryCodeBeingDraggedOver === itemCountryCode
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+        && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
 
       // This is needed or else it overrides the enter handler for an adjacent list item
@@ -153,7 +153,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   }
 
   function handleDropForRankedListItem(event: DragEvent, itemCountryCode: Cca3Code) {
-    if (selectedCountryCode && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (selectedCountryCode && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       event.stopPropagation();
 
@@ -166,7 +166,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
   }
 
   function handleDropForRankedList(event: DragEvent) {
-    if (selectedCountryCode && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+    if (selectedCountryCode && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       event.stopPropagation();
       onAdd(selectedCountryCode);
@@ -176,7 +176,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
 
   function handleDropForUnrankedPool(event: DragEvent) {
     if (quizState.rankedCountryCodes.length !== 0 && selectedCountryCode
-        && event.dataTransfer.types.every(type => type === CUSTOM_DRAG_TYPE)) {
+        && isOnlyDraggingCustomType(event)) {
       event.preventDefault();
       event.stopPropagation();
       onRemove(selectedCountryCode);
@@ -270,7 +270,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
     // Handle adding from outside or moving from within
     const newRankedCountryCodes = quizState.rankedCountryCodes.filter(code => code !== countryCode);
     const moved = newRankedCountryCodes.length < quizState.rankedCountryCodes.length;
-    const countryCodeAtIndex = quizState.rankedCountryCodes[rankIndex]!;
+    const countryCodeAtIndex = quizState.rankedCountryCodes[rankIndex];
     const updatedIndex = newRankedCountryCodes.indexOf(countryCodeAtIndex);
 
     // If moving off the edge, cycle back around
@@ -353,7 +353,7 @@ function QuizControlsForRanking({quizState, setQuizState}: QuizControlsForRankin
       {/* Reminder that you don't have to submit everything in one go */}
       {roundActive && !quizState.countryCodesLockedInAsCorrect.length
           && !!quizState.incorrectSubmissions.length
-          && quizState.incorrectSubmissions[quizState.incorrectSubmissions.length - 1]!.length
+          && quizState.incorrectSubmissions[quizState.incorrectSubmissions.length - 1].length
               === quizState.countryCodes.length
           && <p className="quiz-message" aria-live="polite">
         Remember: {QUIZ_ONE_GO_TIP}

@@ -1,5 +1,5 @@
-import type { Country } from "@yusifaliyevpro/countries/types";
 import { createContext } from "react";
+import type { FullCountry, ShallowCountry } from "../types/commonTypes";
 import type { CountryStorage } from "./CountriesProvider";
 import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
 
@@ -10,7 +10,7 @@ interface CountriesContextType {
   storedCountryData: CountryStorage;
   markShallowDataAsRequested: () => void;
   markCountriesAsRequested: (countryCodes: string[]) => void;
-  updateStoredCountriesFromData: (data: Partial<Country>[], shallowData?: boolean) => void;
+  updateStoredCountriesFromData: (data: (ShallowCountry | FullCountry)[], shallowData?: boolean) => void;
   resetNonLoadedRequestStates: () => void;
 };
 
@@ -24,6 +24,6 @@ export const CountriesContext = createContext<CountriesContextType>({
   storedCountryData: DEFAULT_COUNTRY_STORAGE,
   markShallowDataAsRequested: () => {},
   markCountriesAsRequested: () => {},
-  updateStoredCountriesFromData: (_data: Partial<Country>[]) => {},
+  updateStoredCountriesFromData: (_data: (ShallowCountry | FullCountry)[]) => {},
   resetNonLoadedRequestStates: () => {},
 });

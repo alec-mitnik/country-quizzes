@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import confetti from "canvas-confetti";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { StoredCountry } from "../../types/commonTypes";
@@ -583,14 +583,14 @@ function Quiz() {
                 <li>You may be tasked with matching countries to their flags, capitals, locations, etc.</li>
                 <li>You may be tasked with ordering countries by size, population, etc.</li>
                 <li>The countries involved are also randomly selected for each round.</li>
-                <li>Use the "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top to affect which countries can be used.</li>
+                <li>The "{INDEPENDENT_COUNTRIES_CHECKBOX_LABEL}" checkbox at the very top determines which countries can be included.</li>
               </ul>
               <li><h3>How to Select Answers</h3></li>
               <ul>
-                <li>Countries can be dragged to position, or they can be added/moved/removed using the button controls.</li>
+                <li>Countries can be dragged into position, or they can be added/moved/removed using the button controls.</li>
                 <li>To drag on a mobile device, tap and hold on a country until it becomes draggable.</li>
                 <li>Some devices may not support drag-and-drop well, or at all, so the buttons can be used instead.</li>
-                <li>Match values have buttons that can be used to target them directly when adding countries.</li>
+                <li>Match values have toggles that can be used to target them directly when adding countries via buttons.</li>
               </ul>
               <li><h3>Submission Rules</h3></li>
               <ul>

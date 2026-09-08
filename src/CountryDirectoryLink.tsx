@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import { Link } from "react-router-dom";
 import useSmoothLoadingImageRef from "./hooks/useSmoothLoadingImageRef";
 

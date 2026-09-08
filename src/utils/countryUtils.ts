@@ -1,41 +1,8 @@
-import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import type { FormattedCountryField, StoredCountry, StoredCountryWrapper } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
 import { SQUARE_KM_PER_SQUARE_MILE } from "./consts";
 import { convertToOrdinal, roundToPrecision, toPreciseLocaleString } from "./utils";
-
-/*
-For reference, partial typed data info for Country from the API:
-
-type Country = {
-  code: Cca3Code;                        // e.g. "USA"
-  name: {
-    common: string;                      // e.g. "United States"
-    official: string;
-    nativeName?: Record<string, {
-      official: string;
-      common: string;
-    }>;
-  };
-  independent: boolean;
-  currencies?: Record<string, {          // e.g. { USD: { name: "United States dollar", symbol: "$" } }
-    name: string;
-    symbol: string;
-  }>;
-  capital?: Capital[];                   // e.g. ["Washington, D.C."]
-  languages?: Record<string, string>;    // e.g. { eng: "English" }
-  borders?: Cca3Code[];                  // e.g. ["CAN", "MEX"]
-  area: number;                          // e.g. 9372610 (square km)
-  population: number;                    // e.g. 329484123
-  continents: string[];                  // e.g. ["North America"]
-  flags: {
-    png: string;                         // URL
-    svg: string;                         // URL
-    alt?: string;                        // Description of flag, typically starting like:
-                                         // "The flag of the United States of America is composed of..."
-  };
-}
-*/
 
 /**
  * Gets the rank of the given country in the given ranked array, accounting for ties
@@ -49,7 +16,7 @@ export function getRankAccountingForTies(rankedArray: Cca3Code[], cca3: Cca3Code
   let index = rankedArray.indexOf(cca3);
 
   // Walk back until we find an entry with a different value.
-  while (index > 0 && valueFunction(rankedArray[index - 1]!) === valueFunction(cca3)) {
+  while (index > 0 && valueFunction(rankedArray[index - 1]) === valueFunction(cca3)) {
     index--;
   }
 
@@ -78,14 +45,14 @@ export function extractCurrencies(country: Partial<Country>) {
   let currencies: CurrenciesData = {};
 
   if (country?.currencies) {
-    for (const valueEntry of Object.values({...country.currencies})) {
+    for (const valueEntry of country.currencies) {
       if (valueEntry.symbol && valueEntry.name) {
         // Extract currencies using just the last word ("dollar" vs. "United States dollar")
         // For the purpose of quizzing on
         const nameArray = valueEntry.name.split(" ");
-        let currencyTerm = nameArray[nameArray.length - 1]!;
+        let currencyTerm = nameArray[nameArray.length - 1];
 
-        if (country.cca3 === "VEN") {
+        if (country.codes?.alpha_3 === "VEN") {
           // For Venezuela, the REST Countries API gives "Venezuelan bolívar soberano",
           // but the common term seems to be "bolívar."
           currencyTerm = "bolívar";
@@ -119,7 +86,7 @@ export function extractLanguages(country: Partial<Country>) {
   let languages: string[] = [];
 
   if (country?.languages) {
-    languages = Object.values({...country?.languages}).filter(Boolean);
+    languages = country?.languages.filter(Boolean).map(lang => lang.name);
 
     // Sort alphabetically
     languages.sort((a, b) => a.localeCompare(b));
@@ -166,19 +133,15 @@ export function sortCountryCodesByName(countryCodes: Cca3Code[],
  * @returns The edited alt description for the flag
  */
 export function extractFlagAltDescription(country: Partial<Country>) {
-  if (!country.name) {
-    return undefined;
-  }
-
-  let flagDescription = country?.flags?.alt;
-  const countryName = country?.name?.common;
+  let flagDescription = country?.flag?.description;
 
   if (flagDescription) {
-    const countryNames = [countryName, `the ${countryName}`];
-
-    if (country.name.official) {
-      countryNames.push(country.name.official, `the ${country.name.official}`);
+    if (!country.names) {
+      return undefined;
     }
+
+    const countryNames = [country.names.common, `the ${country.names.common}`,
+        country.names.official, `the ${country.names.official}`];
 
     // Sort names by length, longest first
     countryNames.sort((a, b) => b.length - a.length);

@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import { localeIncludes } from "locale-includes";
 import { useEffect, useMemo, useState } from "react";
 import Button from "../Button";

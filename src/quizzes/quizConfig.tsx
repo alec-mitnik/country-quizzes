@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { StoredCountry } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
 import { formatCountryDataArray, getCountryNameFromCode } from "../utils/countryUtils";
@@ -16,6 +16,8 @@ export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
 
 /*
  * TODO:
+ *
+ * Use data's own imperial units rather than manual conversion?
  *
  * Track stats on best quiz score, times beaten, and win streaks.
  * The first win could unlock the stats feature.

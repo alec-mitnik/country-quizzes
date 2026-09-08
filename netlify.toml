@@ -2,3 +2,8 @@
   for = "/images/*"
   [headers.values]
     Cache-Control = "public, max-age=86400"
+
+[dev]
+  command = "vite"
+  targetPort = 5173
+  port = 8888

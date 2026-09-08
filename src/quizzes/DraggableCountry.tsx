@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import { useMemo, useRef, type DragEvent } from "react";
 import { Link } from "react-router-dom";
 import type { StoredCountry } from "../../types/commonTypes";

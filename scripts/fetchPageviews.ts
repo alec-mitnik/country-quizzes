@@ -1,4 +1,4 @@
-import type { Cca3Code, Country } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code, Country } from "@yusifaliyevpro/countries/types";
 import fs from 'fs/promises';
 import path from 'path';
 import type { StoredCountry } from "../types/commonTypes";
@@ -83,8 +83,8 @@ async function fetchCountries(): Promise<Partial<StoredCountry>[]> {
   const countries = await response.json() as Partial<Country>[];
   return countries
     .map(country => ({
-      name: country?.name?.common,
-      cca3: country.cca3,
+      name: country?.names?.common,
+      cca3: country.codes?.alpha_3,
     }))
     .sort((a, b) => (a?.name ?? "").localeCompare(b?.name ?? ""));
 }

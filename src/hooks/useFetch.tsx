@@ -51,7 +51,7 @@ function useFetch<T = unknown>(
       return {
         ...prev,
         [url]: {
-          ...prev[url]!,
+          ...prev[url],
           ...newState,
         },
       };
@@ -93,7 +93,10 @@ function useFetch<T = unknown>(
       });
 
       if (!response.ok) {
-        throw new Error(response.statusText);
+        const body = await response.json() as { error?: string };
+        // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+        console.error(body.error || response.statusText);
+        throw new Error("Failed to load data");
       }
 
       const responseData: unknown = await response.json();

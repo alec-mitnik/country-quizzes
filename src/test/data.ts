@@ -1,4 +1,6 @@
-import type { Capital, Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Capital, Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { StoredCountry } from "../../types/commonTypes";
+import type { CountryStorage } from "../CountriesProvider";
 
 // Typing this as StoredCountry makes optional fields for the type require checking
 export const testCountry = {
@@ -6,7 +8,7 @@ export const testCountry = {
   name: "Trinidad and Tobago",
   worldFactbookCountryKey: "TD",
   location: "Caribbean, islands between the Caribbean Sea and the North Atlantic Ocean, northeast of Venezuela, south of Grenada",
-  independent: true,
+  independent: true as boolean,
   flag: "https://flagcdn.com/tt.svg",
   flagDescription: `The flag of this country has a red field with \
 a white-edged black diagonal band that extends from the upper \
@@ -56,7 +58,7 @@ hoist-side corner to the lower fly-side corner of the field.`,
     formattedValue: "North America"
   },
   borders: [],
-};
+} satisfies StoredCountry;
 
 export const testStoredCountryData = {
   countries: {
@@ -82,7 +84,7 @@ export const testStoredCountryData = {
       byFamiliarity: [],
     },
   },
-};
+} satisfies CountryStorage;
 
 export const testShallowStoredCountryData = {
   countries: {
@@ -179,4 +181,4 @@ export const testShallowStoredCountryData = {
       byFamiliarity: [testCountry.cca3, "TCA", "TCB"],
     },
   },
-};
+} satisfies CountryStorage;

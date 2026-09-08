@@ -1,4 +1,4 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import type { FormattedCountryField, StoredCountry } from "../../types/commonTypes";
 import useCountries from "../hooks/useCountries";
 import { getLocatorMapSrc, getReactNodeString } from "../utils/utils";

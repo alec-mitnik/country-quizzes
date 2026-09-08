@@ -1,8 +1,10 @@
-import type { Cca3Code } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import confetti from "canvas-confetti";
+import { type DragEvent } from "react";
 import type { StoredCountry } from "../../types/commonTypes";
 import type { CountryStorage } from "../CountriesProvider";
 import {
+  CUSTOM_DRAG_TYPE,
   QUIZ_MAX_DUPLICATE_MATCH_VALUES, QUIZ_MAX_LEVEL,
   QUIZ_ROUNDS_PER_LEVEL
 } from "../utils/consts";
@@ -371,4 +373,19 @@ export function getRandomCountryCodes(availableCountryCodes: Cca3Code[], storedC
 
   return [selectedCountryCodes.filter(Boolean) as Cca3Code[],
       countryCodeSecondaryIndexes.length ? countryCodeSecondaryIndexes : undefined];
+}
+
+// Browser's add internal tracking types like 'chromium/x-drag-id',
+// so can't reliably go by only the custom type being present
+export function isOnlyDraggingCustomType(event: DragEvent) {
+  const types = event.dataTransfer?.types ?? [];
+
+  // Ensure the custom type is explicitly present
+  const hasCustomType = types.includes(CUSTOM_DRAG_TYPE);
+
+  // Ensure the user isn't dragging highlighted text or an external OS file
+  const isHighlightedText = types.includes('text/plain');
+  const isOSFileDrop = types.includes('Files') || types.includes('application/x-moz-file');
+
+  return hasCustomType && !isHighlightedText && !isOSFileDrop;
 }
