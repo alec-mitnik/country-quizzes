@@ -1,10 +1,10 @@
-import type { Alpha_3Code as Cca3Code, Country } from "@yusifaliyevpro/countries/types";
+import type { Alpha_3Code as Cca3Code } from "@yusifaliyevpro/countries/types";
 import React, { useCallback, useMemo, useState } from "react";
 import type { FullCountry, ShallowCountry, StoredCountry, StoredCountryWrapper } from "../types/commonTypes";
 import { CountriesContext } from "./CountriesContext";
 import { useLocalStorageStateBoolean } from "./hooks/useLocalStorageState";
 import countryPageviews from "./supplementalData/countryPageviews.json";
-import { DEFAULT_COUNTRY_STORAGE } from "./utils/consts";
+import { DEFAULT_COUNTRY_STORAGE, SQUARE_KM_PER_SQUARE_MILE } from "./utils/consts";
 import {
   extractAlphabeticalStringArray, extractCurrencies, extractFlagAltDescription,
   extractLanguages, formatCountryDataArray, getPopulationDensityValue, setAreaLabels,
@@ -96,7 +96,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
     if (data?.length) {
       setStoredCountryData(prev => {
         const newData = {...prev};
-        const countryDataMap: Partial<Record<Cca3Code, Partial<Country>>> = {};
+        const countryDataMap: Partial<Record<Cca3Code, ShallowCountry>> = {};
 
         for (const country of data) {
           if (!country.codes?.alpha_3) {
@@ -359,6 +359,7 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
 
             for (const code of countryCodes) {
               const country = newData.countries[code]?.data;
+              const apiCountry = countryDataMap[code];
 
               if (country) {
                 if (!country.location) {
@@ -379,6 +380,18 @@ function CountriesProvider({ children }: { children: React.ReactNode }) {
                   if (!endsWithPunctuationRegex.test(country.flagDescription)) {
                     console.warn(`${country.cca3} - ${country.name} flag description does not end with punctuation!`);
                   }
+                }
+
+                if (apiCountry) {
+                  if (apiCountry.area) {
+                    const sqMi = apiCountry.area.kilometers / SQUARE_KM_PER_SQUARE_MILE;
+                    if (Math.abs(apiCountry.area.miles - sqMi) > 5) {
+                      console.warn(`${country.cca3} - ${country.name} has imperial area value mismatch (${
+                          apiCountry.area.miles} provided vs ${sqMi} calculated)`);
+                    }
+                  }
+                } else {
+                  console.warn(`${country.cca3} - ${country.name} has no API country data!`);
                 }
 
                 for (const otherCountry of countryData) {
