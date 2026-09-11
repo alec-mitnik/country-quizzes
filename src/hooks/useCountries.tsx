@@ -112,12 +112,12 @@ function useCountries() {
   // Set the combined error and loading states,
   // and store any new country data
   useEffect(() => {
-    const combinedError = [];
+    const combinedError = new Set<string>();
     let combinedLoading = false;
 
     for (const [url, {data, error, loading}] of Object.entries(state)) {
       if (error) {
-        combinedError.push(error);
+        combinedError.add(error);
       }
 
       combinedLoading ||= loading;
@@ -128,7 +128,8 @@ function useCountries() {
       }
     }
 
-    const combinedErrorStr = combinedError.length ? combinedError.join(" | ") : null;
+    const combinedErrorArray = Array.from(combinedError);
+    const combinedErrorStr = combinedErrorArray.length ? combinedErrorArray.join(" | ") : null;
 
     if (combinedErrorStr !== error) {
       setError(combinedErrorStr);

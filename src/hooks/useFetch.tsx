@@ -122,7 +122,8 @@ function useFetch<T = unknown>(
         } else if (e.name === 'AbortError') {
           // If aborted for another reason, let just the loading state be updated appropriately
         } else {
-          error = e.message;
+          error = "Failed to load data";
+          console.error(`${error}:`, e.message);
         }
       } else {
         // TypeScript and eslint are too restrictive sometimes...
