@@ -5,6 +5,16 @@ import { fullFields, shallowFields } from "../../types/commonTypes";
 // 500 for paid plains (which I have), 100 for free plans
 const API_LIMIT = 500;
 
+const JSON_HEADERS: Record<string, string> = {
+  "Content-Type": "application/json",
+};
+
+// Cache for 24 hours
+const CACHED_JSON_HEADERS: Record<string, string> = {
+  ...JSON_HEADERS,
+  "Cache-Control": "public, max-age=86400",
+};
+
 const client = new RestCountries({ apiKey: process.env.REST_COUNTRIES_KEY! });
 
 const handler: Handler = async (event) => {
@@ -52,7 +62,7 @@ const handler: Handler = async (event) => {
 
       return {
         statusCode: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: CACHED_JSON_HEADERS,
         body: JSON.stringify(countries),
       };
     }
@@ -74,7 +84,7 @@ const handler: Handler = async (event) => {
 
       return {
         statusCode: 200,
-        headers: { "Content-Type": "application/json" },
+        headers: CACHED_JSON_HEADERS,
         body: JSON.stringify(results.flatMap((r) => r.success ? [r.country] : [])),
       };
     }
