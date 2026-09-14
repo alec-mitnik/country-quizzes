@@ -1912,7 +1912,10 @@
       "cca3": "ZAF",
       "name": "South Africa",
       "worldFactbookCountryKey": "SF",
-      "location": "Southern Africa, at the southern tip of the continent of Africa"
+      "location": "Southern Africa, at the southern tip of the continent of Africa",
+      "funFacts": [
+        "Home of the birthplace of author J. R. R. Tolkien"
+      ]
     }
   },
   "SGS": {
