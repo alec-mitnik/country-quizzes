@@ -1412,12 +1412,9 @@
   "NRU": {
     "data": {
       "cca3": "NRU",
-      "name": "Nauru",
+      "name": "Naoero",
       "worldFactbookCountryKey": "NR",
-      "location": "Oceania, island in the South Pacific Ocean, south of the Marshall Islands",
-      "funFacts": [
-        "The term for a person from this country (its demonym) is a palindrome (reads the same forwards and backwards)"
-      ]
+      "location": "Oceania, island in the South Pacific Ocean, south of the Marshall Islands"
     }
   },
   "NPL": {

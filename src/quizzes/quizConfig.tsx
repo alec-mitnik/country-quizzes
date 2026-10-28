@@ -9,13 +9,15 @@ export const QUIZ_BREAKING_VERSION = 1;
 
 // Increment these as applicable any time a breaking change is introduced to quiz round data
 // so that only preexisting data for the current round will be discarded.
-// Need add to these for any new quiz types.
-export const QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING = 3;
+// Need to add to these for any new quiz types.
+export const QUIZ_ROUND_BREAKING_VERSION_FOR_MATCHING = 4;
 export const QUIZ_ROUND_BREAKING_VERSION_FOR_RANKING = 1;
 export const QUIZ_ROUND_BREAKING_VERSION_FOR_SORTING_OUT = 1;
 
 /*
  * TODO:
+ *
+ * Naoero country code being changed from NRU to NRO...!
  *
  * Use data's own imperial units rather than manual conversion?
  *
